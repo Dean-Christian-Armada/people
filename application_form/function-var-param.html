@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Function Variable Parameter</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+	<div id="dean" style="width: 200px; height:200px; background: red"></div>
+	<script type="text/javascript">
+		// var x = function(event){
+		// 	$(this).css("background-color", color);
+		// };
+		// var y = function(event){
+		// 	alert(sur);
+		// };
+		function x(event){
+			$(this).css("background-color", event.data.color);
+		};
+		function y(event){
+			alert(sur);
+		};
+		// $("body").on("click", "#dean", x('dean'));
+		// $("#dean").click(x('dean'));
+		$("#dean").click({color: "green"}, x);
+	</script>
+</body>
+</html>

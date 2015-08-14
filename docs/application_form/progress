@@ -1,0 +1,24 @@
+August 12, 2015
+	- Made changes as instructed by JR and Lauren
+		-- Autocomplete
+		-- Dropdown
+		-- User Experience of Sea Service
+			--- Come up with an idea of auto pop-up modal
+		-- Having a hard time with the changes of national certiicates due to design issues
+			--- removing issues and place issued
+			--- created two htmls on deanchrisarmada.com
+				---- application-form.html
+				---- application-form-2.html
+August 13, 2015
+	- Meeting with JR and Lauren
+		-- Remove others on "How did you find about manship" : DONE
+		-- Null Fields = Highlighted : PENDING
+			--- For final processes of application form
+		-- Calendars must have better experience on year selections : DONE
+			--- choices on older years
+		-- Month / Days Field must be autocomplete with the Date Joined / Date Left : DONE
+			--- lessen width 
+		-- Year Built
+			--- lessen width
+		-- autocomplete is dynamic with DB : PENDING
+		-- Street Input type text must be long

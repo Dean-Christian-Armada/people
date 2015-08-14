@@ -1,0 +1,131 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+body.login {
+    background-image: url(/static/img/login-bg.jpg);
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    background-color: #fafafa;
+}
+
+.login #container {
+    background-color: #2e76b8;
+    border-radius: 10px;
+    width: 400px;
+    min-width: 350px;
+    /*margin-top: 9%;*/
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login #content-main {
+    width: 100%;
+}
+
+/*#logo {
+    padding: 30px 20px 20px 25px;
+}*/
+
+.login form {
+    margin-top: 1em;
+}
+
+.login .form-row {
+    padding: 4px 0;
+    float: left;
+    width: 100%;
+}
+
+/*.login .form-row label {
+    padding-right: 0.5em;
+    line-height: 2em;
+    font-size: 1em;
+    clear: both;
+    color: #333;
+}*/
+
+.login #content{ padding: 15px; }
+
+.login .form-row #id_username, .login .form-row #id_password {
+    border-radius: 5px;
+    border-style: none;
+    height: 38px;
+    /*padding-left: 5px;*/
+    resize: vertical;
+    /*width: 86%;*/
+    padding-left: 50px;
+    font-size: 16px;
+}
+
+.login .form-row #usernamesubmit, .login .form-row #passwordsubmit{
+    background: transparent url(/static/img/mbtn1.jpg) no-repeat scroll 0 0 / 100% 100%;
+    border: medium none;
+    filter: none;
+    height: 38px;
+    /*margin-left: 1.5px;*/
+    margin-top: -38px;
+    width: 38px;
+    position: absolute;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.login .form-row #passwordsubmit{
+    background: transparent url(/static/img/mbtn2.jpg) no-repeat scroll 0 0 / 100% 100%;
+}
+
+.login span.help {
+    font-size: 10px;
+    display: block;
+}
+
+.login .submit-row {
+/*    clear: both;
+    padding: 1em 0 0 9.4em;*/
+}
+
+.login .submit-row button[type="submit"] {
+    /*height: 30px;*/
+    background-color: #02be9b;
+    border: 0 none;
+    color: #fff;
+    border-radius: 10px;
+    width: 40%;
+    margin-top: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: 700;
+}
+
+.login .submit-row button[type="submit"]:hover{
+    background-color: #04508e; 
+}
+
+.login .password-reset-link, .login .submit-row {
+    text-align: right;
+}
+
+.login .error{
+	text-align: center;
+	background-color: #ccc;
+	color: red;
+	font-weight: 700;
+}
+
+/* Felix CSS*/
+
+#header{
+    display: none
+}
+
+a {
+    text-decoration: none;
+    color: #fff !important;
+    font-size: 14px;
+}
+

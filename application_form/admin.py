@@ -1,0 +1,25 @@
+from django.contrib import admin
+from . models import *
+
+# Register your models here.
+admin.site.register(AppDetails)
+admin.site.register(Tertiary)
+admin.site.register(HighSchool)
+admin.site.register(Education)
+admin.site.register(EmergencyContact)
+admin.site.register(SeaService)
+admin.site.register(BackgroundInformation)
+admin.site.register(Passport)
+admin.site.register(SBook)
+admin.site.register(COC)
+admin.site.register(License)
+admin.site.register(SRC)
+admin.site.register(GOC)
+admin.site.register(USVisa)
+admin.site.register(SchengenVisa)
+admin.site.register(YellowFever)
+admin.site.register(CertificatesDocuments)
+admin.site.register(FlagDocuments)
+admin.site.register(TrainingCertificates)
+admin.site.register(PersonalData)
+admin.site.register(AppForm)
