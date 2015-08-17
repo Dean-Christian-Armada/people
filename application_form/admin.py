@@ -2,7 +2,23 @@ from django.contrib import admin
 from . models import *
 
 # Register your models here.
+
+class SeaServiceInline(admin.TabularInline):
+	model = SeaService
+
+class FlagDocumentsInline(admin.TabularInline):
+	model = FlagDocuments
+
+class TrainingCertificatesInline(admin.TabularInline):
+	model = TrainingCertificates
+
+class AppFormAdmin(admin.ModelAdmin):
+	inlines = [
+		SeaServiceInline
+	]
+
 admin.site.register(AppDetails)
+admin.site.register(AppSource)
 admin.site.register(Tertiary)
 admin.site.register(HighSchool)
 admin.site.register(Education)
@@ -22,6 +38,7 @@ admin.site.register(CertificatesDocuments)
 admin.site.register(FlagDocuments)
 admin.site.register(TrainingCertificates)
 admin.site.register(PersonalData)
-admin.site.register(AppForm)
+admin.site.register(AppForm, AppFormAdmin)
+admin.site.register(Reference)
 # admin.site.register(JSignatureModel)
 # admin.site.register(Sample)
