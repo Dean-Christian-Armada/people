@@ -1,30 +1,51 @@
 from django.core.validators import RegexValidator
 from django.db import models
 
+# from jsignature.mixins import JSignatureFieldsMixin
+
 # Create your models here.
 
-class Source(models.Model):
-	source = models.CharField(max_length=50, default=None)
+# class JSignatureModel(JSignatureFieldsMixin):
+# 	name = models.CharField(max_length=100, default=None)
+# 	signatures = models.ImageField(upload_to='signatures', blank=True, default=None)
 
-	def __str__(self):
-		return self.source
+
+# class Sample(models.Model):
+# 	picture = models.ImageField(upload_to='signatures', blank=True, default=None)
+# 	name = models.CharField(max_length=100, default='dean')
+
+# 	def __unicode__(self):
+# 		return self.name
+
+class AppDetails(models.Model):
+	POSITION_CHOICES = (
+			('M', 'Male'),
+			('F', 'Female'),
+		)
+	application_date = models.DateField()
+	position_applied = models.CharField(max_length=50, default=None, choices=POSITION_CHOICES)
+	alternative_position = models.CharField(max_length=50, default=None, choices=POSITION_CHOICES)
+	picture = models.ImageField(upload_to='application_pictures', blank=True)
+	appsource = models.ForeignKey('AppSource')
+	
+	# def __str__(self):
+	# 	return str(self.form_reference)
+
+# class Source(models.Model):
+# 	source = models.CharField(max_length=50, default=None)
+
+# 	def __str__(self):
+# 		return self.source
+
 
 class AppSource(models.Model):
-	source = models.ForeignKey('Source')
+	source = models.CharField(max_length=50, default=None)
 	specify = models.CharField(max_length=50, default=None)
 
 	def __str__(self):
 		return "%s - %s" % (self.source, self.specify)
 
-class AppDetails(models.Model):
-	application_date = models.DateField()
-	position_applied = models.CharField(max_length=50, default=None)
-	alternative_position = models.CharField(max_length=50, default=None)
-	picture = models.ImageField(upload_to='application_images', blank=True)
-	appsource = models.ForeignKey('AppSource')
 
-	def __str__(self):
-		return str(self.form_reference)
 
 ##### START Educational Information
 
@@ -65,25 +86,6 @@ class EmergencyContact(models.Model):
 
 	def __str__(self):
 		return str(self.name)
-
-class SeaService(models.Model):
-	vessel_name = models.CharField(max_length=50, default=None)
-	vessel_type = models.CharField(max_length=50, default=None)
-	flag = models.CharField(max_length=50, default=None)
-	grt = models.IntegerField()
-	year_built = models.IntegerField()
-	engine_type = models.CharField(max_length=50, default=None)
-	hp = models.IntegerField()
-	manning_agency = models.CharField(max_length=50, default=None)
-	principal = models.CharField(max_length=50, default=None)
-	date_joined = models.DateField()
-	date_left = models.DateField()
-	duration = models.IntegerField()
-	rank = models.CharField(max_length=50, default=None)
-	cause_of_discharge = models.CharField(max_length=100, default=None)
-
-	def __str__(self):
-		return str(self.year_built)
 
 class BackgroundInformation(models.Model):
 	visa_application = models.BooleanField(default=0)
@@ -201,9 +203,12 @@ class PersonalData(models.Model):
 	middle_name = models.CharField(max_length=50, default=None)
 	age = models.IntegerField()
 	birth_date = models.DateField()
-	landline = models.IntegerField()
-	mobile = RegexValidator(regex=r'^([0-9]{11})$')
-	email_address = models.EmailField()
+	landline_1 = models.IntegerField()
+	mobile_1 = RegexValidator(regex=r'^([0-9]{11})$')
+	email_address_1 = models.EmailField()
+	landline_2 = models.IntegerField()
+	mobile_2 = RegexValidator(regex=r'^([0-9]{11})$')
+	email_address_2 = models.EmailField()
 	preferred_vessel_type = models.CharField(max_length=50, default=None)
 	availability_date = models.DateField()
 	sss = models.IntegerField()
@@ -216,7 +221,7 @@ class PersonalData(models.Model):
 	current_address_zip = models.IntegerField()
 	flags = models.ManyToManyField(FlagDocuments)
 	training_certificates = models.ManyToManyField(TrainingCertificates)
-	sea_service = models.ForeignKey(SeaService)
+	# sea_service = models.ForeignKey(SeaService, default=None)
 
 	def __str__(self):
 		name = "%s %s %s" % (self.first_name, self.middle_name, self.last_name, )
@@ -234,7 +239,7 @@ class Reference(models.Model):
 	comments = models.TextField(null=True, blank=True,)
 
 class AppForm(models.Model):
-	form_reference = models.CharField(max_length=50, default=None)
+	# form_reference = models.CharField(max_length=50, default=None)
 	app_details = models.ForeignKey('AppDetails')
 	personal_data = models.ForeignKey('PersonalData')
 	education = models.ForeignKey('Education')
@@ -242,5 +247,26 @@ class AppForm(models.Model):
 	background_information = models.ForeignKey('BackgroundInformation')
 	certificates_documents = models.ForeignKey('CertificatesDocuments')
 	reference = models.ForeignKey('Reference', default=None)
+	# sea_service = models.ForeignKey('SeaService', default=None)
 	essay = models.TextField(default=None)
-	# signature
+	signature = models.ImageField(upload_to='signatures', blank=True, default=None)
+
+class SeaService(models.Model):
+	app_form = models.ForeignKey('AppForm', default=None)
+	vessel_name = models.CharField(max_length=50, default=None)
+	vessel_type = models.CharField(max_length=50, default=None)
+	flag = models.CharField(max_length=50, default=None)
+	grt = models.IntegerField()
+	year_built = models.IntegerField()
+	engine_type = models.CharField(max_length=50, default=None)
+	hp = models.IntegerField()
+	manning_agency = models.CharField(max_length=50, default=None)
+	principal = models.CharField(max_length=50, default=None)
+	date_joined = models.DateField()
+	date_left = models.DateField()
+	duration = models.IntegerField()
+	rank = models.CharField(max_length=50, default=None)
+	cause_of_discharge = models.CharField(max_length=100, default=None)
+
+	def __str__(self):
+		return self.vessel_name

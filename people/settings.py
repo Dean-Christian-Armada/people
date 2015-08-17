@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'jsignature',
+    'widget_tweaks',
     'application_form',
     'login',
 )
@@ -84,7 +86,6 @@ WSGI_APPLICATION = 'people.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'crew_viewer',
         'NAME': 'people',
         'USER': 'root',
         'PASSWORD': 'd3@narmada13',
