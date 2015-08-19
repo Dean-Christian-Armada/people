@@ -7,32 +7,76 @@ from .models import *
 
 class SignatureForm(forms.Form):
 	# pass
-	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#CCC'}))
+	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#000'}))
 
 class AppDetailsForm(forms.ModelForm):
+	POSITION_CHOICES = (
+			('Position Applied', 'Position Applied'),
+			('Captain', 'Captain'),
+            ('Chief Mate', 'Chief Mate'),
+            ('Chief Engineer', 'Chief Engineer'),
+            ('2nd Engineer', '2nd Engineer'),
+		)
+	ALTERNATIVE_CHOICES = (
+			('Alternative Position', 'Alternative Position'),
+			('Captain', 'Captain'),
+            ('Chief Mate', 'Chief Mate'),
+            ('Chief Engineer', 'Chief Engineer'),
+            ('2nd Engineer', '2nd Engineer'),
+		)
+	position_applied = forms.ChoiceField(choices=POSITION_CHOICES, error_messages={'invalid_choice': 'Please select a valid choice'})
+	alternative_position = forms.ChoiceField(choices=ALTERNATIVE_CHOICES, error_messages={'invalid_choice': 'Please select a valid choice'})
 	class Meta:
 		model = AppDetails
 		fields = ('application_date', 'position_applied', 'alternative_position')
 		
-# class AppSourceForm(forms.ModelForm):
-# 	class Meta:
-# 		model = AppSource
+class AppSourceForm(forms.ModelForm):
+	SOURCE_CHOICES = (
+			('Advertisement', 'Advertisement'),
+			('Internet', 'Internet'),
+			('Friends or Relatives', 'Friends or Relatives'),
+			('Seafarer Center', 'Seafarer Center'),
+		)
+	source = forms.ChoiceField(widget=forms.RadioSelect, choices=SOURCE_CHOICES, error_messages={'required': 'Please let us know how you learned our company'})
+	class Meta:
+		model = AppSource
+		fields = ('source', )
+
+class PersonalDataForm(forms.ModelForm):
+	age = forms.IntegerField(error_messages={'required': 'Please Fill up your Date of Birth'})
+	class Meta:
+		model = PersonalData
+		fields = '__all__'
+
+class PermanentAddressForm(forms.ModelForm):
+	class Meta:
+		model = PermanentAddress
+		fields = '__all__'
+
+class CurrentAddressForm(forms.ModelForm):
+	class Meta:
+		model = CurrentAddress
+		fields = '__all__'
+
+class SpouseForm(forms.ModelForm):
+	class Meta:
+		model = Spouse
+		fields = '__all__'
+
+class CollegeForm(forms.ModelForm):
+	class Meta:
+		model = College
+		fields = '__all__'
 		
-# class TertiaryForm(forms.ModelForm):
-# 	class Meta:
-# 		model = Tertiary
+class HighSchoolForm(forms.ModelForm):
+	class Meta:
+		model = HighSchool
+		fields = '__all__'
 		
-# class HighSchoolForm(forms.ModelForm):
-# 	class Meta:
-# 		model = HighSchool
-		
-# class EducationForm(forms.ModelForm):
-# 	class Meta:
-# 		model = Education
-		
-# class EmergencyContactForm(forms.ModelForm):
-# 	class Meta:
-# 		model = EmergencyContact
+class EmergencyContactForm(forms.ModelForm):
+	class Meta:
+		model = EmergencyContact
+		fields = '__all__'
 		
 # class SeaServiceForm(forms.ModelForm):
 # 	class Meta:
@@ -89,10 +133,6 @@ class AppDetailsForm(forms.ModelForm):
 # class TrainingCertificatesForm(forms.ModelForm):
 # 	class Meta:
 # 		model = TrainingCertificates
-		
-# class PersonalDataForm(forms.ModelForm):
-# 	class Meta:
-# 		model = PersonalData
 		
 # class ReferenceForm(forms.ModelForm):
 # 	class Meta:

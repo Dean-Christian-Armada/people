@@ -111,20 +111,220 @@ body.login {
 }
 
 .login .error{
-	text-align: center;
-	background-color: #ccc;
-	color: red;
-	font-weight: 700;
+    text-align: center;
+    background-color: #ccc;
+    color: red;
+    font-weight: 700;
 }
 
-/* Felix CSS*/
+#application-form input,
+#application-form select {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #c4c1c7;
+    border-image: none;
+    border-style: none none solid;
+    border-width: 0 0 2px;
+    border-radius: 0;
+    box-shadow: none!important;
+    color: #000;
+    padding-left: 0
+}
+#application-form select {
+    color: #c4c1c7
+}
+select option {
+    color: #000
+}
+.bs-docs-sidebar .nav>.active:focus>a,
+.bs-docs-sidebar .nav>.active:hover>a,
+.bs-docs-sidebar .nav>.active>a,
+.bs-docs-sidebar .nav>.active>a:hover {
+    color: #2e76b8;
+    border-left: 2px solid #02be9b
+}
+#application-form h3:nth-child(n+2) {
+    text-transform: uppercase;
+    margin-top: 50px
+}
+#application-form textarea {
+    border: 2px solid #c4c1c7;
+    font-weight: 600;
+    padding-left: 5px;
+    resize: none
+}
+.btn-success {
+    background-color: #2e76b8;
+    border-color: #2e76b8
+}
+.btn-success:hover {
+    background-color: #02be9b;
+    border-color: #02be9b
+}
+.btn-info {
+    background-color: #2e76b8;
+    border-color: #2e76b8
+}
+.btn-info:hover {
+    background-color: #02be9b;
+    border-color: #02be9b
+}
+.ui-widget-header {
+    background-color: #fafafa
+}
+.certification-input {
+    border-radius: 4px!important;
+    border: 2px solid #c4c1c7!important;
+    padding-left: 4px!important
+}
+.certification {
+    padding: 15px;
+    border: 2px solid #000
+}
+.ui-widget-header {
+    background: #2e76b8!important;
+    border-color: #2e76b8!important
+}
+.ui-state-default {
+    color: #02be9b!important;
+    background: #fff!important
+}
+.ui-state-hover,
+.ui-state-highlight,
+.ui-state-active {
+    border: 1px solid #2e76b8!important
+}
+.ui-datepicker {
+    color: #04508e!important
+}
+.ui-widget-content {
+    border-color: #2e76b8!important;
+    background: #fff!important
+}
+.form-control[readonly] {
+    background-color: #a1d2f1!important
+}
+.padding-negator {
+    padding-left: 0;
+    padding-right: 0
+}
+.padding-right-negator {
+    padding-right: 0
+}
+.picture-container {
+    margin-top: 30px;
+    width: 220px;
+    height: 180px;
+    border: 1px solid #000;
+    float: right
+}
+.bs-doc-header {
+    background-image: url(/static/img/header.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    padding-top: 60px;
+    padding-bottom: 80px;
+    color: #fafafa;
+    background-repeat: no-repeat
+}
+#footer {
+    padding-top: 20px;
+    color: #fff;
+    font-size: 12px;
+    background-color: #02be9b
+}
+input.date {
+    background-image: url(/static/img/calendar_sign.png);
+    background-repeat: no-repeat;
+    background-position: right
+}
+select.ui-datepicker-year,
+select.ui-datepicker-month {
+    color: #2e76b8!important
+}
+.delete-row,
+.add-row {
+    cursor: pointer
+}
+.modal-dialog {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: auto
+}
+.modal-body {
+    padding: 0
+}
+.hide-calendar .ui-datepicker-calendar {
+    display: none!important;
+    visibility: hidden!important
+}
+.HideTodayButton .ui-datepicker-buttonpane .ui-datepicker-current {
+    visibility: hidden
+}
+.bottom-zero {
+    margin-bottom: 0
+}
+.ui-autocomplete {
+    z-index: 1100!important
+}
+.sea-service {
+    height: 50px;
+    font-size: 25px
+}
+.table-responsive th {
+    background-color: #02be9b;
+    color: #04508e
+}
+.fade {
+    opacity: 0;
+    -webkit-transition: opacity .5s linear;
+    transition: opacity .5s linear
+}
+.table-responsive::-webkit-scrollbar {
+    width: 15px;
+    background-color: #04508e
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #02be9b;
+    border-radius: 17px
+}
+.jSignature {
+    z-index: 2000!important;
+}
 
-#header{
+.half-width{
+    width: 50%;
+} 
+
+table.sea-services input{
+    width: 170px;
+}
+
+table.sea-services .year_built, table.sea-services .duration{
+    width: 100px;
+}
+
+#signature input.btn { 
+    width: 50%; background: #ccc; color: #fff;
+}
+
+.search-zip{
+    float:right;
+    text-decoration: underline;
+    color: #2e76b8;
+    cursor: pointer;
+}
+
+select.first-choice option:first-child{
     display: none
 }
 
-a {
-    text-decoration: none;
-    color: #fff !important;
-    font-size: 14px;
-}
+ul.errorlist{ padding-left: 15px !important; font-weight: 700; color:rgb(175, 17, 28); }
+
+.hidden{ display: none; }
+
+#id_source{ list-style:none !important; padding-left:0 !important; }
+
+#id_source label{ font-weight: 400; }

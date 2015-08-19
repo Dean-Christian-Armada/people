@@ -10,7 +10,11 @@ August 13, 2015
 			-- added clear button instead
 		- set min date after the day he joined
 
+August 18, 2015
+	- Used JS Custom Validity
+		-- Essay 50 minimum words validation
 
 
 Suggestions:
-	- Months / Days be hidden instead of readonly : NOT YET DISCUSSED
+	- Months / Days be hidden instead of readonly : Not Yet Discussed
+		-- DONE, (Auto-Computation on Date Left and Date Joined)

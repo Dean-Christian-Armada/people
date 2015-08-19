@@ -18,17 +18,11 @@ from django.db import models
 # 		return self.name
 
 class AppDetails(models.Model):
-	POSITION_CHOICES = (
-			('Captain', 'Captain'),
-            ('Chief Mate', 'Chief Mate'),
-            ('Chief Engineer', 'Chief Engineer'),
-            ('2nd Engineer', '2nd Engineer'),
-		)
 	application_date = models.DateField()
-	position_applied = models.CharField(max_length=50, default=None, choices=POSITION_CHOICES)
-	alternative_position = models.CharField(max_length=50, default=None, choices=POSITION_CHOICES)
+	position_applied = models.CharField(max_length=50, default=None,)
+	alternative_position = models.CharField(max_length=50, default=None,)
 	picture = models.ImageField(upload_to='application_pictures', blank=True)
-	appsource = models.ForeignKey('AppSource')
+	appdetails = models.OneToOneField('AppSource', default=None)
 	
 	def __str__(self):
 		return str(self.application_date)
@@ -42,7 +36,7 @@ class AppDetails(models.Model):
 
 class AppSource(models.Model):
 	source = models.CharField(max_length=50, default=None)
-	specify = models.CharField(max_length=50, default=None)
+	specify = models.CharField(max_length=50, default=None, null=True, blank=True)
 
 	def __str__(self):
 		return "%s - %s" % (self.source, self.specify)
@@ -51,27 +45,27 @@ class AppSource(models.Model):
 
 ##### START Educational Information
 
-class Tertiary(models.Model):
+class College(models.Model):
 	school = models.CharField(max_length=100, default=None)
 	degree_obtained = models.CharField(max_length=50, default=None)
-	_from = models.IntegerField()
-	_to = models.IntegerField()
+	coll_from = models.DateField()
+	coll_to = models.DateField()
 
 	def __str__(self):
 		return str(self.school)
 
 class HighSchool(models.Model):
 	school = models.CharField(max_length=100, default=None)
-	_from = models.IntegerField()
-	_to = models.IntegerField()
+	hs_from = models.DateField()
+	hs_to = models.DateField()
 
 	def __str__(self):
 		return str(self.school)
 
 
 class Education(models.Model):
-	tertiary = models.ForeignKey('Tertiary')
-	highschool = models.ForeignKey('HighSchool')
+	college = models.OneToOneField('College')
+	highschool = models.OneToOneField('HighSchool')
 
 	def __str__(self):
 		return self.tertiary.school
@@ -81,9 +75,13 @@ class Education(models.Model):
 
 class EmergencyContact(models.Model):
 	name = models.CharField(max_length=100, default=None)
-	number = models.CharField(max_length=100, default=None)
+	contact = models.CharField(max_length=100, default=None)
 	relationship = models.CharField(max_length=50, default=None)
-	address = models.CharField(max_length=100, default=None)
+	# address = models.CharField(max_length=100, default=None)
+	street = models.CharField(max_length=50, default=None)
+	baranggay = models.CharField(max_length=50, default=None)
+	town = models.CharField(max_length=50, default=None)
+	municipality = models.CharField(max_length=50, default=None)
 	zip = models.IntegerField()
 
 	def __str__(self):
@@ -167,15 +165,15 @@ class YellowFever(models.Model):
 		return str(self.yellow_fever)
 
 class CertificatesDocuments(models.Model):
-	passport = models.ForeignKey('Passport')
-	sbook = models.ForeignKey('SBook')
-	coc = models.ForeignKey('COC')
-	license = models.ForeignKey('License')
-	src = models.ForeignKey('SRC')
-	goc = models.ForeignKey('GOC')
-	us_visa = models.ForeignKey('USVisa')
-	schgengen_visa = models.ForeignKey('SchengenVisa')
-	yellow_fever = models.ForeignKey('YellowFever')
+	passport = models.OneToOneField('Passport')
+	sbook = models.OneToOneField('SBook')
+	coc = models.OneToOneField('COC')
+	license = models.OneToOneField('License')
+	src = models.OneToOneField('SRC')
+	goc = models.OneToOneField('GOC')
+	us_visa = models.OneToOneField('USVisa')
+	schgengen_visa = models.OneToOneField('SchengenVisa')
+	yellow_fever = models.OneToOneField('YellowFever')
 
 	def __str__(self):
 		return str(self.passport.passport)
@@ -194,8 +192,28 @@ class TrainingCertificates(models.Model):
 	def __str__(self):
 		return str(self.trainings_certificates)
 
+class Spouse(models.Model):
+	name =  models.CharField(max_length=100, null=True)
+	birthdate = models.DateField(default=None, null=True)
+	contact = models.CharField(max_length=100, null=True)
+
+class PermanentAddress(models.Model):
+	street = models.CharField(max_length=50, default=None)
+	baranggay = models.CharField(max_length=50, default=None)
+	town = models.CharField(max_length=50, default=None)
+	municipality = models.CharField(max_length=50, default=None)
+	zip = models.IntegerField()
+
+class CurrentAddress(models.Model):
+	street = models.CharField(max_length=50, default=None)
+	baranggay = models.CharField(max_length=50, default=None)
+	town = models.CharField(max_length=50, default=None)
+	municipality = models.CharField(max_length=50, default=None)
+	zip = models.IntegerField()
+
 class PersonalData(models.Model):
 	CIVIL_CHOICES = (
+			('Civil Status', 'Civil Status'),
 			('M', 'Married'),
             ('S', 'Single'),
 		)
@@ -204,9 +222,10 @@ class PersonalData(models.Model):
 	middle_name = models.CharField(max_length=50, default=None)
 	age = models.IntegerField()
 	birth_date = models.DateField()
-	landline_1 = models.IntegerField(blank=True, null=True)
-	mobile_1 = models.CharField(max_length=50, blank=True, null=True)
-	email_address_1 = models.EmailField(blank=True, null=True)
+	birth_place = models.CharField(max_length=50, default=None)
+	landline_1 = models.IntegerField(null=True)
+	mobile_1 = models.CharField(max_length=50, null=True)
+	email_address_1 = models.EmailField(null=True)
 	landline_2 = models.IntegerField(default=None, blank=True, null=True)
 	mobile_2 = models.CharField(max_length=50, blank=True, null=True)
 	email_address_2 = models.EmailField(default=None, blank=True, null=True)
@@ -216,24 +235,13 @@ class PersonalData(models.Model):
 	philhealth = models.CharField(max_length=50, default=None)
 	tin = models.CharField(max_length=50, default=None)
 	pagibig = models.CharField(max_length=50, default=None)
-	permanent_street = models.CharField(max_length=50, default=None)
-	permanent_baranggay = models.CharField(max_length=50, default=None)
-	permanent_town = models.CharField(max_length=50, default=None)
-	permanent_municipality = models.CharField(max_length=50, default=None)
-	permanent_zip = models.IntegerField()
-	current_street = models.CharField(max_length=50, default=None)
-	current_baranggay = models.CharField(max_length=50, default=None)
-	current_town = models.CharField(max_length=50, default=None)
-	current_municipality = models.CharField(max_length=50, default=None)
-	current_zip = models.IntegerField()
-	civil_status = models.CharField(max_length=50, default=None, blank=True, null=True, choices=CIVIL_CHOICES)
-	spouse_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-	spouse_birthdate = models.DateField(default=None, blank=True, null=True)
-	spouse_contact = models.CharField(max_length=100, default=None, blank=True, null=True)
-	father_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-	mother_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-	married_date = models.DateField(default=None, blank=True, null=True)
-	# sea_service = models.ForeignKey(SeaService, default=None)
+	civil_status = models.CharField(max_length=50, default=None, choices=CIVIL_CHOICES)
+	married_date = models.DateField(default=None, null=True)
+	father_name = models.CharField(max_length=100, null=True)
+	mother_name = models.CharField(max_length=100, null=True)
+	permanent_address = models.ForeignKey(PermanentAddress, default=None)
+	current_address = models.ForeignKey(CurrentAddress, default=None)
+	spouse = models.ForeignKey(Spouse, default=None)
 
 	def __str__(self):
 		name = "%s %s %s" % (self.first_name, self.middle_name, self.last_name, )
@@ -255,13 +263,13 @@ class Reference(models.Model):
 
 class AppForm(models.Model):
 	# form_reference = models.CharField(max_length=50, default=None)
-	app_details = models.ForeignKey('AppDetails')
-	personal_data = models.ForeignKey('PersonalData')
-	education = models.ForeignKey('Education')
-	emergency_contact = models.ForeignKey('EmergencyContact')
-	background_information = models.ForeignKey('BackgroundInformation')
-	certificates_documents = models.ForeignKey('CertificatesDocuments')
-	reference = models.ForeignKey('Reference', default=None)
+	app_details = models.OneToOneField('AppDetails')
+	personal_data = models.OneToOneField('PersonalData')
+	education = models.OneToOneField('Education')
+	emergency_contact = models.OneToOneField('EmergencyContact')
+	background_information = models.OneToOneField('BackgroundInformation')
+	certificates_documents = models.OneToOneField('CertificatesDocuments')
+	reference = models.OneToOneField('Reference', default=None)
 	flags = models.ManyToManyField(FlagDocuments)
 	training_certificates = models.ManyToManyField(TrainingCertificates)
 	# sea_service = models.ForeignKey('SeaService', default=None)
@@ -278,9 +286,11 @@ class SeaService(models.Model):
 	vessel_type = models.CharField(max_length=50, default=None)
 	flag = models.CharField(max_length=50, default=None)
 	grt = models.IntegerField()
+	dwt = models.IntegerField(default=None)
 	year_built = models.IntegerField()
 	engine_type = models.CharField(max_length=50, default=None)
 	hp = models.IntegerField()
+	kw = models.IntegerField(default=None)
 	manning_agency = models.CharField(max_length=50, default=None)
 	principal = models.CharField(max_length=50, default=None)
 	date_joined = models.DateField()

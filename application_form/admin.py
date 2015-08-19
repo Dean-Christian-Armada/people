@@ -19,7 +19,7 @@ class AppFormAdmin(admin.ModelAdmin):
 
 admin.site.register(AppDetails)
 admin.site.register(AppSource)
-admin.site.register(Tertiary)
+admin.site.register(College)
 admin.site.register(HighSchool)
 admin.site.register(Education)
 admin.site.register(EmergencyContact)

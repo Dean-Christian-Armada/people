@@ -10,83 +10,63 @@ import os, shutil
 
 # Create your views here.
 def form(request):
-	template = "application_form/index.html"
-	context_dict = {}
-	form = SignatureForm(request.POST or None)
-	context_dict['form'] = form
-	if request.method == 'POST':
-		application_date = request.POST['application-date']
-		position_applied = request.POST['position_applied']
-		alternative_position = request.POST['alternative_position']
-		last_name = request.POST['last_name']
-		first_name = request.POST['first_name']
-		middle_name = request.POST['middle_name']
-		age = request.POST['age']
-		birth_date = request.POST['birth_date']
-		birth_place = request.POST['birth_place']
-		landline_number_1 = request.POST['landline_number_1']
-		mobile_number_1 = request.POST['mobile_number_1']
-		email_address_1 = request.POST['email_address_1']
-		landline_number_2 = request.POST['landline_number_2']
-		mobile_number_2 = request.POST['mobile_number_2']
-		email_address_2 = request.POST['email_address_2']
-		preferred_vessel = request.POST['preferred_vessel']
-		availability = request.POST['availability']
-		sss = request.POST['sss']
-		philhealth = request.POST['philhealth']
-		tin = request.POST['tin']
-		pag_ibig = request.POST['pag_ibig']
-		permanent_street = request.POST['permanent_street']
-		permanent_baranggay = request.POST['permanent_baranggay']
-		permanent_town = request.POST['permanent_town']
-		permanent_municipality = request.POST['permanent_municipality']
-		permanent_zip = request.POST['permanent_zip']
-		current_street = request.POST['current_street']
-		current_baranggay = request.POST['current_baranggay']
-		current_town = request.POST['current_town']
-		current_municipality = request.POST['current_municipality']
-		current_zip = request.POST['current_zip']
-		civil_status = request.POST['civil_status']
-		date_married = request.POST['date_married']
-		spouse_maiden_name = request.POST['spouse_maiden_name']
-		spouse_birthday = request.POST['spouse_birthday']
-		spouse_contact = request.POST['spouse_contact']
-		father_full_name = request.POST['father_full_name']
-		mother_full_name = request.POST['mother_full_name']
-		tertiary = request.POST['tertiary']
-		degree_obtained = request.POST['degree_obtained']
-		tertiary_from = request.POST['tertiary_from']
-		tertiary_to = request.POST['tertiary_to']
-		highschool = request.POST['highschool']
-		highschool_from = request.POST['highschool_from']
-		highschool_to = request.POST['highschool_to']
-		emergency_person = request.POST['emergency_person']
-		emergency_contact = request.POST['emergency_contact']
-		emergency_relationship = request.POST['emergency_relationship']
-		emergency_address = request.POST['emergency_address']
-		emergency_zip = request.POST['emergency_zip']
-		visa_entry = request.POST['visa_entry']
-		leave_order = request.POST['leave_order']
-		disciplinary_action = request.POST['disciplinary_action']
-		passport_number = request.POST['passport_number']
-		passport_expiry = request.POST['passport_expiry']
-		sbook_number = request.POST['sbook_number']
-		sbook_expiry = request.POST['sbook_expiry']
-		coc = request.POST['coc']
-		coc_expiry = request.POST['coc_expiry']
-		coc_rank = request.POST['coc_rank']
-		license = request.POST['license']
-		license_rank = request.POST['license_rank']
-		src = request.POST['src']
-		src_rank = request.POST['src_rank']
-		goc_licenses = request.POST['goc_licenses']
-		goc_expiry = request.POST['goc_expiry']
-		us_visa_expiry = request.POST['us_visa_expiry']
-		schengen_visa_expiry = request.POST['schengen_visa_expiry']
-		yellow_fever = request.POST['yellow_fever']
-		yellow_fever_expiry = request.POST['yellow_fever_expiry']
-		essay = request.POST['essay']
-		signature = request.POST['signature']
 
-	# context_dict['form'] = form
+	# sinature_form = SignatureForm(request.POST or None)
+	appdetails_form = AppDetailsForm()
+	appsource_form = AppSourceForm()
+	personaldata_form = PersonalDataForm()
+	permanentaddress_form = PermanentAddressForm()
+	currentaddress_form = CurrentAddressForm()
+	spouse_form = SpouseForm()
+	college_form = CollegeForm()
+	highschool_form = HighSchoolForm()
+	emergencycontact_form = EmergencyContactForm()
+	if request.method == 'POST':
+		# To make the request immutable
+		request.POST = request.POST.copy()
+		if request.POST['position_applied'] == 'Position Applied':
+			request.POST['position_applied'] = ''
+		if request.POST['alternative_position'] == 'Alternative Position':
+			request.POST['alternative_position'] = ''
+		if request.POST['civil_status'] == 'Civil Status':
+			request.POST['civil_status'] = ''
+
+		print request.POST
+
+		appdetails_form = AppDetailsForm(request.POST)
+		appsource_form = AppSourceForm(request.POST)
+		personaldata_form = PersonalDataForm(request.POST)
+		permanentaddress_form = PermanentAddressForm(request.POST)
+		currentaddress_form = CurrentAddressForm(request.POST)
+		spouse_form = SpouseForm(request.POST)
+		college_form = CollegeForm(request.POST)
+		highschool_form = HighSchoolForm(request.POST)
+		emergencycontact_form = EmergencyContactForm(request.POST)
+		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid():
+			pass
+			# print "dean"
+		else:
+			# print "guinto"
+			print appdetails_form.errors
+			print appsource_form.errors
+			print personaldata_form.errors
+			print permanentaddress_form.errors
+			print currentaddress_form.errors
+			print spouse_form.errors
+			print college_form.errors
+			print highschool_form.errors
+			print emergencycontact_form.errors
+
+	template = "application_form/index.html"
+	context_dict = {"title": "Application Form"}
+	# context_dict['signature_form'] = signature_form
+	context_dict['appdetails_form'] = appdetails_form
+	context_dict['appsource_form'] = appsource_form
+	context_dict['personaldata_form'] = personaldata_form
+	context_dict['permanentaddress_form'] = permanentaddress_form
+	context_dict['currentaddress_form'] = currentaddress_form
+	context_dict['spouse_form'] = spouse_form
+	context_dict['college_form'] = college_form
+	context_dict['highschool_form'] = highschool_form
+	context_dict['emergencycontact_form'] = emergencycontact_form
 	return render(request, template, context_dict)

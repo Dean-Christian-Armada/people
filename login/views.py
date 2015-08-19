@@ -60,15 +60,17 @@ def home(request):
 	user = request.user
 	template = "home.html"
 	context_dict = {}
+	context_dict = {"title": "Manship People Software"}
 	if user.is_authenticated():
 		user = User.objects.get(username=user)
 		userprofile = UserProfile.objects.get(user=user)
 		userlevel = str(userprofile.userlevel)
 		if userlevel == 'recruitment':
 			# return signature(request)
-			return HttpResponseRedirect('/application-form/')
+			return HttpResponse("HELLO This is the recruitment level!<a href='/logout/'>Log Out</a>")
 		elif userlevel == 'applicant':
-			return HttpResponse("HELLO This is the applicant level!<a href='/logout/'>Log Out</a>")
+			# return HttpResponse("HELLO This is the applicant level!<a href='/logout/'>Log Out</a>")
+			return HttpResponseRedirect('/application-form/')
 		elif userlevel == 'crew':
 			return HttpResponse("HELLO This is the crew level!<a href='/logout/'>Log Out</a>")
 		else:
