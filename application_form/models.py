@@ -281,12 +281,6 @@ class AppForm(models.Model):
 		return appform
 
 class SeaService(models.Model):
-	# COD_CHOICES = (
-	# 	('Civil Status', 'Civil Status'),
-	# 	(),
-	# 	(),
-	# 	(),
-	# )
 	app_form = models.ForeignKey('AppForm', default=None)
 	vessel_name = models.CharField(max_length=50, default=None)
 	vessel_type = models.CharField(max_length=50, default=None)

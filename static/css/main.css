@@ -1,5 +1,5 @@
 body {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
     padding-bottom: 20px;
 }
 
@@ -11,6 +11,7 @@ body.login {
     background-attachment: fixed;
     background-position: center center;
     background-color: #fafafa;
+    padding-top: 50px;
 }
 
 .login #container {
@@ -331,3 +332,5 @@ ul.errorlist{ padding-left: 15px !important; font-weight: 700; color:rgb(175, 17
 #id_source, #id_visa_application, #id_detained, #id_disciplinary_action, #id_flags{ list-style:none !important; padding-left:0 !important; }
 
 #id_source label{ font-weight: 400; }
+
+.text_center{ text-align: center }

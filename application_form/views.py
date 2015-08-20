@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.forms.formsets import formset_factory
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -33,6 +34,7 @@ def form(request):
 	usvisa_form = USVisaForm()
 	schengenvisa_form = SchengenVisaForm()
 	yellowfever_form = YellowFeverForm()
+	seaservice_form = formset_factory(SeaServiceForm, extra=5)
 	app_form = AppForm()
 	if request.method == 'POST':
 		# To make the request immutable
@@ -43,6 +45,8 @@ def form(request):
 			request.POST['alternative_position'] = ''
 		if request.POST['civil_status'] == 'Civil Status':
 			request.POST['civil_status'] = ''
+		if request.POST['cause_of_discharge'] == 'Cause of Discharge':
+			request.POST['cause_of_discharge'] = ''
 
 		print request.POST
 
@@ -65,8 +69,9 @@ def form(request):
 		usvisa_form = USVisaForm(request.POST)
 		schengenvisa_form = SchengenVisaForm(request.POST)
 		yellowfever_form = YellowFeverForm(request.POST)
+		seaservice_form = SeaServiceForm(request.POST)
 		app_form = AppForm(request.POST)
-		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid() and backgroundinfo_form.is_valid() and passport_form.is_valid() and sbook_form.is_valid() and coc_form.is_valid() and license_form.is_valid() and src_form.is_valid() and goc_form.is_valid() and usvisa_form.is_valid() and schengenvisa_form.is_valid() and yellowfever_form.is_valid() and app_form.is_valid():
+		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid() and backgroundinfo_form.is_valid() and passport_form.is_valid() and sbook_form.is_valid() and coc_form.is_valid() and license_form.is_valid() and src_form.is_valid() and goc_form.is_valid() and usvisa_form.is_valid() and schengenvisa_form.is_valid() and yellowfever_form.is_valid() and seaservice_form.is_valid() and app_form.is_valid():
 			pass
 			# print "dean"
 		else:
@@ -90,6 +95,7 @@ def form(request):
 			print usvisa_form.errors
 			print schengenvisa_form.errors
 			print yellowfever_form.errors
+			print seaservice_form.errors
 			print app_form.errors
 
 	template = "application_form/index.html"
@@ -114,5 +120,6 @@ def form(request):
 	context_dict['usvisa_form']= usvisa_form
 	context_dict['schengenvisa_form']= schengenvisa_form
 	context_dict['yellowfever_form']= yellowfever_form
+	context_dict['seaservice_form'] = seaservice_form
 	context_dict['app_form']= app_form
 	return render(request, template, context_dict)

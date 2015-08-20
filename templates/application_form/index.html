@@ -25,6 +25,9 @@
           <div class="bs-docs-section" id='application-form'>
             <form method="POST" class="form-horizontal" autocomplete="off" action="{% url 'application_form' %}">
               {% csrf_token%}
+              <<!-- div class="form-group">
+                
+              </div> -->
               <div class="form-group">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -612,7 +615,7 @@
               <h3 id='step-11' style="color: #02be9b;">Essay</h3>
               <p>Kindly say something about yourself, your qualifications and any other reasons why we should hire you.</p>
               <p><b>(Take note: Essay must be at least 50 words)</b></p>
-              <p>TOTAL WORD COUNT: <span id="display_count">0</span> words</p>
+              <p><b>TOTAL WORD COUNT: <span id="display_count">0</span> words</b></p>
               {{ app_form.essay.errors }}
               <p>
                 <!-- <textarea class="form-control essay" style="height:200px" name="essay" id="essay"></textarea> -->
@@ -649,11 +652,6 @@
       </div>
       <div class="modal-body" style="text-align: center">
         {{ app_form.signature }}
-        
-        {% for signature_forms in signature_form %}
-          {{ signature_forms.error }}
-          {{ signature_forms }}
-        {% endfor %}
         <button type="button" class="btn btn-info form-control half-width" data-dismiss="modal" style="margin-top: 15px; margin-bottom: 15px;">Proceed to Submit</button>
       </div>
     </div>
@@ -716,7 +714,7 @@
                     <td><input type="text" data-toggle="tooltip" name="principal" class="principal" placeholder="Principal / Shipowner"></td>
                     <td><input type="text" data-toggle="tooltip" name="date_joined" class="date date-joined" placeholder="Date Joined"></td>
                     <td><input type="text" data-toggle="tooltip" name="date_left" class="date date-left" placeholder="Date Left" disabled></td>
-                    <td><input type="text" data-toggle="tooltip" name="duration" class="duration" placeholder="Month / Days" readonly></td>
+                    <td><input type="text" data-toggle="tooltip" name="duration" class="duration" placeholder="Days" readonly></td>
                     <td><input type="text" data-toggle="tooltip" name="vessel_rank" class="rank" placeholder="Rank"></td>
                     <td>
                       <select data-toggle="tooltip" name="discharge_cause">
@@ -726,9 +724,9 @@
                       </select>
                     </td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <td></td>
-                    <td><button type="button" class="btn btn-info add-row">Add</button><!-- <img src="../static/img/plus_sign.png" class="add-row" height="25" width="25"> --></td>
+                    <td><button type="button" class="btn btn-info add-row">Add</button></td>
                     <td><input type="text" data-toggle="tooltip" class="vname" name="vname" placeholder="Vessel Name"></td>
                     <td><input type="text" data-toggle="tooltip" name="vtype" class="vtype" placeholder="Vessel Type"></td>
                     <td><input type="text" data-toggle="tooltip" name="flag" class="flag" placeholder="Flag"></td>
@@ -751,7 +749,31 @@
                         <option>Vessel Sold</option>
                       </select>
                     </td>
-                  </tr>
+                  </tr> -->
+                  {% for seaservice in seaservice_form %}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>{{ seaservice.vessel_name|attr:"data-toggle:tooltip"|attr:"Placeholder:Vessel Name" }}</td>
+                      <td>{{ seaservice.vessel_type|attr:"data-toggle:tooltip"|attr:"Placeholder:Vessel Type" }}</td>
+                      <td>{{ seaservice.flag|attr:"data-toggle:tooltip"|attr:"Placeholder:Flag" }}</td>
+                      <td>{{ seaservice.grt|attr:"data-toggle:tooltip"|attr:"Placeholder:GRT" }}</td>
+                      <td>{{ seaservice.dwt|attr:"data-toggle:tooltip"|attr:"Placeholder:DWT" }}</td>
+                      <td>{{ seaservice.year_built|attr:"data-toggle:tooltip"|attr:"Placeholder:Year Built" }}</td>
+                      <td>{{ seaservice.engine_type|attr:"data-toggle:tooltip"|attr:"Placeholder:Engine Type" }}</td>
+                      <td>{{ seaservice.hp|attr:"data-toggle:tooltip"|attr:"Placeholder:HP" }}</td>
+                      <td>{{ seaservice.kw|attr:"data-toggle:tooltip"|attr:"Placeholder:KW" }}</td>
+                      <td>{{ seaservice.manning_agency|attr:"data-toggle:tooltip"|attr:"Placeholder:Manning Agency" }}</td>
+                      <td>{{ seaservice.principal|attr:"data-toggle:tooltip"|attr:"Placeholder:Principal / Shipowner" }}</td>
+                      <td>{{ seaservice.date_joined|add_class:"date date-joined"|attr:"data-toggle:tooltip"|attr:"Placeholder:Date Joined" }}</td>
+                      <!-- <td><input type="text" data-toggle="tooltip" class="date date-left" placeholder="Date Left" disabled></td> -->
+                      <td>{{ seaservice.date_left|add_class:"date date-left"|attr:"data-toggle:tooltip"|attr:"Placeholder:Date Left"|attr:"disabled" }}</td>
+                      <td>{{ seaservice.duration|add_class:"duration"|attr:"data-toggle:tooltip"|attr:"Placeholder:Days"|attr:"readonly" }}</td>
+                       <td>{{ seaservice.rank|attr:"data-toggle:tooltip"|attr:"Placeholder:Rank" }}</td>
+                       <td>{{ seaservice.cause_of_discharge|attr:"data-toggle:tooltip" }}</td>
+                    </tr>
+                  {% endfor %}
+
                 </tbody>  
               </table>
             </div>

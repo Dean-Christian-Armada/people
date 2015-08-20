@@ -245,7 +245,7 @@ $(function(){
                 total_duration = Math.ceil(total_duration / (1000 * 3600 * 24));
               }
               if( total_duration ){
-                duration.val(total_duration+" days");
+                duration.val(total_duration);
               }
             }
           }

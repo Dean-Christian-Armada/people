@@ -173,10 +173,22 @@ class YellowFeverForm(forms.ModelForm):
 		model = YellowFever
 		fields = ('yellow_fever', 'expiry')
 
-# class FlagDocumentsForm(forms.ModelForm):
-# 	flags = forms.ModelMultipleChoiceField(queryset=)
-# 	class Meta:
-# 		model = FlagDocuments
+class SeaServiceForm(forms.ModelForm):
+	SEASERVICE_CHOICES = (
+			('Cause of Discharge', 'Cause of Discharge'),
+			('Finished Contract', 'Finished Contract'),
+			('Compassionate Reason', 'Compassionate Reason'),
+            ('Medical Repatriation', 'Medical Repatriation'),
+            ('Promoted on Board', 'Promoted on Board'),
+            ('Vessel Sold', 'Vessel Sold'),
+            ('Vessel Scraped', 'Vessel Scraped'),
+            ('Change Management', 'Change Management'),
+            ('Own Request', 'Own Request'),
+		)
+	cause_of_discharge = forms.ChoiceField(choices=SEASERVICE_CHOICES, error_messages={'invalid_choice': 'Please select a valid choice'})
+	class Meta:
+		model = SeaService
+		fields = '__all__'
 
 class AppForm(forms.ModelForm):
 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#000'}), error_messages={'required': 'Please do not forget to sign before submitting'})
@@ -186,25 +198,14 @@ class AppForm(forms.ModelForm):
 		model = AppForm
 		fields = ('essay', 'signature')
 
-# class SignatureFormForm(forms.Form):
-# 	# pass
-# 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#CCC'}))
-
-
-
-# class SeaServiceForm(forms.ModelForm):
-# 	class Meta:
-# 		model = SeaService
-		
 # class CertificatesDocumentsForm(forms.ModelForm):
 # 	class Meta:
 # 		model = CertificatesDocuments
-		
 
-		
-# class TrainingCertificatesForm(forms.ModelForm):
-# 	class Meta:
-# 		model = TrainingCertificates
+# class SignatureFormForm(forms.Form):
+# 	# pass
+# 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#CCC'}))
+	
 		
 # class ReferenceForm(forms.ModelForm):
 # 	class Meta:
