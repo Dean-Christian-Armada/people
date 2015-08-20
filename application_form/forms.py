@@ -77,14 +77,31 @@ class EmergencyContactForm(forms.ModelForm):
 	class Meta:
 		model = EmergencyContact
 		fields = '__all__'
-		
+
+class BackgroundInformationForm(forms.ModelForm):
+	
+	class Meta:
+		model = BackgroundInformation
+		fields = '__all__'
+
+	def __init__(self, *args, **kwargs):
+		CHOICES = (
+			('1	', 'Yes'),
+			('0', 'No'),
+		)
+		super(BackgroundInformationForm, self).__init__(*args, **kwargs)
+
+		FieldList = ['visa_application', 'detained', 'disciplinary_action']
+		for field in FieldList:
+			self.fields[field].widget = forms.RadioSelect(choices=CHOICES)
+			# Sets the booleanfield as required
+			self.fields[field].required = True
+
 # class SeaServiceForm(forms.ModelForm):
 # 	class Meta:
 # 		model = SeaService
 		
-# class BackgroundInformationForm(forms.ModelForm):
-# 	class Meta:
-# 		model = BackgroundInformation
+
 		
 # class PassportForm(forms.ModelForm):
 # 	class Meta:

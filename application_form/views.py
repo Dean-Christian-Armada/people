@@ -21,6 +21,7 @@ def form(request):
 	college_form = CollegeForm()
 	highschool_form = HighSchoolForm()
 	emergencycontact_form = EmergencyContactForm()
+	backgroundinfo_form = BackgroundInformationForm()
 	if request.method == 'POST':
 		# To make the request immutable
 		request.POST = request.POST.copy()
@@ -42,7 +43,8 @@ def form(request):
 		college_form = CollegeForm(request.POST)
 		highschool_form = HighSchoolForm(request.POST)
 		emergencycontact_form = EmergencyContactForm(request.POST)
-		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid():
+		backgroundinfo_form = BackgroundInformationForm(request.POST)
+		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid() and backgroundinfo_form.is_valid():
 			pass
 			# print "dean"
 		else:
@@ -56,6 +58,7 @@ def form(request):
 			print college_form.errors
 			print highschool_form.errors
 			print emergencycontact_form.errors
+			print backgroundinfo_form.errors
 
 	template = "application_form/index.html"
 	context_dict = {"title": "Application Form"}
@@ -69,4 +72,5 @@ def form(request):
 	context_dict['college_form'] = college_form
 	context_dict['highschool_form'] = highschool_form
 	context_dict['emergencycontact_form'] = emergencycontact_form
+	context_dict['backgroundinfo_form'] = backgroundinfo_form
 	return render(request, template, context_dict)

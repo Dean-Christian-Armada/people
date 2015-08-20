@@ -88,9 +88,9 @@ class EmergencyContact(models.Model):
 		return str(self.name)
 
 class BackgroundInformation(models.Model):
-	visa_application = models.BooleanField(default=0)
-	detained = models.BooleanField(default=0)
-	disciplinary_action = models.BooleanField(default=0)
+	visa_application = models.BooleanField()
+	detained = models.BooleanField()
+	disciplinary_action = models.BooleanField()
 
 	def __str__(self):
 		return "BackgroundInformation"
