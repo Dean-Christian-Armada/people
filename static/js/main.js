@@ -6,6 +6,8 @@ $(function(){
     var date = ((''+month).length<2 ? '0' : '') + month + '/' +
         ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
     var x = ''; 
+
+    // full name in the bottom most of the code
     var full_name = function(){
                       last_name = $("#last_name").val();
                       first_name = $("#first_name").val();
@@ -13,6 +15,7 @@ $(function(){
                       full_name = $("#full_name").val(first_name+' '+middle_name+' '+last_name);
                     };
 
+    // auto title tooltip if text is typed
     var tooltip = function(){
                     val = $(this).val();
                     if(val == ''){
@@ -24,6 +27,8 @@ $(function(){
                       $(this).attr("data-original-title", placeholder);
                     }
                   };
+
+    // same affress function
     var address = function(){
         permanent_street = $("#permanent_street").val();
         permanent_town = $("#permanent_town").val();
@@ -48,6 +53,24 @@ $(function(){
 
     var autocomplete = function(){
 
+    }
+
+    // 50 words essay word count validation
+    var essay = function(event){
+      var _essay = document.getElementById('essay');
+      try{
+        essay = _essay.value.match(/\S+/g).length;
+      }
+      catch(err){
+        return false;
+      }
+      if(essay < 50){
+        _essay.setCustomValidity('Please answer the essay with a minimum of fifty words');
+        
+      }else{
+        _essay.setCustomValidity('');
+      }
+      $('#display_count').text(essay);
     }
 
     var tertiary = [      
@@ -229,6 +252,7 @@ $(function(){
         }
       });
     }).on("keydown", ".date", function(e){
+      // prevents erasing via backspace
       if (e.which === 8) {
             e.preventDefault();
       }
@@ -268,7 +292,8 @@ $(function(){
     $("input[type='text']").keyup(tooltip).click(full_name).focusout(full_name);
     $("#last_name, #first_name, #middle_name").keyup(full_name).click(full_name).focusout(full_name);
     $("#permanent_street, #permanent_town, #permanent_baranggay, #permanent_municipality, #permanent_zip, #current_street, #current_town, #current_baranggay, #current_municipality, #current_zip").keyup(address).change(address);
-    
+    $(".essay").keyup(essay).click(essay).focusout(essay);
+    $(".essay").trigger('click');
     $("body").on("change", "select", function(){
       val = $(this).val();
       $(this).css("color", "#000");
@@ -323,18 +348,8 @@ $(function(){
       $(".jSignature").jSignature();
       $(".jSignature").resize();
     });
-    // 50 words essay word count validation
-    $(".essay").keyup(function(){
-      var _essay = document.getElementById('essay');
-      essay = this.value.match(/\S+/g).length;
-      if(essay < 50){
-        _essay.setCustomValidity('Please answer the essay with a minimum of fifty words');
-        
-      }else{
-        _essay.setCustomValidity('');
-      }
-      $('#display_count').text(essay);
-    });
+
+    // Auto Age
     $(".birth_date").change(function(){
       val = $(this).val();
       var birthday = new Date(val);

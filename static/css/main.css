@@ -115,6 +115,8 @@ body.login {
     background-color: #ccc;
     color: red;
     font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
 }
 
 #application-form input,
@@ -154,6 +156,7 @@ select option {
     font-weight: 600;
     padding-left: 5px;
     resize: none
+    height: 200px;
 }
 .btn-success {
     background-color: #2e76b8;
@@ -325,6 +328,6 @@ ul.errorlist{ padding-left: 15px !important; font-weight: 700; color:rgb(175, 17
 
 .hidden{ display: none; }
 
-#id_source{ list-style:none !important; padding-left:0 !important; }
+#id_source, #id_visa_application, #id_detained, #id_disciplinary_action, #id_flags{ list-style:none !important; padding-left:0 !important; }
 
 #id_source label{ font-weight: 400; }

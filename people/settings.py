@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'application_form',
     'login',
+    'import_export',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -129,3 +130,5 @@ EMAIL_HOST_USER = 'deanarmada@gmail.com'
 EMAIL_HOST_PASSWORD = 'd3@narmada13'
 DEFAULT_FROM_EMAIL = 'deanarmada@gmail.com'
 DEFAULT_TO_EMAIL = 'deanarmada@gmail.com'
+
+LOGIN_URL = '/?error=Please login First'

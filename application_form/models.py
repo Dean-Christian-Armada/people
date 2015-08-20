@@ -274,13 +274,19 @@ class AppForm(models.Model):
 	training_certificates = models.ManyToManyField(TrainingCertificates)
 	# sea_service = models.ForeignKey('SeaService', default=None)
 	essay = models.TextField(default=None)
-	signature = models.ImageField(upload_to='signatures', blank=True, default=None)
+	signature = models.ImageField(upload_to='signatures', default=None)
 
 	def __str__(self):
 		appform = "%s %s %s : %s" % (self.personal_data.first_name, self.personal_data.middle_name, self.personal_data.last_name, self.app_details.application_date )
 		return appform
 
 class SeaService(models.Model):
+	# COD_CHOICES = (
+	# 	('Civil Status', 'Civil Status'),
+	# 	(),
+	# 	(),
+	# 	(),
+	# )
 	app_form = models.ForeignKey('AppForm', default=None)
 	vessel_name = models.CharField(max_length=50, default=None)
 	vessel_type = models.CharField(max_length=50, default=None)

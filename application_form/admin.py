@@ -1,4 +1,8 @@
 from django.contrib import admin
+
+from import_export.admin import ImportExportModelAdmin
+from import_export import resources
+
 from . models import *
 
 # Register your models here.
@@ -16,6 +20,13 @@ class AppFormAdmin(admin.ModelAdmin):
 	inlines = [
 		SeaServiceInline
 	]
+
+class TrainingCertificatesResource(resources.ModelResource):
+	class Meta:
+		model = TrainingCertificates
+
+class TrainingCertificatesImport(ImportExportModelAdmin):
+	resource_class = TrainingCertificatesResource
 
 admin.site.register(AppDetails)
 admin.site.register(AppSource)
@@ -36,7 +47,7 @@ admin.site.register(SchengenVisa)
 admin.site.register(YellowFever)
 admin.site.register(CertificatesDocuments)
 admin.site.register(FlagDocuments)
-admin.site.register(TrainingCertificates)
+admin.site.register(TrainingCertificates, TrainingCertificatesImport)
 admin.site.register(PersonalData)
 admin.site.register(AppForm, AppFormAdmin)
 admin.site.register(Reference)

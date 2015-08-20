@@ -1,9 +1,18 @@
+from django.utils.safestring import mark_safe
 from django import forms
 
 from jsignature.forms import JSignatureField
 from jsignature.widgets import JSignatureWidget
 
 from .models import *
+
+class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+  def render(self):
+    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+class HorizontalCheckboxRenderer(forms.CheckboxSelectMultiple.renderer):
+  def render(self):
+    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
 class SignatureForm(forms.Form):
 	# pass
@@ -93,59 +102,105 @@ class BackgroundInformationForm(forms.ModelForm):
 
 		FieldList = ['visa_application', 'detained', 'disciplinary_action']
 		for field in FieldList:
-			self.fields[field].widget = forms.RadioSelect(choices=CHOICES)
+			self.fields[field].widget = forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer)
 			# Sets the booleanfield as required
 			self.fields[field].required = True
+
+class PassportForm(forms.ModelForm):
+	class Meta:
+		model = Passport
+		fields = ('passport', 'expiry')
+		
+class SBookForm(forms.ModelForm):
+	class Meta:
+		model = SBook
+		fields = ('sbook', 'expiry')
+		
+class COCForm(forms.ModelForm):
+	class Meta:
+		model = COC
+		fields = ('coc', 'expiry', 'rank')
+		
+class LicenseForm(forms.ModelForm):
+	class Meta:
+		model = License
+		fields = ('license', 'rank')
+		
+class SRCForm(forms.ModelForm):
+	class Meta:
+		model = SRC
+		fields = ('src', 'rank')
+		
+class GOCForm(forms.ModelForm):
+	class Meta:
+		model = GOC
+		fields = ('goc', 'expiry')
+		
+class USVisaForm(forms.ModelForm):
+	class Meta:
+		model = USVisa
+		fields = ('type', 'expiry')
+
+	def __init__(self, *args, **kwargs):
+		CHOICES = (
+			('1	', 'Yes'),
+			('0', 'No'),
+		)
+		super(USVisaForm, self).__init__(*args, **kwargs)
+
+		self.fields['type'].widget = forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer)
+		# Sets the booleanfield as required
+		self.fields['type'].required = True
+		
+class SchengenVisaForm(forms.ModelForm):
+	class Meta:
+		model = SchengenVisa
+		fields = ('type', 'expiry')
+
+	def __init__(self, *args, **kwargs):
+		CHOICES = (
+			('1	', 'Yes'),
+			('0', 'No'),
+		)
+		super(SchengenVisaForm, self).__init__(*args, **kwargs)
+
+		self.fields['type'].widget = forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer)
+		# Sets the booleanfield as required
+		self.fields['type'].required = True
+		
+class YellowFeverForm(forms.ModelForm):
+	class Meta:
+		model = YellowFever
+		fields = ('yellow_fever', 'expiry')
+
+# class FlagDocumentsForm(forms.ModelForm):
+# 	flags = forms.ModelMultipleChoiceField(queryset=)
+# 	class Meta:
+# 		model = FlagDocuments
+
+class AppForm(forms.ModelForm):
+	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#000'}), error_messages={'required': 'Please do not forget to sign before submitting'})
+	flags = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=FlagDocuments.objects.all(), error_messages={'required': 'Please do not forget to select among the flags'})
+	training_certificates = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=TrainingCertificates.objects.all(), error_messages={'required': 'Please do not forget to select among the trainings and certificates'})
+	class Meta:
+		model = AppForm
+		fields = ('essay', 'signature')
+
+# class SignatureFormForm(forms.Form):
+# 	# pass
+# 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#CCC'}))
+
+
 
 # class SeaServiceForm(forms.ModelForm):
 # 	class Meta:
 # 		model = SeaService
 		
-
-		
-# class PassportForm(forms.ModelForm):
-# 	class Meta:
-# 		model = Passport
-		
-# class SBookForm(forms.ModelForm):
-# 	class Meta:
-# 		model = SBook
-		
-# class COCForm(forms.ModelForm):
-# 	class Meta:
-# 		model = COC
-		
-# class LicenseForm(forms.ModelForm):
-# 	class Meta:
-# 		model = License
-		
-# class SRCForm(forms.ModelForm):
-# 	class Meta:
-# 		model = SRC
-		
-# class GOCForm(forms.ModelForm):
-# 	class Meta:
-# 		model = GOC
-		
-# class USVisaForm(forms.ModelForm):
-# 	class Meta:
-# 		model = USVisa
-		
-# class SchengenVisaForm(forms.ModelForm):
-# 	class Meta:
-# 		model = SchengenVisa
-		
-# class YellowFeverForm(forms.ModelForm):
-# 	class Meta:
-# 		model = YellowFever
-		
 # class CertificatesDocumentsForm(forms.ModelForm):
 # 	class Meta:
 # 		model = CertificatesDocuments
 		
-# class FlagDocumentsForm(forms.ModelForm):
-# 	class Meta:
-# 		model = FlagDocuments
+
 		
 # class TrainingCertificatesForm(forms.ModelForm):
 # 	class Meta:
@@ -155,13 +210,7 @@ class BackgroundInformationForm(forms.ModelForm):
 # 	class Meta:
 # 		model = Reference
 		
-# class AppForm(forms.ModelForm):
-# 	class Meta:
-# 		model = AppForm
 
-# class SignatureFormForm(forms.Form):
-# 	# pass
-# 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#CCC'}))
 
 # class SampleFormForm(forms.ModelForm):
 # 	class Meta:

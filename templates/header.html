@@ -21,8 +21,9 @@
       <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.min.css">
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.theme.min.css">
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.structure.min.css">
-
-      <link rel="stylesheet" type="text/css" href="{% static 'css/pace.css' %}"  />
+      {% if user.is_authenticated %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/pace.css' %}"  />
+      {% endif %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
