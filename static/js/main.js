@@ -1,3 +1,7 @@
+!function(a){"use strict";a(function(){var b=a(window),c=a(document.body);c.scrollspy({target:".sidebar"}),b.on("load",function(){c.scrollspy("refresh")}),a(".bs-docs-container [href=#]").click(function(a){a.preventDefault()}),setTimeout(function(){var b=a(".sidebar");b.affix({offset:{top:function(){var c=b.offset().top,d=parseInt(b.children(0).css("margin-top"),10),e=a(".bs-docs-nav").height();return this.top=c-e-d},bottom:function(){return this.bottom=a(".bs-docs-footer")}}})},100);})}(jQuery);
+
+
+
 $(function(){
     var sea_service = $(".sea-service");
     var d = new Date();
@@ -257,7 +261,7 @@ $(function(){
             e.preventDefault();
       }
     });
-    $('.bs-docs-sidebar').on('activate.bs.scrollspy', function () {
+    $('.sidebar').on('activate.bs.scrollspy', function () {
       // boolean is used for the sea-service to pop-up only from top to bottom
       if ($(this).find("li.active").text().trim() == 'Emergency Contact Details'){
         x = 1;
