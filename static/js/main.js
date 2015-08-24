@@ -3,14 +3,14 @@
 
 
 $(function(){
-    var sea_service = $(".sea-service");
+    var sea_service = $(".sea-service-button");
     var d = new Date();
     var month = d.getMonth()+1;
     var day = d.getDate();
     var date = ((''+month).length<2 ? '0' : '') + month + '/' +
         ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
     var x = ''; 
-
+    count = 0;
     // full name in the bottom most of the code
     var full_name = function(){
                       last_name = $("#last_name").val();
@@ -297,6 +297,40 @@ $(function(){
     $("#last_name, #first_name, #middle_name").keyup(full_name).click(full_name).focusout(full_name);
     $("#permanent_street, #permanent_town, #permanent_baranggay, #permanent_municipality, #permanent_zip, #current_street, #current_town, #current_baranggay, #current_municipality, #current_zip").keyup(address).change(address);
     $(".essay").keyup(essay).click(essay).focusout(essay);
+    $(".sea-services input").keyup(function(){
+      $(this).parent().siblings().children().prop("required", "true");
+    });
+    // Sea Service Validation
+    $("#proceed-sea-service").click(function(){
+      $('.sea-services').find('input').each(function(){
+        if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val().length < 1){
+          count++;
+          $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
+        }else if($(this).val().length >= 1 && $(this).next('ul').length == 1){
+          count--;
+          $(this).next('ul').remove();
+        }
+      });
+      $('.sea-services').find('select').each(function(){
+        if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val() == "Cause of Discharge"){
+          count++;
+          $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
+        }else if($(this).val() != "Cause of Discharge" && $(this).next('ul').length == 1){
+          count--;
+          $(this).next('ul').remove();
+        }
+      });
+      setTimeout(function(){ 
+        // alert(count); 
+        if(count == 0){ 
+          // closes the modal 
+          $('#seaservice').modal('hide');
+          $('h5.validations').text("");
+        }else{
+          $('h5.validations').text(count+ " REQUIRED FIELDS NEED TO BE FILLED UP");
+        } 
+      }, 500);
+    });
     $(".essay").trigger('click');
     $("body").on("change", "select", function(){
       val = $(this).val();

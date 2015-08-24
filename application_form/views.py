@@ -7,7 +7,7 @@ from jsignature.utils import draw_signature
 
 from . forms import *
 
-import os, shutil
+import os, shutil, datetime
 
 # Create your views here.
 
@@ -36,6 +36,12 @@ def form(request):
 	yellowfever_form = YellowFeverForm()
 	seaservice_form = formset_factory(SeaServiceForm, extra=5)
 	app_form = AppForm()
+
+	# Gets Date Today
+	# today = datetime.date.today()
+	# Changes format to Day/Month/Year
+	# today = today.strftime("%d/%m/%y")
+
 	if request.method == 'POST':
 		# To make the request immutable
 		request.POST = request.POST.copy()
@@ -45,8 +51,8 @@ def form(request):
 			request.POST['alternative_position'] = ''
 		if request.POST['civil_status'] == 'Civil Status':
 			request.POST['civil_status'] = ''
-		if request.POST['cause_of_discharge'] == 'Cause of Discharge':
-			request.POST['cause_of_discharge'] = ''
+		# if request.POST['cause_of_discharge'] == 'Cause of Discharge':
+		# 	request.POST['cause_of_discharge'] = ''
 
 		print request.POST
 
@@ -69,7 +75,8 @@ def form(request):
 		usvisa_form = USVisaForm(request.POST)
 		schengenvisa_form = SchengenVisaForm(request.POST)
 		yellowfever_form = YellowFeverForm(request.POST)
-		seaservice_form = SeaServiceForm(request.POST)
+		# seaservice_form = SeaServiceForm(request.POST)
+		# seaservice_form = seaservice_form(request.POST)
 		app_form = AppForm(request.POST)
 		if appdetails_form.is_valid() and appsource_form.is_valid() and personaldata_form.is_valid() and permanentaddress_form.is_valid() and currentaddress_form.is_valid() and spouse_form.is_valid() and college_form.is_valid() and highschool_form.is_valid() and emergencycontact_form.is_valid() and backgroundinfo_form.is_valid() and passport_form.is_valid() and sbook_form.is_valid() and coc_form.is_valid() and license_form.is_valid() and src_form.is_valid() and goc_form.is_valid() and usvisa_form.is_valid() and schengenvisa_form.is_valid() and yellowfever_form.is_valid() and seaservice_form.is_valid() and app_form.is_valid():
 			pass
@@ -122,4 +129,7 @@ def form(request):
 	context_dict['yellowfever_form']= yellowfever_form
 	context_dict['seaservice_form'] = seaservice_form
 	context_dict['app_form']= app_form
+
+	# context_dict["today"] = today
+
 	return render(request, template, context_dict)
