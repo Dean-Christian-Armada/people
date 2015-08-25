@@ -111,6 +111,10 @@ body.login {
     text-align: right;
 }
 
+.password-reset-link a{
+    color: #fff;
+}
+
 .login .error{
     text-align: center;
     background-color: #ccc;
@@ -136,7 +140,7 @@ body.login {
     padding-left: 0
 }
 #application-form select {
-    color: #c4c1c7
+    color: #c4c1c7; background-color: #fff;
 }
 select option {
     color: #000
@@ -217,21 +221,20 @@ select option {
 .padding-right-negator {
     padding-right: 0
 }
-.picture-container {
+.image-holder{
+    margin: -160px 50px -60px 0;  
+}
+#picture-container {
     margin-top: 30px;
     width: 220px;
     height: 180px;
     border: 1px solid #000;
-    float: right
 }
-.bs-doc-header {
-    background-image: url(/static/img/header.jpg);
-    background-attachment: fixed;
-    background-size: cover;
+.bs-doc-header{
+    background-color: #2e76b8;
     padding-top: 60px;
-    padding-bottom: 80px;
+    padding-bottom: 40px;
     color: #fafafa;
-    background-repeat: no-repeat
 }
 #footer {
     padding-top: 20px;
@@ -315,7 +318,7 @@ table.sea-services .year_built, table.sea-services .duration{
 }
 
 .search-zip{
-    float:right;
+    /*float:right;*/
     text-decoration: underline;
     color: #2e76b8;
     cursor: pointer;
@@ -340,5 +343,7 @@ ul.errorlist li a{ color: rgb(175, 17, 28) !important; text-decoration: underlin
 .validations{ font-weight: 700; color: rgb(175, 17, 28); font-size: 20px; }
 
 .errorlist-group{ width: 100%; border-radius: 15px; border: 2px solid black; margin-top: 25px; padding: 20px; }
+
+#webcam{ width: 500px; height: 500px; margin-left: auto; margin-right: auto; margin-top: 60px;}
 
 .sidebar.affix{position:static}@media (min-width:768px){.sidebar{padding-left:20px}}.bs-docs-sidenav{margin-top:20px;margin-bottom:20px}.sidebar .nav>li>a{display:block;padding:4px 20px;font-size:13px;font-weight:500;color:#767676}.sidebar .nav>li>a:focus,.sidebar .nav>li>a:hover{padding-left:19px;color:#563d7c;text-decoration:none;background-color:transparent;border-left:1px solid #563d7c}.sidebar .nav>.active:focus>a,.sidebar .nav>.active:hover>a,.sidebar .nav>.active>a{padding-left:18px;font-weight:700;color:#563d7c;background-color:transparent;border-left:2px solid #563d7c}.sidebar .nav .nav{display:none;padding-bottom:10px}.sidebar .nav .nav>li>a{padding-top:1px;padding-bottom:1px;padding-left:30px;font-size:12px;font-weight:400}.sidebar .nav .nav>li>a:focus,.sidebar .nav .nav>li>a:hover{padding-left:29px}.sidebar .nav .nav>.active:focus>a,.sidebar .nav .nav>.active:hover>a,.sidebar .nav .nav>.active>a{padding-left:28px;font-weight:500}.back-to-top,.bs-docs-theme-toggle{display:none;padding:4px 10px;margin-top:10px;margin-left:10px;font-size:12px;font-weight:500;color:#999}.back-to-top:hover,.bs-docs-theme-toggle:hover{color:#563d7c;text-decoration:none}.bs-docs-theme-toggle{margin-top:0}@media (min-width:768px){.back-to-top,.bs-docs-theme-toggle{display:block}}@media (min-width:992px){.sidebar .nav>.active>ul{display:block}.sidebar.affix,.sidebar.affix-bottom{width:213px}.sidebar.affix{position:fixed;top:20px}.sidebar.affix-bottom{position:absolute}.sidebar.affix .bs-docs-sidenav,.sidebar.affix-bottom .bs-docs-sidenav{margin-top:0;margin-bottom:0}}@media (min-width:1200px){.sidebar.affix,.sidebar.affix-bottom{width:263px}}

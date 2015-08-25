@@ -21,7 +21,7 @@ from django.contrib import admin
 from django.conf import settings
 
 from login.views import home, validation, user_logout
-from application_form.views import form
+# from application_form.views import form
 
 
 urlpatterns = [
@@ -37,7 +37,8 @@ urlpatterns = [
     url(r'^validate/$', validation, name='validate'),
     url(r'^logout/$', user_logout, name='logout'),
 
-    url(r'^application-form/$', form, name='application_form')
+    # url(r'^application-form/$', form, name='application_form'),
+    url(r'^application-form/', include('application_form.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -1,4 +1,5 @@
 from django.utils.safestring import mark_safe
+from django.db.models import Q
 from django import forms
 
 from jsignature.forms import JSignatureField
@@ -192,7 +193,7 @@ class SeaServiceForm(forms.ModelForm):
 
 class AppForm(forms.ModelForm):
 	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#000'}), error_messages={'required': 'Please do not forget to sign before submitting'})
-	flags = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=FlagDocuments.objects.all(), error_messages={'required': 'Please do not forget to select among the flags'})
+	flags = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=FlagDocuments.objects.filter(~Q(flags='None')), error_messages={'required': 'Please do not forget to select among the flags'})
 	training_certificates = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=TrainingCertificates.objects.all(), error_messages={'required': 'Please do not forget to select among the trainings and certificates'})
 	class Meta:
 		model = AppForm

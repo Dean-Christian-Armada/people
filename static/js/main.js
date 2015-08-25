@@ -1,8 +1,7 @@
 !function(a){"use strict";a(function(){var b=a(window),c=a(document.body);c.scrollspy({target:".sidebar"}),b.on("load",function(){c.scrollspy("refresh")}),a(".bs-docs-container [href=#]").click(function(a){a.preventDefault()}),setTimeout(function(){var b=a(".sidebar");b.affix({offset:{top:function(){var c=b.offset().top,d=parseInt(b.children(0).css("margin-top"),10),e=a(".bs-docs-nav").height();return this.top=c-e-d},bottom:function(){return this.bottom=a(".bs-docs-footer")}}})},100);})}(jQuery);
 
-
-
 $(function(){
+    // Start Variables
     var sea_service = $(".sea-service-button");
     var d = new Date();
     var month = d.getMonth()+1;
@@ -76,7 +75,22 @@ $(function(){
       }
       $('#display_count').text(essay);
     }
-
+    var hp_kw_grt_dwt_validator = function(x){
+      if(x.hasClass('hp')){
+        ul = x.parent();
+        setTimeout(function(){ ul.next("td").children("ul").remove(); ul.next("td").children("input").removeAttr('required'); }, 100);
+      }else if(x.hasClass('kw')){
+        ul2 = x.parent();
+        setTimeout(function(){ ul2.prev("td").children("ul").remove(); ul2.next("td").children("input").removeAttr('required'); }, 100);
+      }
+      if(x.hasClass('grt')){
+        ul3 = x.parent();
+        setTimeout(function(){ ul3.next("td").children("ul").remove(); ul3.next("td").children("input").removeAttr('required'); }, 100);
+      }else if(x.hasClass('dwt')){
+        ul4 = x.parent();
+        setTimeout(function(){ ul4.prev("td").children("ul").remove(); ul4.next("td").children("input").removeAttr('required'); }, 100);
+      }
+    }
     var tertiary = [      
       "PMI", 
       "PMMA",
@@ -118,7 +132,7 @@ $(function(){
       "Chief Engineer",
       "2nd Engineer",
     ];
-
+    // End Variables
 
     $("input[name='visa_entry']").change(function(){
       html = ''
@@ -212,6 +226,9 @@ $(function(){
         closeText: 'Clear',
         beforeShow: function (e, t) {
           $("#ui-datepicker-div").addClass('HideTodayButton');
+          if($(this).hasClass('birth_date')){
+            $(this).datepicker("option", "maxDate", 0);
+          }
         },
         onClose: function () {
           var event = arguments.callee.caller.caller.arguments[0];
@@ -290,7 +307,6 @@ $(function(){
       }
     });
 
-
     $('.application-date').val(date);
     $('[data-toggle="tooltip"]').tooltip({ html: true });
     $("input[type='text']").keyup(tooltip).click(full_name).focusout(full_name);
@@ -299,29 +315,46 @@ $(function(){
     $(".essay").keyup(essay).click(essay).focusout(essay);
     $(".sea-services input").keyup(function(){
       $(this).parent().siblings().children().prop("required", "true");
+      $(this).parent().siblings("td:nth-child(2)").html("<button type='button' class='btn btn-warning clear-row'>Clear Row</button>");
     });
-    // Sea Service Validation
+
+    // Start Sea Service Validation
     $("#proceed-sea-service").click(function(){
+      count = 0
       $('.sea-services').find('input').each(function(){
         if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val().length < 1){
-          count++;
+          // count++;
           $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
         }else if($(this).val().length >= 1 && $(this).next('ul').length == 1){
-          count--;
+          // count--;
+          x = $(this)
+          x.next('ul').remove();
+          hp_kw_grt_dwt_validator(x);
+        }
+        else if($(this).val().length >= 1 && $(this).next('ul').length == 0){
+          x = $(this)
+          hp_kw_grt_dwt_validator(x);
+        }else if(!$(this).prop('required')){
+          // alert('dean');
+          // count--;
           $(this).next('ul').remove();
         }
       });
+      // $("")
       $('.sea-services').find('select').each(function(){
         if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val() == "Cause of Discharge"){
-          count++;
+          // count++;
           $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
         }else if($(this).val() != "Cause of Discharge" && $(this).next('ul').length == 1){
-          count--;
+          // count--;
           $(this).next('ul').remove();
         }
       });
       setTimeout(function(){ 
-        // alert(count); 
+        // alert(count);
+        $('.sea-services').find('ul.errorlist').each(function(){
+          count++;
+        });
         if(count == 0){ 
           // closes the modal 
           $('#seaservice').modal('hide');
@@ -331,10 +364,27 @@ $(function(){
         } 
       }, 500);
     });
+    // End Sea Service Validation
+
     $(".essay").trigger('click');
     $("body").on("change", "select", function(){
       val = $(this).val();
       $(this).css("color", "#000");
+    });
+    $(".sea-services").on("click", ".clear-row", function(){
+      count = 0;
+      $(this).parent().siblings().children("input").val("");
+      $(this).parent().siblings().children().removeAttr('required');
+      $(this).parent().siblings().children("ul").remove();
+      $(this).remove();
+      setTimeout(function(){ 
+        $('.sea-services').find('ul.errorlist').each(function(){
+            count++;
+        });
+        if( count > 0){
+          $('h5.validations').text(count+ " REQUIRED FIELDS NEED TO BE FILLED UP");
+        }
+      }, 500);
     });
 
     $("#tertiary").autocomplete({
@@ -413,5 +463,56 @@ $(function(){
     }
     if($("#id_position_applied").val() != "Position Applied"){
       $("#id_position_applied").css("color", "#000");
-    }    
+    }
+
+    // Start Input Validations
+    $("body").on("keydown", "input[type='number']", function(e){
+      // Allow: backspace, delete, tab, escape, enter and .
+      if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+           // Allow: Ctrl+A, Command+A
+          (e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) || 
+           // Allow: home, end, left, right, down, up
+          (e.keyCode >= 35 && e.keyCode <= 40)) {
+               // let it happen, don't do anything
+               return;
+      }
+      // Ensure that it is a number and stop the keypress
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+          e.preventDefault();
+      }
+    });
+    $("body").on("keydown", "input", function(e){
+      if (e.which === 13) {
+        e.preventDefault();
+      }
+    });
+    // End Input Validations
 }); 
+
+// Start Webcam Scripts
+webcam.set_api_url( '/application-form/tmp-image/' );
+webcam.set_quality( 90 ); // JPEG quality (1 - 100)
+webcam.set_shutter_sound( true ); // play shutter click sound
+$(".webcam-container").html(webcam.get_html(220, 180));
+webcam.set_hook( 'onComplete', 'my_completion_handler' );
+  
+function take_snapshot() {
+  webcam.snap();
+}
+
+function my_completion_handler(msg) {
+  d = new Date();
+  if (msg != 'No data') {
+    var image_url = msg;
+    // show JPEG image in page
+    // Extra parameter for Image Caching
+    document.getElementById('picture-container').innerHTML = '<img src="' + image_url + '?'+d.getTime()+'">';
+    // reset camera for another shot
+    webcam.reset();
+    // $("#update_image").val("image");
+  }
+  else{
+    alert("Python Error: " + msg);
+  } 
+}
+// End Webcam Scripts

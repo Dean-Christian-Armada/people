@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.forms.formsets import formset_factory
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -53,7 +54,10 @@ def form(request):
 			request.POST['civil_status'] = ''
 		# if request.POST['cause_of_discharge'] == 'Cause of Discharge':
 		# 	request.POST['cause_of_discharge'] = ''
-
+		# flags = request.POST.get('flags', False)
+		# if not flags:
+		# 	flag = FlagDocuments.objects.get(flags='None')
+		# 	request.POST.get('flags', flag.id)
 		print request.POST
 
 		appdetails_form = AppDetailsForm(request.POST)
@@ -133,3 +137,18 @@ def form(request):
 	# context_dict["today"] = today
 
 	return render(request, template, context_dict)
+
+@csrf_exempt
+def tmp_image(request):
+	if request.method == 'POST':
+		# does not work with starting slash
+		x = 'media/photos/tmp/someimage.jpg'
+		f = open(x, 'wb')
+		f.write(request.body)
+		f.close()
+		# os.rename(x, y)
+		scheme = request.scheme
+		http_host = request.META['HTTP_HOST']
+		return HttpResponse(scheme+"://"+http_host+"/"+x)
+	else:
+		return HttpResponse("No data")

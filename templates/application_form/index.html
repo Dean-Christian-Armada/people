@@ -14,6 +14,7 @@
         <div class="container">
           <h1>Step 1 : APPLICATION FORM</h1>
           <h4>Explore your opportunities here!</h4>
+          <div class="image-holder pull-right"><img src="{% static 'img/mascot.png' %}" width="350" height="350"></div>
         </div>
       </div>
     </div>
@@ -25,49 +26,7 @@
           <div class="bs-docs-section" id='application-form'>
             <form method="POST" id="myform" class="form-horizontal" autocomplete="off" action="{% url 'application_form' %}">
               {% csrf_token%}
-              {% if appsource_form.errors or personaldata_form.errors or permanentaddress_form.errors or currentaddress_form.errors or spouse_form.errors or college_form.errors or highschool_form.errors or emergencycontact_form.errors or backgroundinfo_form.errors or passport_form.errors or sbook_form.errors or coc_form.errors or license_form.errors or src_form.errors or goc_form.errors or usvisa_form.errors or schengenvisa_form.errors or yellowfever_form.errors or seaservice_form.errors or app_form.errors %}
-                <div class="form-group">
-                  <div class="errorlist-group" >
-                    <ul class="error-list">
-                      {% if appsource_form.errors %}
-                        <li><a href="#step-2">Please indicate where you have learned Manship</a></li>
-                      {% endif %}
-
-                      {% if personaldata_form.errors or permanentaddress_form.errors or currentaddress_form.errors or spouse_form.errors %}
-                        <li><a href="#step-3">Please fill up everything in your Personal Data</a></li>
-                      {% endif %}
-
-                      {% if college_form.errors or highschool_form.errors %}
-                        <li><a href="#step-4">Please fill up everything in your Education Information</a></li>
-                      {% endif %}
-
-                      {% if emergencycontact_form.errors %}
-                        <li><a href="#step-5">Please fill up everything in your Emergency Contact Details</a></li>
-                      {% endif %}
-
-                      {% if backgroundinfo_form.errors %}
-                        <li><a href="#step-7">Please fill up everything in your Background Information</a></li>
-                      {% endif %}
-
-                      {% if passport_form.errors or sbook_form.errors or coc_form.errors or license_form.errors or src_form.errors or goc_form.errors or usvisa_form.errors or schengenvisa_form.errors or yellowfever_form.errors %}
-                        <li><a href="#step-8">Please fill up everything in your National Certificates and Travel Documents</a></li>
-                      {% endif %}
-
-                      {% if app_form.errors %}
-                        {% if app_form.training_certificates.errors %}
-                          <li><a href="#step-10">Please select your Trainings and Certificates</a></li>
-                        {% endif %}
-                        {% if app_form.essay.errors %}
-                          <li><a href="#step-10">Please fill up the essay</a></li>
-                        {% endif %}
-                        {% if app_form.signature.errors  %}
-                          <li><a data-target="#signature">Please do not forget your signature</a></li>
-                        {% endif %}
-                      {% endif %}
-                    </ul>
-                  </div>  
-                </div>
-              {% endif %}
+              {% include "application_form/error_validation.html" %}
               <div class="form-group">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -94,10 +53,19 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6" style="text-align:right; color: #02be9b;">
-                  <div class="picture-container">
-                    
+                <div class="col-md-6" style="text-align:right;">
+                  <div class="form-group">
+                    <div class="pull-right" id="picture-container">
+                      {% if request.POST %}  
+                        <img src="{{MEDIA_URL}}photos/tmp/someimage.jpg">
+                      {% endif %}
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#webcam" style="width:220px">Change Picture</button>
+
+                  </div>
+                  
                 </div>
               </div>
               <h3 id='step-2' style="color: #02be9b;">How did you learn about Manship?</h3>
@@ -123,14 +91,14 @@
               </div>
               <div class="form-group">
                 <div class="col-md-4">
-                <!-- <input type="text" data-toggle="tooltip" class="form-control age" name="age" placeholder="Age" readonly=""> -->
-                  {{ personaldata_form.age|add_class:"form-control age"|attr:"data-toggle:tooltip"|attr:"placeholder:Age"|attr:"readonly"|attr:"title: Fill up your Date of Birth" }}
-                  {{ personaldata_form.age.errors }}
-                </div>
-                <div class="col-md-4">
                   <!-- <input type="text" data-toggle="tooltip" class="form-control date birth_date" name="birth_date" placeholder="Date of Birth"> -->
                   {{ personaldata_form.birth_date|add_class:"form-control date birth_date"|attr:"data-toggle:tooltip"|attr:"placeholder:Date of Birth" }}
                   {{ personaldata_form.birth_date.errors }}
+                </div>
+                <div class="col-md-4">
+                  <!-- <input type="text" data-toggle="tooltip" class="form-control age" name="age" placeholder="Age" readonly=""> -->
+                  {{ personaldata_form.age|add_class:"form-control age"|attr:"data-toggle:tooltip"|attr:"placeholder:Age"|attr:"readonly"|attr:"title: Fill up your Date of Birth" }}
+                  {{ personaldata_form.age.errors }}
                 </div>
                 <div class="col-md-4">
                   <!-- <input type="text" data-toggle="tooltip" class="form-control" name="birth_place" placeholder="Place of Birth"> -->
@@ -213,7 +181,7 @@
                   <div class="col-md-12">
                     <div class="col-md-12">
                       <i><u>Permanent Address</u></i>
-                      <span class="search-zip" data-params="permanent" style="">Search zip code</span>
+                      <span class="search-zip pull-right" data-params="permanent" style="">Search zip code</span>
                     </div>
                   </div>
                 </div>
@@ -269,7 +237,7 @@
                   <div class="col-md-12">
                     <div class="col-md-12">
                       <i><u>Current Address</u></i>
-                      <span class="search-zip" data-params="current" style="">Search zip code</span>
+                      <span class="search-zip pull-right" data-params="current" style="">Search zip code</span>
                     </div>
                   </div>
                 </div>
@@ -613,31 +581,13 @@
               <div class="form-group">
                 <!-- Loop of all Flags -->
                 <div class="col-md-12">
-                  {{ app_form.flags.errors }}
+                  {# app_form.flags.errors #}
                 </div>
                 {% for flags in app_form.flags %}
                   <div class="col-md-2 padding-right-negator">
                     {{ flags }}
                   </div>
                 {% endfor %}
-                <!-- <div class="col-md-2 padding-right-negator">
-                  <input type="checkbox" data-toggle="tooltip" class="flag"> Caymen Islands
-                </div>
-                <div class="col-md-2 padding-right-negator">
-                  <input type="checkbox" data-toggle="tooltip" class="flag"> Marshall Islands
-                </div>
-                <div class="col-md-2">
-                  <input type="checkbox" data-toggle="tooltip" class="flag"> Liberia
-                </div>
-                <div class="col-md-2">
-                  <input type="checkbox" data-toggle="tooltip" class="flag"> Cyprus
-                </div>
-                <div class="col-md-2">
-                  <input type="checkbox" data-toggle="tooltip" class="flag"> Singapore
-                </div>
-                <div class="col-md-2">
-                 <input type="checkbox" data-toggle="tooltip" class="flag"> Greek
-                </div> -->
               </div>
 
             <h3 id='step-10' style="color: #02be9b;">Training and Other Certificates</h3>
@@ -684,21 +634,21 @@
               </div>
               <br />
 
-<div class="modal fade" id="signature" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Signature {{ app_form.signature.errors }}</h4>
-      </div>
-      <div class="modal-body" style="text-align: center">
-        {{ app_form.signature }}
-        <button type="button" class="btn btn-info form-control half-width" data-dismiss="modal" style="margin-top: 15px; margin-bottom: 15px;">Proceed to Submit</button>
+    <div class="modal fade" id="webcam" tabindex="-1" role="dialog" aria-labelledby="PictureLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="seaserviceLabel"><b>TAKE PICTURE</b></h4>
+          </div>
+          <div class="modal-body webcam-container" style="text-align:center">
+          </div>
+          <div class="modal-footer">
+            <center><button type="button" class="btn btn-info half-width" id="start-application" onClick="take_snapshot()" data-dismiss="modal">Start Application</button></center>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<div class="modal fade" id="seaservice" tabindex="-1" role="dialog" aria-labelledby="seaserviceLabel" aria-hidden="true" data-keyboard="false">
+    <div class="modal fade" id="seaservice" tabindex="-1" role="dialog" aria-labelledby="SeaServiceLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -712,6 +662,7 @@
               <h5>3.) <i>Take note:</i> <b>If no available sea service simply proceed to next section</b></h5>
               <h5>4.) <i>Take note:</i> <b>If available please complete all fields</b></h5>
               <h5>5.) <i>Take note:</i> <b>Click the "Proceed to Application" button to close</b></h5>
+              <h5>6.) <i>Take note:</i> <b>Click "Clear Row" to clear the required fields</b></h5>
               <h5 class="validations"></h5>
             </div>
             
@@ -719,6 +670,7 @@
               <table class="table table-striped sea-services">
                 <thead>
                   <tr>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th>Vessel Name</th>
@@ -770,15 +722,16 @@
                     <tr>
                       <td></td>
                       <td></td>
+                      <td></td>
                       <td>{{ seaservice.vessel_name|attr:"data-toggle:tooltip"|attr:"Placeholder:Vessel Name" }}</td>
                       <td>{{ seaservice.vessel_type|attr:"data-toggle:tooltip"|attr:"Placeholder:Vessel Type"|add_class:"vtype" }}</td>
                       <td>{{ seaservice.flag|attr:"data-toggle:tooltip"|attr:"Placeholder:Flag"|add_class:"flag" }}</td>
-                      <td>{{ seaservice.grt|attr:"data-toggle:tooltip"|attr:"Placeholder:GRT" }}</td>
-                      <td>{{ seaservice.dwt|attr:"data-toggle:tooltip"|attr:"Placeholder:DWT" }}</td>
+                      <td>{{ seaservice.grt|attr:"data-toggle:tooltip"|attr:"Placeholder:GRT"|add_class:"grt" }}</td>
+                      <td>{{ seaservice.dwt|attr:"data-toggle:tooltip"|attr:"Placeholder:DWT"|add_class:"dwt" }}</td>
                       <td>{{ seaservice.year_built|attr:"data-toggle:tooltip"|attr:"Placeholder:Year Built" }}</td>
                       <td>{{ seaservice.engine_type|attr:"data-toggle:tooltip"|attr:"Placeholder:Engine Type" }}</td>
-                      <td>{{ seaservice.hp|attr:"data-toggle:tooltip"|attr:"Placeholder:HP" }}</td>
-                      <td>{{ seaservice.kw|attr:"data-toggle:tooltip"|attr:"Placeholder:KW" }}</td>
+                      <td>{{ seaservice.hp|attr:"data-toggle:tooltip"|attr:"Placeholder:HP"|add_class:"hp" }}</td>
+                      <td>{{ seaservice.kw|attr:"data-toggle:tooltip"|attr:"Placeholder:KW"|add_class:"kw" }}</td>
                       <td>{{ seaservice.manning_agency|attr:"data-toggle:tooltip"|attr:"Placeholder:Manning Agency"|add_class:"manning_agency" }}</td>
                       <td>{{ seaservice.principal|attr:"data-toggle:tooltip"|attr:"Placeholder:Principal / Shipowner" }}</td>
                       <td>{{ seaservice.date_joined|add_class:"date date-joined"|attr:"data-toggle:tooltip"|attr:"Placeholder:Date Joined" }}</td>
@@ -800,59 +753,25 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="signature" tabindex="-1" role="dialog" aria-labelledby="SignatureLabel" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Signature {{ app_form.signature.errors }}</h4>
+          </div>
+          <div class="modal-body" style="text-align: center">
+            {{ app_form.signature }}
+            <button type="button" class="btn btn-info form-control half-width" data-dismiss="modal" style="margin-top: 15px; margin-bottom: 15px;">Proceed to Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
               <button class="btn btn-success form-control submit-application" >Submit Application</button>
               <br /> &nbsp;
             </form>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="sidebar hidden-print" role="complementary">
-            <ul class="nav bs-docs-sidenav">
-              <li>
-                <a href="#step-2">How did you learn about Manship?</a>
-              </li>
-              <li>
-                <a href="#step-3">Personal Data</a>
-              </li>
-              <!-- <li>
-                <a href="#step-2">Next of Kin</a>
-              </li> -->
-              <li>
-                <a href="#step-4">Educational Information</a>
-              </li>
-              <li>
-                <a href="#step-5">Emergency Contact Details</a>
-              </li>
-              <li>
-                <a href="#step-6">Sea Service</a>
-              </li>
-              <li>
-                <a href="#step-7">Background Information</a>
-              </li>
-              <li>
-                <a href="#step-8">National Certificates and Travel Documents</a>
-              </li>
-              <li>
-                <a href="#step-9">Flag Documents</a>
-              </li>
-              <li>
-                <a href="#step-10">Training and Other Certificates</a>
-              </li>
-              <li>
-                <a href="#step-11">Essay</a>
-              </li>
-              <li>
-                <a href="#step-12">Certification</a>
-              </li>
-              <li>
-                <a class="back-to-top" href="#top">
-                  Back to top
-                </a>
-              </li>
-            </ul>
-
-          </div>
-        </div>
+        {% include "application_form/sidebar.html" %}
       </div>
     </div>
 
