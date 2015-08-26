@@ -35,7 +35,7 @@ def form(request):
 	usvisa_form = USVisaForm()
 	schengenvisa_form = SchengenVisaForm()
 	yellowfever_form = YellowFeverForm()
-	seaservice_form = formset_factory(SeaServiceForm, extra=5)
+	seaservice_form = formset_factory(SeaServiceForm, extra=10)
 	app_form = AppForm()
 
 	# Gets Date Today
@@ -136,6 +136,12 @@ def form(request):
 
 	# context_dict["today"] = today
 
+	return render(request, template, context_dict)
+
+@login_required
+def success(request):
+	template = "application_form/success.html"
+	context_dict = {}
 	return render(request, template, context_dict)
 
 @csrf_exempt

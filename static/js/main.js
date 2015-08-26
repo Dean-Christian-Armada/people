@@ -383,6 +383,8 @@ $(function(){
         });
         if( count > 0){
           $('h5.validations').text(count+ " REQUIRED FIELDS NEED TO BE FILLED UP");
+        }else{
+          $('h5.validations').text("");
         }
       }, 500);
     });
@@ -448,14 +450,14 @@ $(function(){
     });
     $(".search-zip").click(function(){
       params = $(this).attr('data-params');
-      permanent_baranggay = $("#"+params+"_baranggay").val();
-      permanent_zip = $("#"+params+"_zip").val();
-      permanent_municipality = $("#"+params+"_municipality").val();
-      permanent_town = $("#"+params+"_town").val();
-      permanent_street = $("#"+params+"_street").val();
-      permanent_address = permanent_baranggay+"+"+permanent_municipality+"+"+"zip code";
-      permanent_address = permanent_address.replace(/ /g,"+");
-      var myWindow = window.open("http://www.google.com.ph/#q="+permanent_address, "", "width=1000, height=700");
+      baranggay = $("#"+params+"_baranggay").val();
+      zip = $("#"+params+"_zip").val();
+      municipality = $("#"+params+"_municipality").val();
+      town = $("#"+params+"_town").val();
+      street = $("#"+params+"_street").val();
+      address = baranggay+"+"+municipality+"+"+"zip code";
+      address = address.replace(/ /g,"+");
+      var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");
     });
     
     if($("#id_alternative_position").val() != "Alternative Position"){
@@ -481,7 +483,8 @@ $(function(){
           e.preventDefault();
       }
     });
-    $("body").on("keydown", "input", function(e){
+    // Prevents Enter
+    $(".bs-docs-section").on("keydown", "input", function(e){
       if (e.which === 13) {
         e.preventDefault();
       }

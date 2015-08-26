@@ -14,7 +14,7 @@
         <div class="container">
           <h1>Step 1 : APPLICATION FORM</h1>
           <h4>Explore your opportunities here!</h4>
-          <div class="image-holder pull-right"><img src="{% static 'img/mascot.png' %}" width="350" height="350"></div>
+          <div class="image-holder pull-right"><img src="{% static 'img/mascot.png' %}" ></div>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
           <div class="bs-docs-section" id='application-form'>
             <form method="POST" id="myform" class="form-horizontal" autocomplete="off" action="{% url 'application_form' %}">
               {% csrf_token%}
-              {% include "application_form/error_validation.html" %}
+              {% include "application_form/error_validations.html" %}
               <div class="form-group">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -384,6 +384,13 @@
                   {{ emergencycontact_form.relationship.errors }}
                 </div>
               </div>
+              <div class="form-group bottom-zero">
+                <div class="col-md-12">
+                  <div class="col-md-12">
+                    <span class="search-zip pull-right" data-params="emergency" style="">Search zip code</span>
+                  </div>
+                </div>
+              </div>
               <div class="form-group">
                 <div class="col-md-3">
                   <!-- <input type="text" data-toggle="tooltip" id="current_street" name="current_street" class="form-control" placeholder="Street"> -->
@@ -392,7 +399,7 @@
                 </div>
                 <div class="col-md-3">
                   <!-- <input type="text" data-toggle="tooltip" id="current_baranggay" name="current_baranggay" class="form-control" placeholder="Baranggay"> -->
-                  {{ emergencycontact_form.baranggay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Baranggay" }}
+                  {{ emergencycontact_form.baranggay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Baranggay"|attr:"id:emergency_baranggay" }}
                   {{ emergencycontact_form.baranggay.errors }}
                 </div>
                 <div class="col-md-2">
@@ -418,7 +425,7 @@
                     <option>Jovellar</option>
                   </select> -->
                   <!-- <input type="text" data-toggle="tooltip" id="current_municipality" class="form-control" placeholder="Municipality"> -->
-                  {{ emergencycontact_form.municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality" }}
+                  {{ emergencycontact_form.municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:emergency_municipality" }}
                   {{ emergencycontact_form.municipality.errors }}
                 </div>
                 <div class="col-md-2">
@@ -428,7 +435,7 @@
                 </div>
               </div>
 
-              <h3 id='step-6'><a href = "#seaservice" role="button" data-toggle="modal" rel="tooltip" data-original-title="Click here to add more sea services" class="btn btn-info sea-service-button form-control">Sea Service</a></h3>
+              <h3 id='step-6'><a href = "#seaservice" role="button" data-toggle="modal" rel="tooltip" data-original-title="Click here to add more sea services" class="btn btn-info btn-lg sea-service-button form-control">Sea Service</a></h3>
 
               <h3 id='step-7' style="color: #02be9b;">Background Information</h3>
                 
@@ -657,12 +664,12 @@
           <div class="modal-body">
             <div style="padding-left: 15px">
               <h5><b>PLEASE READ INSTRUCTIONS CAREFULLY BEFORE FILLING OUT</b></h5>
-              <h5>1.) <i>Please complete the fields per row from left to right</i><b> (Vessel Name, Vessel Type, Flag, GRT, Year Built, Engine Type, HP/KW, Manning Agency, Principal / Shipowner, Date Joined, Date Left, Month / Days, Rank, Cause of Discharge)</b></h5>
-              <h5>2.) <i>Take note:</i> <b>Scroll from left to right</b></h5>
-              <h5>3.) <i>Take note:</i> <b>If no available sea service simply proceed to next section</b></h5>
-              <h5>4.) <i>Take note:</i> <b>If available please complete all fields</b></h5>
-              <h5>5.) <i>Take note:</i> <b>Click the "Proceed to Application" button to close</b></h5>
-              <h5>6.) <i>Take note:</i> <b>Click "Clear Row" to clear the required fields</b></h5>
+              <h5>1.) <i>Take note:</i> <b>If no available sea service simply click the button to proceed to the next section of Application Form</b></h5>
+              <h5>2.) <i>Please complete the fields per row from left to right</i><b> (Vessel Name, Vessel Type, Flag, GRT, DWT, Year Built, Engine Type, HP, KW, Manning Agency, Principal / Shipowner, Date Joined, Date Left, Month / Days, Rank, Cause of Discharge)</b></h5>
+              <h5>3.) <i>Take note:</i> <b>Scroll from left to right</b></h5>           
+              <h5>4.) <i>Take note:</i> <b>If a field is filled out you will be required to complete all the fields within the row</b></h5>
+              <h5>5.) <i>Take note:</i> <b>Click "Clear Row" to clear the required fields within the row</b></h5>
+              <h5>6.) <i>Take note:</i> <b>Click the "Proceed to Application" button to close</b></h5>
               <h5 class="validations"></h5>
             </div>
             
@@ -686,7 +693,7 @@
                     <th>Principal / Shipowner</th>
                     <th>Date Joined</th>
                     <th>Date Left</th>
-                    <th>Month / Days</th>
+                    <!-- <th>Month / Days</th> -->
                     <th>Rank</th>
                     <th>Cause of Discharge</th>
                   </tr>
@@ -737,12 +744,11 @@
                       <td>{{ seaservice.date_joined|add_class:"date date-joined"|attr:"data-toggle:tooltip"|attr:"Placeholder:Date Joined" }}</td>
                       <!-- <td><input type="text" data-toggle="tooltip" class="date date-left" placeholder="Date Left" disabled></td> -->
                       <td>{{ seaservice.date_left|add_class:"date date-left"|attr:"data-toggle:tooltip"|attr:"Placeholder:Date Left"|attr:"disabled" }}</td>
-                      <td>{{ seaservice.duration|add_class:"duration"|attr:"data-toggle:tooltip"|attr:"Placeholder:Days"|attr:"readonly" }}</td>
+                      <!-- <td> -->{{ seaservice.duration|add_class:"duration"|attr:"data-toggle:tooltip"|attr:"Placeholder:Days"|attr:"readonly"|attr:"style:display:none" }}<!-- </td> -->
                        <td>{{ seaservice.rank|attr:"data-toggle:tooltip"|attr:"Placeholder:Rank"|add_class:"rank" }}</td>
                        <td>{{ seaservice.cause_of_discharge|attr:"data-toggle:tooltip"|add_class:"first-choice" }}</td>
                     </tr>
                   {% endfor %}
-
                 </tbody>  
               </table>
             </div>
@@ -761,7 +767,7 @@
           </div>
           <div class="modal-body" style="text-align: center">
             {{ app_form.signature }}
-            <button type="button" class="btn btn-info form-control half-width" data-dismiss="modal" style="margin-top: 15px; margin-bottom: 15px;">Proceed to Submit</button>
+            <button type="button" class="btn btn-info form-control half-width" data-dismiss="modal" style="margin-top: 15px; margin-bottom: 15px;">Proceed to Application</button>
           </div>
         </div>
       </div>
