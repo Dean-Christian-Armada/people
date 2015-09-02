@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
@@ -8,9 +9,16 @@ class Userlevel(models.Model):
 		return self.userlevel
 
 class UserProfile(models.Model):
+	# Regexes
+	# regex for four letter codes only
+	code_regex = RegexValidator(regex=r'^([a-z]{4})$', message="Please follow code format")
+
 	user = models.OneToOneField(User)
 	userlevel = models.ForeignKey('Userlevel')
-	phrase = models.CharField(max_length=50)
+	code = models.CharField(max_length=4, validators=[code_regex], null=True, blank=True)
+	first_name = models.CharField(max_length=50, null=True)
+	middle_name = models.CharField(max_length=50, null=True)
+	last_name = models.CharField(max_length=50, null=True)
 
 	def __unicode__(self):
 		return self.user.username

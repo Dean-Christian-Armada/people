@@ -1,4 +1,5 @@
 Django==1.8.3
+django-easy-pdf==0.1.0
 django-jsignature==0.8
 django-signature==0.3.1
 django-widget-tweaks==1.4.1

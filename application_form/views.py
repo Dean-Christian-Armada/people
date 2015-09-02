@@ -4,6 +4,9 @@ from django.forms.formsets import formset_factory
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
+from easy_pdf.views import PDFTemplateView
+from easy_pdf.rendering import render_to_pdf_response
+
 from jsignature.utils import draw_signature
 
 from . forms import *
@@ -122,19 +125,17 @@ def form(request):
 	context_dict['highschool_form'] = highschool_form
 	context_dict['emergencycontact_form'] = emergencycontact_form
 	context_dict['backgroundinfo_form'] = backgroundinfo_form
-	context_dict['passport_form']= passport_form
-	context_dict['sbook_form']= sbook_form
-	context_dict['coc_form']= coc_form
-	context_dict['license_form']= license_form
-	context_dict['src_form']= src_form
-	context_dict['goc_form']= goc_form
-	context_dict['usvisa_form']= usvisa_form
-	context_dict['schengenvisa_form']= schengenvisa_form
-	context_dict['yellowfever_form']= yellowfever_form
+	context_dict['passport_form'] = passport_form
+	context_dict['sbook_form'] = sbook_form
+	context_dict['coc_form'] = coc_form
+	context_dict['license_form'] = license_form
+	context_dict['src_form'] = src_form
+	context_dict['goc_form'] = goc_form
+	context_dict['usvisa_form'] = usvisa_form
+	context_dict['schengenvisa_form'] = schengenvisa_form
+	context_dict['yellowfever_form'] = yellowfever_form
 	context_dict['seaservice_form'] = seaservice_form
-	context_dict['app_form']= app_form
-
-	# context_dict["today"] = today
+	context_dict['app_form'] = app_form
 
 	return render(request, template, context_dict)
 
@@ -145,6 +146,7 @@ def success(request):
 	return render(request, template, context_dict)
 
 @csrf_exempt
+@login_required
 def tmp_image(request):
 	if request.method == 'POST':
 		# does not work with starting slash
@@ -158,3 +160,23 @@ def tmp_image(request):
 		return HttpResponse(scheme+"://"+http_host+"/"+x)
 	else:
 		return HttpResponse("No data")
+
+
+
+@login_required
+def pdf_report(request, template):
+	if template:
+		if template == 'sea-service':
+			template = "application_form/pdf-report-sea-service.html"
+	# returns hypertext protocol: http or https
+		else:
+			template = "application_form/pdf-report.html"
+
+		domain = request.scheme
+		domain += "://"
+		# returns domain name
+		domain += request.META["HTTP_HOST"]
+		context_dict = {"domain":domain}
+		return render_to_pdf_response(request, template, context_dict)
+	else:
+		raise Http404("System Error.")

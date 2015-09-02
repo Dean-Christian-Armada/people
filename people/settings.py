@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'application_form',
     'login',
     'import_export',
+    'easy_pdf',
 )
 
 MIDDLEWARE_CLASSES = (

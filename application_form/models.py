@@ -1,303 +1,377 @@
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 
-# from jsignature.mixins import JSignatureFieldsMixin
+from django_date_extensions.fields import ApproximateDateField
 
-# Create your models here.
+from login.models import UserProfile
 
-# class JSignatureModel(JSignatureFieldsMixin):
-# 	name = models.CharField(max_length=100, default=None)
-# 	signatures = models.ImageField(upload_to='signatures', blank=True, default=None)
+# Notes
+#  Use ModelBase / class model inheritance for created and modified
+# change user onetoone field
 
+# START NORMALIZATION
 
-# class Sample(models.Model):
-# 	picture = models.ImageField(upload_to='signatures', blank=True, default=None)
-# 	name = models.CharField(max_length=100, default='dean')
-
-# 	def __unicode__(self):
-# 		return self.name
-
-class AppDetails(models.Model):
-	application_date = models.DateField()
-	position_applied = models.CharField(max_length=50, default=None,)
-	alternative_position = models.CharField(max_length=50, default=None,)
-	picture = models.ImageField(upload_to='application_pictures', blank=True)
-	appdetails = models.OneToOneField('AppSource', default=None)
-	
-	def __str__(self):
-		return str(self.application_date)
-
-# class Source(models.Model):
-# 	source = models.CharField(max_length=50, default=None)
-
-# 	def __str__(self):
-# 		return self.source
-
-
-class AppSource(models.Model):
-	source = models.CharField(max_length=50, default=None)
-	specify = models.CharField(max_length=50, default=None, null=True, blank=True)
-
-	def __str__(self):
-		return "%s - %s" % (self.source, self.specify)
-
-
-
-##### START Educational Information
-
-class College(models.Model):
-	school = models.CharField(max_length=100, default=None)
-	degree_obtained = models.CharField(max_length=50, default=None)
-	coll_from = models.DateField()
-	coll_to = models.DateField()
-
-	def __str__(self):
-		return str(self.school)
-
-class HighSchool(models.Model):
-	school = models.CharField(max_length=100, default=None)
-	hs_from = models.DateField()
-	hs_to = models.DateField()
-
-	def __str__(self):
-		return str(self.school)
-
-
-class Education(models.Model):
-	college = models.OneToOneField('College')
-	highschool = models.OneToOneField('HighSchool')
-
-	def __str__(self):
-		return self.tertiary.school
-
-##### END Educational Information
-
-
-class EmergencyContact(models.Model):
-	name = models.CharField(max_length=100, default=None)
-	contact = models.CharField(max_length=100, default=None)
-	relationship = models.CharField(max_length=50, default=None)
-	# address = models.CharField(max_length=100, default=None)
-	street = models.CharField(max_length=50, default=None)
-	baranggay = models.CharField(max_length=50, default=None)
-	town = models.CharField(max_length=50, default=None)
-	municipality = models.CharField(max_length=50, default=None)
-	zip = models.IntegerField()
-
-	def __str__(self):
-		return str(self.name)
-
-class BackgroundInformation(models.Model):
-	visa_application = models.BooleanField()
-	detained = models.BooleanField()
-	disciplinary_action = models.BooleanField()
-
-	def __str__(self):
-		return "BackgroundInformation"
-
-
-##### START National Certificates and Documents
-
-class Passport(models.Model):
-	passport = models.CharField(max_length=100, default=None, unique=True)
-	expiry = models.DateField()
-	place = models.CharField(max_length=50, default=None)
-
-	def __str__(self):
-		return str(self.passport)
-
-class SBook(models.Model):
-	sbook = models.CharField(max_length=100, default=None, unique=True)
-	expiry = models.DateField()
-	place = models.CharField(max_length=50, default=None)
-
-	def __str__(self):
-		return str(self.sbook)
-
-class COC(models.Model):
-	coc = models.CharField(max_length=100, default=None, unique=True)
-	expiry = models.DateField()
-	rank = models.CharField(max_length=50, default=None)
-
-	def __str__(self):
-		return str(self.coc)
-
-class License(models.Model):
-	license = models.CharField(max_length=50, default=None, unique=True)
-	rank = models.CharField(max_length=50, default=None)
-
-	def __str__(self):
-		return str(self.license)
-
-class SRC(models.Model):
-	src = models.CharField(max_length=50, default=None, unique=True)
-	rank = models.CharField(max_length=50, default=None)
-
-	def __str__(self):
-		return str(self.src)
-
-class GOC(models.Model):
-	goc = models.CharField(max_length=50, default=None, unique=True)
-	expiry = models.DateField()
-
-	def __str__(self):
-		return str(self.goc)
-
-class USVisa(models.Model):
-	type = models.BooleanField()
-	expiry = models.DateField()
-
-	def __str__(self):
-		return str(self.type)
-
-class SchengenVisa(models.Model):
-	type = models.BooleanField()
-	expiry = models.DateField()
-
-	def __str__(self):
-		return str(self.type)
-
-class YellowFever(models.Model):
-	yellow_fever = models.IntegerField(unique=True)
-	expiry = models.DateField()
-
-	def __str__(self):
-		return str(self.yellow_fever)
-
-class CertificatesDocuments(models.Model):
-	passport = models.OneToOneField('Passport')
-	sbook = models.OneToOneField('SBook')
-	coc = models.OneToOneField('COC')
-	license = models.OneToOneField('License')
-	src = models.OneToOneField('SRC')
-	goc = models.OneToOneField('GOC')
-	us_visa = models.OneToOneField('USVisa')
-	schgengen_visa = models.OneToOneField('SchengenVisa')
-	yellow_fever = models.OneToOneField('YellowFever')
-
-	def __str__(self):
-		return str(self.passport.passport)
-##### END National Certificates and Documents
-
-
+# ManyToMany Fields for 3NFs
+class Flags(models.Model):
+	flags = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 class FlagDocuments(models.Model):
-	flags = models.CharField(max_length=100, default=None)
-
-	def __str__(self):
-		return str(self.flags)
+	user = models.OneToOneField(UserProfile, default=None)
+	flags = models.ManyToManyField(Flags, blank=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 class TrainingCertificates(models.Model):
-	trainings_certificates = models.CharField(max_length=100, default=None)
+	trainings_certificates = models.CharField(max_length=100, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+class TrainingCertificateDocuments(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	trainings_certificates = models.ManyToManyField(TrainingCertificates, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-	def __str__(self):
-		return str(self.trainings_certificates)
+
+# Foreign Models for 2NFs
+class BirthPlace(models.Model):
+	birth_place = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+class VesselName(models.Model):
+	vessel_name = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class VesselType(models.Model):
+	vessel_type = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Principal(models.Model):
+	principal = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class CivilStatus(models.Model):
+	civil_status = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+class Colleges(models.Model):
+	college = models.CharField(max_length=100, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	# full_name = models.CharField(max_length=100, null=True, default=None)
+
+class Degree(models.Model):
+	degree = models.CharField(max_length=100, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	# full_name = models.CharField(max_length=100, null=True, default=None)
+
+class HighSchools(models.Model):
+	highschool = models.CharField(max_length=100, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	# full_name = models.CharField(max_length=100, null=True, default=None)
+
+class Relationship(models.Model):
+	relationship = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Rank(models.Model):
+	rank = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class EngineType(models.Model):
+	engine_type = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class ManningAgency(models.Model):
+	manning_agency = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class CauseOfDischarge(models.Model):
+	cause_of_discharge = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Municipality(models.Model):
+	municipality = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Barangay(models.Model):
+	barangay = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Sources(models.Model):
+	source = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Specifics(models.Model):
+	specific = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Reasons(models.Model):
+	reason = models.TextField(blank=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Status(models.Model):
+	status = models.CharField(max_length=50, null=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+# Foreign Models for 1NFs
 
 class Spouse(models.Model):
-	name =  models.CharField(max_length=100, null=True)
-	birthdate = models.DateField(default=None, null=True)
-	contact = models.CharField(max_length=100, null=True)
+	user = models.OneToOneField(UserProfile, default=None)
+	name = models.CharField(max_length=100, null=True, blank=True, default=None)
+	married_date = models.DateField(null=True, blank=True, default=None)
+	birthdate = models.DateField(null=True, blank=True, default=None)
+	contact = models.CharField(max_length=100, null=True, blank=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-class PermanentAddress(models.Model):
-	street = models.CharField(max_length=50, default=None)
-	baranggay = models.CharField(max_length=50, default=None)
-	town = models.CharField(max_length=50, default=None)
-	municipality = models.CharField(max_length=50, default=None)
-	zip = models.IntegerField()
+class College(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	college = models.ForeignKey(Colleges, related_name='Colleges', default=None)
+	degree = models.ForeignKey(Degree, default=None)
+	schoolyear_from = models.PositiveSmallIntegerField(default=None)
+	schoolyear_to = models.PositiveSmallIntegerField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+class HighSchool(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	highschool = models.ForeignKey(HighSchools, related_name='Highschools', default=None)
+	schoolyear_from = models.PositiveSmallIntegerField(default=None)
+	schoolyear_to = models.PositiveSmallIntegerField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+class Zip(models.Model):
+	zip = models.PositiveIntegerField(default=None)
+	barangay = models.ForeignKey(Barangay, default=None)
+	municipality = models.ForeignKey(Municipality, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class EmergencyContact(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	relationship = models.ForeignKey(Relationship, default=None)
+	zip = models.ForeignKey(Zip, default=None)
+	name = models.CharField(max_length=100, null=True, default=None)
+	contact = models.CharField(max_length=100, null=True, default=None)
+	street = models.CharField(max_length=50, null=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 class CurrentAddress(models.Model):
-	street = models.CharField(max_length=50, default=None)
-	baranggay = models.CharField(max_length=50, default=None)
-	town = models.CharField(max_length=50, default=None)
-	municipality = models.CharField(max_length=50, default=None)
-	zip = models.IntegerField()
+	zip = models.ForeignKey(Zip, default=None)
+	street = models.CharField(max_length=50, null=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class PermanentAddress(models.Model):
+	zip = models.ForeignKey(Zip, default=None)
+	street = models.CharField(max_length=50, null=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class AppSource(models.Model):
+	source = models.ForeignKey(Sources, default=None)
+	specific = models.ForeignKey(Specifics, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+# START Background Info
+class VisaApplication(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	visa_application = models.NullBooleanField(default=None)
+	reason = models.ForeignKey(Reasons, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Detained(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	detained = models.NullBooleanField(default=None)
+	reason = models.ForeignKey(Reasons, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class DisciplinaryAction(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	disciplinary_action = models.NullBooleanField(default=None)
+	reason = models.ForeignKey(Reasons, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+# END Background Info
+
+class Passport(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	passport = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class Sbook(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	sbook = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class COC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	coc = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	rank = models.ForeignKey(Rank, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class License(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	license = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class SRC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	src = models.CharField(max_length=100, null=True, unique=True, default=None)
+	rank = models.ForeignKey(Rank, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class GOC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	goc = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class USVisa(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	us_visa = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(blank=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class SchengenVisa(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	schengen_visa = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(blank=True, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+class YellowFever(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	yellow_fever = models.CharField(max_length=100, null=True, unique=True, default=None)
+	expiry = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+# END NORMALIZATION
+
 
 class PersonalData(models.Model):
-	CIVIL_CHOICES = (
-			('Civil Status', 'Civil Status'),
-			('M', 'Married'),
-            ('S', 'Single'),
-		)
-	last_name = models.CharField(max_length=50, default=None)
-	first_name = models.CharField(max_length=50, default=None)
-	middle_name = models.CharField(max_length=50, default=None)
-	age = models.IntegerField()
-	birth_date = models.DateField()
-	birth_place = models.CharField(max_length=50, default=None)
-	landline_1 = models.IntegerField(null=True)
-	mobile_1 = models.CharField(max_length=50, null=True)
-	email_address_1 = models.EmailField(null=True)
-	landline_2 = models.IntegerField(default=None, blank=True, null=True)
-	mobile_2 = models.CharField(max_length=50, blank=True, null=True)
-	email_address_2 = models.EmailField(default=None, blank=True, null=True)
-	preferred_vessel_type = models.CharField(max_length=50, default=None)
-	availability_date = models.DateField()
-	sss = models.CharField(max_length=50, default=None)
-	philhealth = models.CharField(max_length=50, default=None)
-	tin = models.CharField(max_length=50, default=None)
-	pagibig = models.CharField(max_length=50, default=None)
-	civil_status = models.CharField(max_length=50, default=None, choices=CIVIL_CHOICES)
-	married_date = models.DateField(default=None, null=True)
-	father_name = models.CharField(max_length=100, null=True)
-	mother_name = models.CharField(max_length=100, null=True)
-	permanent_address = models.ForeignKey(PermanentAddress, default=None)
+	# Regex
+	# regex for mobile numbers
+	mobile_regex = RegexValidator(regex=r'^09([0-9]{9})$', message="Please input proper mobile number format 09xxxxxxxxx")
+	# regex for landline numbers
+	landline_regex = RegexValidator(regex=r'^([0-9]{7})$', message="Please input proper 7 digit telephone number format")
+	# regex for sss
+	sss_regex = RegexValidator(regex=r'^([0-9]{10})$', message="Please input proper 10 digit format of sss")
+	# regex for philhealth
+	philhealth_regex = RegexValidator(regex=r'^([0-9]{12})$', message="Please input proper 12 digit format of philhealth")
+	# regex for tin
+	tin_regex = RegexValidator(regex=r'^([0-9]{12})$', message="Please input proper 12 digit format of tin")
+	# regex for pagibig
+	pagibig_regex = RegexValidator(regex=r'^([0-9]{12})$', message="Please input proper 12 digit format of pagibig")
+	# twelvedigit_regex = RegexValidator(regex=r'^([0-9]{12})$', message="This id contains 12 digit number") 
+
+	# OneToOneField with Django Users Model 
+	name = models.OneToOneField(UserProfile, default=None)
+
+	# ForeignKeys
+	birth_place = models.ForeignKey(BirthPlace, default=None)
+	preferred_vessel_type = models.ForeignKey(VesselType, default=None)
+	civil_status = models.ForeignKey(CivilStatus, default=None)
 	current_address = models.ForeignKey(CurrentAddress, default=None)
-	spouse = models.ForeignKey(Spouse, default=None)
+	permanent_address = models.ForeignKey(PermanentAddress, default=None)
 
-	def __str__(self):
-		name = "%s %s %s" % (self.first_name, self.middle_name, self.last_name, )
-		return name
+	# CharFields
+	mobile_1 = models.BigIntegerField(validators=[mobile_regex], null=True, default=None)
+	mobile_2 = models.BigIntegerField(validators=[mobile_regex], null=True, blank=True, default=None)
+	father_name = models.CharField(max_length=100, null=True, default=None)
+	mother_name = models.CharField(max_length=100, null=True, default=None)
 
-class Reference(models.Model):
-	verified_by = models.CharField(max_length=100, null=True, blank=True, default=None)
-	date = models.DateField()
-	company_name = models.CharField(max_length=50, null=True, blank=True, default=None)
-	person_contacted = models.CharField(max_length=100, null=True, blank=True, default=None)
-	veracity_history = models.CharField(max_length=50, null=True, blank=True, default=None)
-	health_problem = models.CharField(max_length=50, null=True, blank=True, default=None)
-	financial_liability = models.CharField(max_length=50, null=True, blank=True, default=None)
-	character = models.TextField(null=True, blank=True,)
-	comments = models.TextField(null=True, blank=True,)
+	# Integer Fields
+	age = models.PositiveIntegerField(default=None)
+	landline_1 = models.PositiveIntegerField(validators=[landline_regex], null=True, blank=True, default=None)
+	landline_2 = models.PositiveIntegerField(validators=[landline_regex], null=True, blank=True, default=None)
+	sss = models.PositiveIntegerField(validators=[sss_regex], null=True, default=None)
+	philhealth = models.BigIntegerField(validators=[philhealth_regex], null=True, blank=True, default=None)
+	tin = models.BigIntegerField(validators=[tin_regex], null=True, blank=True, default=None)
+	pagibig = models.BigIntegerField(validators=[pagibig_regex], null=True, blank=True, default=None)
 
-	def __str__(self):
-		return self.verified_by
+	# EmailFields
+	email_address_1 = models.EmailField(null=True, default=None)
+	email_address_2 = models.EmailField(blank=True, null=True, default=None)
 
-class AppForm(models.Model):
-	# form_reference = models.CharField(max_length=50, default=None)
-	app_details = models.OneToOneField('AppDetails')
-	personal_data = models.OneToOneField('PersonalData')
-	education = models.OneToOneField('Education')
-	emergency_contact = models.OneToOneField('EmergencyContact')
-	background_information = models.OneToOneField('BackgroundInformation')
-	certificates_documents = models.OneToOneField('CertificatesDocuments')
-	reference = models.OneToOneField('Reference', default=None)
-	flags = models.ManyToManyField(FlagDocuments)
-	training_certificates = models.ManyToManyField(TrainingCertificates)
-	# sea_service = models.ForeignKey('SeaService', default=None)
-	essay = models.TextField(default=None)
-	signature = models.ImageField(upload_to='signatures', default=None)
+	# DateFields
+	birth_date = models.DateField(default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-	def __str__(self):
-		appform = "%s %s %s : %s" % (self.personal_data.first_name, self.personal_data.middle_name, self.personal_data.last_name, self.app_details.application_date )
-		return appform
+	# ThirdParty Fields
+	availability_date = ApproximateDateField(default=None)
+
 
 class SeaService(models.Model):
-	app_form = models.ForeignKey('AppForm', default=None)
-	vessel_name = models.CharField(max_length=50, default=None)
-	vessel_type = models.CharField(max_length=50, default=None)
-	flag = models.CharField(max_length=50, default=None)
-	grt = models.IntegerField()
-	dwt = models.IntegerField(default=None)
-	year_built = models.IntegerField()
-	engine_type = models.CharField(max_length=50, default=None)
-	hp = models.IntegerField()
-	kw = models.IntegerField(default=None)
-	manning_agency = models.CharField(max_length=50, default=None)
-	principal = models.CharField(max_length=50, default=None)
-	date_joined = models.DateField()
-	date_left = models.DateField()
-	duration = models.IntegerField()
-	rank = models.CharField(max_length=50, default=None)
-	cause_of_discharge = models.CharField(max_length=100, default=None)
 
-	def __str__(self):
-		return self.vessel_name
+	# OneToOneField with Django Users Model 
+	user = models.OneToOneField(UserProfile, default=None)
+
+	# ForeignKeys
+	vessel_name = models.ForeignKey(VesselName, default=None)
+	vessel_type = models.ForeignKey(VesselType, default=None)
+	flag = models.ForeignKey(Flags, default=None)
+	engine_type = models.ForeignKey(EngineType, default=None)
+	manning_agency = models.ForeignKey(ManningAgency, default=None)
+	principal = models.ForeignKey(Principal, default=None)
+	rank = models.ForeignKey(Rank, default=None)
+	cause_of_discharge = models.ForeignKey(CauseOfDischarge, default=None)
+
+	# Integer Fields
+	grt = models.PositiveIntegerField(null=True, default=None)
+	dwt = models.PositiveIntegerField(null=True, default=None)
+	year_built = models.PositiveSmallIntegerField(null=True, default=None)
+	duration = models.PositiveSmallIntegerField(null=True, default=None)
+
+	# Decimal Fields
+	hp = models.DecimalField(null=True, decimal_places=1, max_digits=10, default=None)
+	kw = models.DecimalField(null=True, decimal_places=1, max_digits=10, default=None)
+
+	# Date Fields
+	date_joined = models.DateField(null=True, default=None)
+	date_left = models.DateField(null=True, default=None)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+
+class AppForm(models.Model):
+
+	# OneToOneField with Django Users Model 
+	user = models.OneToOneField(UserProfile, default=None)
+	
+	# ForeignKeys
+	position_applied = models.ForeignKey(Rank, related_name="position_applied", default=None)
+	alternative_position = models.ForeignKey(Rank, related_name="alternative_position", default=None)
+	application_source = models.ForeignKey(AppSource, default=None)
+	status = models.ForeignKey(Status, default=None)
+
+	# Image Fields
+	picture = models.ImageField(upload_to='application/pictures', blank=True, default=None)
+	signatures = models.ImageField(upload_to='application/signatures', blank=True, default=None)
+
+	# Date Fields
+	application_date = models.DateField(default=None)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	# Text Field
+	essay = models.TextField(null=True, default=None)
