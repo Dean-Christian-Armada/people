@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'login',
     'import_export',
     'easy_pdf',
+    'mariners_profile',
 )
 
 MIDDLEWARE_CLASSES = (
