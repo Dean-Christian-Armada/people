@@ -7,54 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from jsignature.utils import draw_signature
 
-# from application_form.forms import SignatureForm, SampleForm
-# from application_form.models import JSignatureModel
 
 from . models import *
-
-# import os, shutil
-
-# def signature(request):
-# 	template = "application_form/index.html"
-# 	context_dict = {}
-# 	form = SignatureForm(request.POST or None)
-# 	# sample_form = SampleForm(request.POST or None)
-# 	context_dict['form'] = form
-# 	# context_dict['sample_form'] = sample_form
-# 	if form.is_valid():
-# 		signature = form.cleaned_data.get('signature')
-# 		# print signature
-# 		if signature:
-# 			# as an image
-# 			signature_picture = draw_signature(signature)
-# 			#or as a file
-# 			_signature_file_path = draw_signature(signature, as_file=True)
-# 			signature_file_path = settings.MEDIA_ROOT+"/signatures/"
-# 			shutil.move(_signature_file_path, signature_file_path)
-# 			_signature_file_path = _signature_file_path.replace('/tmp/', 'signatures/')
-
-# 			signature = JSignatureModel.objects.get_or_create(name='sample')[0]
-# 			signature.signatures = _signature_file_path
-# 			signature.save()
-# 	else:
-# 		print form.errors
-# 	# if sample_form.is_valid():
-# 	# 	print "armada"
-# 	# 	sample_form = sample_form.save(commit=False)
-# 	# 	if 'picture' in request.FILES:
-# 	# 		print "guinto"
-# 	# 		print request.FILES['picture']
-# 	# 		picture = request.FILES['picture']
-# 	# 	else:
-# 	# 		picture = ''
-# 	# 	sample_form.picture = picture
-# 	# 	sample_form.save()
-		
-# 	# else:
-# 	# 	print "dean"
-# 	# 	# print sample_form
-# 	# 	print sample_form.errors
-# 	return render(request, template, context_dict)
 
 def home(request):
 	user = request.user
@@ -63,12 +17,16 @@ def home(request):
 	context_dict = {"title": "Manship People Software"}
 	if user.is_authenticated():
 		user = User.objects.get(username=user)
-		userprofile = UserProfile.objects.get(user=user)
+		try:
+			userprofile = UserProfile.objects.get(user=user)
+		except:
+			logout(request)
+			return HttpResponseRedirect('/?error=Invalid Username or Password')
 		userlevel = str(userprofile.userlevel)
 		if userlevel == 'recruitment':
 			# return signature(request)
 			return HttpResponse("HELLO This is the recruitment level!<a href='/logout/'>Log Out</a>")
-		elif userlevel == 'applicant':
+		elif userlevel == 'application-form':
 			# return HttpResponse("HELLO This is the applicant level!<a href='/logout/'>Log Out</a>")
 			return HttpResponseRedirect('/application-form/')
 		elif userlevel == 'crew':
