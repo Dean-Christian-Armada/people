@@ -21,3 +21,9 @@ from . models import *
 # 	resource_class = FlagsResource
 
 admin.site.register(ApplicationFormPersonalData)
+admin.site.register(ApplicationFormCurrentAddress)
+admin.site.register(ApplicationFormPermanentAddress)
+admin.site.register(ApplicationFormSpouse)
+admin.site.register(ApplicationFormCollege)
+admin.site.register(ApplicationFormHighSchool)
+admin.site.register(ApplicationFormEmergencyContact)

@@ -14,5 +14,19 @@
 		{% endif %}
 	</script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script language="JavaScript">
+        {% if not request.POST %}
+            $("#id_civil_status option:first-child").text("Civil Status");
+            $("#id_civil_status option:first-child").css("display", "inline");
+            setTimeout(function(){ $("#id_civil_status option:first-child").css("display", "none"); $("#id_civil_status").attr("style", "") }, 500);
+        {% else %}
+            text = $("#id_civil_status option:selected").text();
+            if(text == "---------"){
+                $("#id_civil_status option:first-child").text("Civil Status");
+                $("#id_civil_status option:first-child").css("display", "inline");
+                setTimeout(function(){ $("#id_civil_status option:first-child").css("display", "none"); $("#id_civil_status").attr("style", "") }, 500);
+            }
+        {% endif %}
+    </script>
   </body>
 </html>

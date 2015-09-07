@@ -59,7 +59,7 @@
                   {{ personal_data.landline_1.errors }}
                 </div>
                 <div class="col-md-4">
-                  {{ personal_data.mobile_1|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mobile No. 1" }}
+                  <b>+63</b> {{ personal_data.mobile_1|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mobile No. 1"|attr:"style:width:89%; display: inline" }}
                   {{ personal_data.mobile_1.errors }}
                 </div>
                 <div class="col-md-4">
@@ -73,7 +73,7 @@
                   {{ personal_data.landline_2.errors }}
                 </div>
                 <div class="col-md-4">
-                  {{ personal_data.mobile_2|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mobile No. 2" }}
+                  <b>+63</b> {{ personal_data.mobile_2|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mobile No. 2"|attr:"style:width:89%; display: inline" }}
                   {{ personal_data.mobile_2.errors }}
                 </div>
                 <div class="col-md-4">
@@ -120,8 +120,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-2">
-                  {{ permanent_address.permanent_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit"|attr:"id:current_unit" }}
+                <div class="col-md-3">
+                  {{ permanent_address.permanent_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit / Lot / House"|attr:"id:permanent_unit" }}
                   {{ permanent_address.permanent_unit.errors }}
                 </div>
                 <div class="col-md-2">
@@ -129,10 +129,10 @@
                   {{ permanent_address.permanent_street.errors }}
                 </div>
                 <div class="col-md-2">
-                  {{ permanent_address.permanent_baranggay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Baranggay"|attr:"id:permanent_baranggay" }}
-                  {{ permanent_address.permanent_baranggay.errors }}
+                  {{ permanent_address.permanent_barangay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Barangay"|attr:"id:permanent_barangay" }}
+                  {{ permanent_address.permanent_barangay.errors }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                   {{ permanent_address.permanent_municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:permanent_municipality" }}
                   {{ permanent_address.permanent_municipality.errors }}
                 </div>
@@ -143,7 +143,7 @@
               </div>
               <div class="form-group">
                 <div class="col-md-4">
-                <input type="checkbox" id="same_address"> Same as above
+                <input type="checkbox" id="same_address"> <label for="same_address">Same as above</label>
                 </div>
               </div>
               <div class="form-group">
@@ -155,8 +155,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-2">
-                  {{ current_address.current_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit"|attr:"id:current_unit" }}
+                <div class="col-md-3">
+                  {{ current_address.current_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit / Lot / House"|attr:"id:current_unit" }}
                   {{ current_address.current_unit.errors }}
                 </div>
                 <div class="col-md-2">
@@ -164,10 +164,10 @@
                   {{ current_address.current_street.errors }}
                 </div>
                 <div class="col-md-2">
-                  {{ current_address.current_baranggay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Baranggay"|attr:"id:current_baranggay" }}
-                  {{ current_address.current_baranggay.errors }}
+                  {{ current_address.current_barangay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Barangay"|attr:"id:current_barangay" }}
+                  {{ current_address.current_barangay.errors }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                   {{ current_address.current_municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:current_municipality" }}
                   {{ current_address.current_municipality.errors }}
                 </div>
@@ -176,8 +176,186 @@
                   {{ current_address.current_zip.errors }}
                 </div>
               </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ personal_data.civil_status|add_class:"form-control first-choice"|attr:"data-toggle:tooltip" }}
+                  {{ personal_data.civil_status.errors }}
+                </div> 
+                <div class="col-md-6">
+                  <!-- <input type="text" data-toggle="tooltip" class="form-control date" name="date_married" placeholder="Date Married"> -->
+                  {{ personaldata_form.married_date|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Date of Marriage" }}
+                  {{ personaldata_form.married_date.errors }}
+                </div>
+                <div class="col-md-6">
+                  <!-- <input type="text" data-toggle="tooltip" class="form-control date" name="date_married" placeholder="Date Married"> -->
+                  {{ spouse_form.married_date|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Date of Marriage" }}
+                  {{ spouse_form.married_date.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4">
+                  {{ spouse_form.spouse_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Spouse's Maiden Last Name" }}
+                  {{ spouse_form.spouse_last_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ spouse_form.spouse_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Spouse's First Name" }}
+                  {{ spouse_form.spouse_first_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ spouse_form.spouse_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Spouse's Maiden Middle Name" }}
+                  {{ spouse_form.spouse_middle_name.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ spouse_form.birthdate|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Spouse's birthday" }}
+                  {{ spouse_form.birthdate.errors }}
+                </div>
+                <div class="col-md-6">
+                  {{ spouse_form.spouse_contact|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Spouse's Contact No." }}
+                  {{ spouse_form.spouse_contact.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4">
+                  {{ personal_data.father_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Father's Last Name" }}
+                  {{ personal_data.father_last_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ personal_data.father_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Father's First Name" }}
+                  {{ personal_data.father_first_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ personal_data.father_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Father's Middle Name" }}
+                  {{ personal_data.father_middle_name.errors }}
+                </div>
+              </div>
+               <div class="form-group">
+                <div class="col-md-4">
+                  {{ personal_data.mother_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mother's Maiden Last Name" }}
+                  {{ personal_data.mother_last_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ personal_data.mother_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mother's First Name" }}
+                  {{ personal_data.mother_first_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ personal_data.mother_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Mother's Maiden Middle Name" }}
+                  {{ personal_data.mother_middle_name.errors }}
+                </div>
+              </div>
 
-  
+              <h3 id='step-4' style="color: #02be9b;">Educational Information</h3>
+              {{ college.management_form }}
+              <div class="form-group bottom-zero">
+                <div class="col-md-12">
+                  <i><u>Colleges</u></i> <button type="button" class="btn btn-info add-college">Add more Colleges</button>
+                </div>
+              </div>
+              {% for college_form in college %}
+                <div class="form-group colleges">
+                  <div class="col-md-4">
+                    
+                    {{ college_form.college|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:College" }}
+                    {{ college_form.college.errors }}
+                    {{ college_form.college.non_form_errors }}
+                  </div>
+                  <div class="col-md-4">
+                    
+                    {{ college_form.degree|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Degree Obtained" }}
+                    {{ college_form.degree.errors }}
+                    {{ college_form.degree.non_form_errors }}
+                  </div>
+                  <div class="col-md-2">
+                    
+                    {{ college_form.collegeyear_from|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:From" }}
+                    {{ college_form.collegeyear_from.errors }}
+                    {{ college_form.collegeyear_from.non_form_errors }}
+                  </div>
+                  <div class="col-md-2">
+                    
+                    {{ college_form.collegeyear_to|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:To" }}
+                    {{ college_form.collegeyear_to.errors }}
+                    {{ college_form.collegeyear_to.non_form_errors }}
+                  </div>
+                </div>
+              {% endfor %}
+              <div class="form-group bottom-zero">
+                <div class="col-md-12">
+                  <i><u>HighSchool</u></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-8">
+                  {{ highschool_form.highschool|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Highschool" }}
+                  {{ highschool_form.highschool.errors }}
+                </div>
+                <div class="col-md-2">
+                  {{ highschool_form.schoolyear_from|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:From" }}
+                  {{ highschool_form.schoolyear_from.errors }}
+                </div>
+                <div class="col-md-2">
+                  {{ highschool_form.schoolyear_to|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:To" }}
+                  {{ highschool_form.schoolyear_to.errors }}
+                </div>
+              </div>
+
+              <h3 id='step-5' style="color: #02be9b;">Emergency Contact Details</h3>
+              <div class="form-group">
+                <div class="col-md-4">
+                  {{ emergencycontact_form.emergency_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Last Name" }}
+                  {{ emergencycontact_form.emergency_last_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ emergencycontact_form.emergency_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:First Name" }}
+                  {{ emergencycontact_form.emergency_first_name.errors }}
+                </div>
+                <div class="col-md-4">
+                  {{ emergencycontact_form.emergency_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Middle Name" }}
+                  {{ emergencycontact_form.emergency_middle_name.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ emergencycontact_form.emergency_contact|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Contact No." }}
+                  {{ emergencycontact_form.emergency_contact.errors }}
+                </div>
+                <div class="col-md-6">
+                  {{ emergencycontact_form.relationship|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Relationship" }}
+                  {{ emergencycontact_form.relationship.errors }}
+                </div>
+              </div>
+              <div class="form-group bottom-zero">
+                <div class="col-md-12">
+                  <div class="col-md-12">
+                    <span class="search-zip pull-right" data-params="emergency" style="">Search zip code</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-3">
+                  {{ emergencycontact_form.emergency_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit / Lot / House" }}
+                  {{ emergencycontact_form.emergency_unit.errors }}
+                </div>
+                 <div class="col-md-2">
+                  {{ emergencycontact_form.emergency_street|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Street" }}
+                  {{ emergencycontact_form.emergency_street.errors }}
+                </div>
+                <div class="col-md-2">
+                  {{ emergencycontact_form.emergency_barangay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Barangay"|attr:"id:emergency_barangay" }}
+                  {{ emergencycontact_form.emergency_barangay.errors }}
+                </div>
+                <div class="col-md-3">
+                  {{ emergencycontact_form.emergency_municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:emergency_municipality" }}
+                  {{ emergencycontact_form.emergency_municipality.errors }}
+                </div>
+                <div class="col-md-2">
+                  {{ emergencycontact_form.emergency_zip|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Zip Code" }}
+                  {{ emergencycontact_form.emergency_zip.errors }}
+                </div>
+              </div>
+              
+
               <button class="btn btn-success form-control submit-application" >Submit Application</button>
               <br /> &nbsp;
             </form>

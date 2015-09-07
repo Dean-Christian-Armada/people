@@ -10,6 +10,9 @@ $(function(){
         ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
     var x = ''; 
     count = 0;
+    var seaservice_count = 0;
+    var college_count = 0;
+
     // full name in the bottom most of the code
     var full_name = function(){
                       last_name = $("#last_name").val();
@@ -31,20 +34,20 @@ $(function(){
                     }
                   };
 
-    // same affress function
+    // same address function
     var address = function(){
+        permanent_unit = $("#permanent_unit").val();
         permanent_street = $("#permanent_street").val();
-        permanent_town = $("#permanent_town").val();
         permanent_baranggay = $("#permanent_baranggay").val();
         permanent_municipality = $("#permanent_municipality").val();
         permanent_zip = $("#permanent_zip").val();
+        current_unit = $("#current_unit").val();
         current_street = $("#current_street").val();
-        current_town = $("#current_town").val();
         current_baranggay = $("#current_baranggay").val();
         current_municipality = $("#current_municipality").val();
         current_zip = $("#current_zip").val();
         if(permanent_street == current_street && 
-            permanent_town == current_town && 
+            permanent_unit == current_unit && 
             permanent_baranggay == current_baranggay &&
             permanent_municipality == current_municipality && 
             permanent_zip == current_zip){
@@ -160,14 +163,14 @@ $(function(){
     });
     $("input[name='source']").click(function(){
       val = $(this).val();
-      if($(this).is(':checked') && val != 'seafarer_center'){
+      if($(this).is(':checked') && val != 'Seafarer Center'){
         $('.specific').remove();
-        if(val == 'internet'){ 
+        if(val == 'Internet'){ 
           label = '<label class="specific"><b>(Website Name/Address)</b></label>';
         }else{
           label = '<label class="specific"><b>(Please Specify)</b></label>';
         }
-        $(this).parent().append(label+" <input type='text' class='specific' name='specific'>");
+        $(this).parent().append(label+" <input type='text' class='specific' name='specific' value="+specific+">");
       }else{
         $(this).parent().children("label, input[type='text']").remove();
       }
@@ -184,44 +187,110 @@ $(function(){
     });
     $("#same_address").change(function(){
       if($(this).is(':checked')){
+        unit = $("#permanent_unit").val();
         street = $("#permanent_street").val();
-        town = $("#permanent_town").val();
-        baranggay = $("#permanent_baranggay").val();
+        barangay = $("#permanent_barangay").val();
         municipality = $("#permanent_municipality").val();
         zip = $("#permanent_zip").val();
-        if(municipality != 'Municipality'){
-          $("#current_municipality").css("color", "#000");
-        }
-        if(town != 'Town'){
-          $("#current_town").css("color", "#000");
-        }
       }else{
+        unit = "";
         street = "";
-        town = "Town";
-        baranggay = "";
-        municipality = "Municipality";
+        barangay = "";
+        municipality = "";
         zip = "";
       }
+      $("#current_unit").val(unit);
       $("#current_street").val(street);
-      $("#current_town").val(town);
-      $("#current_baranggay").val(baranggay);
+      // $("#current_town").val(town);
+      $("#current_barangay").val(barangay);
       $("#current_municipality").val(municipality);
       $("#current_zip").val(zip);
     });
+    $("#id_civil_status").change(function(){
+      val = $('option:selected', this).text();
+      if(val == 'Single'){
+        $("#id_married_date").val("");
+        $("#id_spouse_last_name").val("");
+        $("#id_spouse_first_name").val("");
+        $("#id_spouse_middle_name").val("");
+        $("#id_birthdate").val("");
+        $("#id_spouse_contact").val("");
+        $("#id_married_date").prop("disabled", true);
+        $("#id_spouse_last_name").prop("disabled", true);
+        $("#id_spouse_first_name").prop("disabled", true);
+        $("#id_spouse_middle_name").prop("disabled", true);
+        $("#id_birthdate").prop("disabled", true);
+        $("#id_spouse_contact").prop("disabled", true);
+      }else if(val == 'Domestic Partner'){
+        $("#id_married_date").val("");
+        $("#id_spouse_last_name").attr("Placeholder", "Live-in's Maiden Last Name");
+        $("#id_spouse_first_name").attr("Placeholder", "Live-in's First Name");
+        $("#id_spouse_middle_name").attr("Placeholder", "Live-in's Maiden Middle Name");
+        $("#id_birthdate").attr("Placeholder", "Live-in's birthday");
+        $("#id_spouse_contact").attr("Placeholder", "Live-in's Contact No.");
+        $("#id_married_date").prop("disabled", true);
+        $("#id_spouse_last_name").prop("disabled", false);
+        $("#id_spouse_first_name").prop("disabled", false);
+        $("#id_spouse_middle_name").prop("disabled", false);
+        $("#id_birthdate").prop("disabled", false);
+        $("#id_spouse_contact").prop("disabled", false);
+      }else{
+        $("#id_spouse_last_name").attr("Placeholder", "Spouse's Maiden Last Name");
+        $("#id_spouse_first_name").attr("Placeholder", "Spouse's First Name");
+        $("#id_spouse_middle_name").attr("Placeholder", "Spouse's Maiden Middle Name");
+        $("#id_birthdate").attr("Placeholder", "Spouse's birthday");
+        $("#id_spouse_contact").attr("Placeholder", "Spouse's Contact No.");
+        $("#id_married_date").prop("disabled", false);
+        $("#id_spouse_last_name").prop("disabled", false);
+        $("#id_spouse_first_name").prop("disabled", false);
+        $("#id_spouse_middle_name").prop("disabled", false);
+        $("#id_birthdate").prop("disabled", false);
+        $("#id_spouse_contact").prop("disabled", false);
+      }
+    });
+
+    $('table.sea-services').find('tr').each(function(){
+      seaservice_count++;
+    });
+    $('table.sea-services').find('.date-left').each(function(){
+      if($(this).val() != ''){
+        $(this).prop("disabled", false);
+      }
+    });
+    $('table.sea-services').find('.cause_of_discharge').each(function(){
+      if($(this).val() != "Cause of Discharge"){
+        $(this).css("color", "#000");
+      }
+    });
 
 
+
+    add_seaservice = '<tr><td><button type="button" class="btn btn-danger delete-row">Delete</button></td><td><button type="button" class="btn btn-info add-row">Add</button></td><td><button type="button" class="btn btn-warning clear-row">Clear Row</button></td><td><input Placeholder="Vessel Name" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_name" maxlength="50" name="form-'+seaservice_count+'-vessel_name" type="text" /></td><td><input Placeholder="Vessel Type" class="vtype" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_type" maxlength="50" name="form-'+seaservice_count+'-vessel_type" type="text" /></td><td><input Placeholder="Flag" class="flag" data-toggle="tooltip" id="id_form-'+seaservice_count+'-flag" maxlength="50" name="form-'+seaservice_count+'-flag" type="text" /></td><td><input Placeholder="GRT" class="grt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-grt" min="0" name="form-'+seaservice_count+'-grt" type="number" /></td><td><input Placeholder="DWT" class="dwt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-dwt" min="0" name="form-'+seaservice_count+'-dwt" type="number" /></td><td><input Placeholder="Year Built" data-toggle="tooltip" id="id_form-'+seaservice_count+'-year_built" min="0" name="form-'+seaservice_count+'-year_built" type="number" /></td><td><input Placeholder="Engine Type" data-toggle="tooltip" id="id_form-'+seaservice_count+'-engine_type" maxlength="50" name="form-'+seaservice_count+'-engine_type" type="text" /></td><td><input Placeholder="HP" class="hp" data-toggle="tooltip" id="id_form-'+seaservice_count+'-hp" step="0.1" name="form-'+seaservice_count+'-hp" type="number" /></td><td><input Placeholder="KW" class="kw" data-toggle="tooltip" id="id_form-'+seaservice_count+'-kw" step="0.1" name="form-'+seaservice_count+'-kw" type="number" /></td><td><input Placeholder="Manning Agency" class="td-150 manning_agency" data-toggle="tooltip" id="id_form-'+seaservice_count+'-manning_agency" maxlength="50" name="form-'+seaservice_count+'-manning_agency"type="text" /></td><td><input Placeholder="Principal / Shipowner" class="td-170" data-toggle="tooltip" id="id_form-'+seaservice_count+'-principal" maxlength="50" name="form-'+seaservice_count+'-principal" type="text" /></td><td><input Placeholder="Date Joined" class="date date-joined" data-toggle="tooltip" id="id_form-'+seaservice_count+'-date_joined" name="form-'+seaservice_count+'-date_joined" type="text" /></td><td><input Placeholder="Date Left" class="date date-left" data-toggle="tooltip" disabled="" id="id_form-'+seaservice_count+'-date_left" name="form-'+seaservice_count+'-date_left" type="text" /></td><td style="display:none"><input Placeholder="Days" class="duration" data-toggle="tooltip" id="id_form-'+seaservice_count+'-duration" min="0" name="form-'+seaservice_count+'-duration" readonly="" type="number"/></td><td><input Placeholder="Rank" class="rank" data-toggle="tooltip" id="id_form-'+seaservice_count+'-rank" maxlength="50" name="form-'+seaservice_count+'-rank" type="text" /></td><td><select class="first-choice cause_of_discharge" data-toggle="tooltip" id="id_form-'+seaservice_count+'-cause_of_discharge" name="form-'+seaservice_count+'-cause_of_discharge"><option value="Cause of Discharge">Cause of Discharge</option><option value="Finished Contract">Finished Contract</option><option value="Compassionate Reason">Compassionate Reason</option><option value="Medical Repatriation">Medical Repatriation</option><option value="Promoted on Board">Promoted on Board</option><option value="Vessel Sold">Vessel Sold</option><option value="Vessel Scraped">Vessel Scraped</option><option value="Change Management">Change Management</option><option value="Own Request">Own Request</option></select></td></tr>';
     $("tbody").on("click", ".add-row", function(){
-      html = $(".first-row").html();
-      $(this).parent().parent().after("<tr>"+html+"</tr>");
+      $(this).parent().parent().after(add_seaservice);
+      seaservice_count++;
+      val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
     });
     $("tbody").on("click", ".delete-row", function(){
       $(this).parent().parent().remove();
+      seaservice_count--;
+      val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
     });
+    $(".add-college").click(function(){
+      college_count++;
+      college_html = '<div class="form-group"><div class="col-md-2"><button type="button" class="btn btn-info delete-college">Delete College</button></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-college" name="form-'+college_count+'-college" placeholder="College" type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-degree" name="form-'+college_count+'-degree" placeholder="Degree Obtained"type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_from" min="0" name="form-'+college_count+'-collegeyear_from"placeholder="From" type="number" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_to" min="0" name="form-'+college_count+'-collegeyear_to"placeholder="To" type="number" /></div></div>'
+      $(".colleges").after(college_html);
+    });
+    $("body").on("click", ".delete-college", function(){
+      $(this).parent().parent().remove();
+    });
+
+
     $("body").on("focus", ".date", function(){
       $(this).datepicker({ 
         changeYear: true, 
         changeMonth: true, 
-        yearRange: "1950:"+d.getFullYear(), 
+        yearRange: "1950:+50", 
         showButtonPanel: true,
         closeText: 'Clear',
         beforeShow: function (e, t) {
@@ -234,6 +303,19 @@ $(function(){
           var event = arguments.callee.caller.caller.arguments[0];
           if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
             $(this).val('');
+          }
+          if($(this).hasClass('birth_date')){
+            val = $(this).val();
+            // alert('val');
+            if(val != ''){
+              var birthday = new Date(val);
+              var today = new Date();
+              var age = ((today - birthday) / (31557600000));
+              var age = Math.floor( age );
+            }else{
+              var age = ''
+            }
+            $(".age").val(age);
           }
           if($(this).hasClass('date-joined') || $(this).hasClass('date-left')){
             val = $(this).val();
@@ -294,7 +376,7 @@ $(function(){
     $(".month-only").datepicker({ 
       showButtonPanel: true,
       changeYear: false,  
-      dateFormat: 'mm-yy',
+      dateFormat: 'M yy',
       beforeShow: function (e, t) {
         $("#ui-datepicker-div").addClass("hide-calendar");
         $("#ui-datepicker-div").addClass('HideTodayButton');
@@ -309,14 +391,18 @@ $(function(){
 
     $('.application-date').val(date);
     $('[data-toggle="tooltip"]').tooltip({ html: true });
-    $("input[type='text']").keyup(tooltip).click(full_name).focusout(full_name);
+    $("input").keyup(tooltip).click(tooltip).focusout(tooltip);
     $("#last_name, #first_name, #middle_name").keyup(full_name).click(full_name).focusout(full_name);
-    $("#permanent_street, #permanent_town, #permanent_baranggay, #permanent_municipality, #permanent_zip, #current_street, #current_town, #current_baranggay, #current_municipality, #current_zip").keyup(address).change(address);
+    $("#permanent_unit, #current_unit, #permanent_street, #permanent_baranggay, #permanent_municipality, #permanent_zip, #current_street, #current_baranggay, #current_municipality, #current_zip").keyup(address).change(address);
     $(".essay").keyup(essay).click(essay).focusout(essay);
-    $(".sea-services input").keyup(function(){
+    $(".sea-services").on("keyup", "input", function(){
       $(this).parent().siblings().children().prop("required", "true");
-      $(this).parent().siblings("td:nth-child(2)").html("<button type='button' class='btn btn-warning clear-row'>Clear Row</button>");
     });
+
+    // $(".sea-services input").keyup(function(){
+    //   $(this).parent().siblings().children().prop("required", "true");
+      // $(this).parent().siblings("td:nth-child(2)").html("<button type='button' class='btn btn-warning clear-row'>Clear Row</button>");
+    // });
 
     // Start Sea Service Validation
     $("#proceed-sea-service").click(function(){
@@ -327,12 +413,12 @@ $(function(){
           $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
         }else if($(this).val().length >= 1 && $(this).next('ul').length == 1){
           // count--;
-          x = $(this)
+          x = $(this);
           x.next('ul').remove();
           hp_kw_grt_dwt_validator(x);
         }
         else if($(this).val().length >= 1 && $(this).next('ul').length == 0){
-          x = $(this)
+          x = $(this);
           hp_kw_grt_dwt_validator(x);
         }else if(!$(this).prop('required')){
           // alert('dean');
@@ -340,7 +426,6 @@ $(function(){
           $(this).next('ul').remove();
         }
       });
-      // $("")
       $('.sea-services').find('select').each(function(){
         if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val() == "Cause of Discharge"){
           // count++;
@@ -364,9 +449,26 @@ $(function(){
         } 
       }, 500);
     });
+
+    $(".sea-services").on("keyup", ".hp", function(){
+      val = $(this).val();
+      kw = val * .746;
+      kw = Math.round( kw * 10 ) / 10;
+      $(this).parent().next("td").children().val(kw);
+      $(this).parent().next("td").children().prop("required", false);
+    });
+    $(".sea-services").on("keyup", ".kw", function(){
+      val = $(this).val();
+      hp = val * 1.340;
+      hp = Math.round( hp * 10 ) / 10;
+      $(this).parent().prev("td").children().val(hp);
+      $(this).parent().prev("td").children().prop("required", false);
+    });
     // End Sea Service Validation
 
     $(".essay").trigger('click');
+    $("#id_civil_status").trigger("change");
+    $("#application-form input").trigger("keyup");
     $("body").on("change", "select", function(){
       val = $(this).val();
       $(this).css("color", "#000");
@@ -374,9 +476,11 @@ $(function(){
     $(".sea-services").on("click", ".clear-row", function(){
       count = 0;
       $(this).parent().siblings().children("input").val("");
+      $(this).parent().siblings().children("select").val("Cause of Discharge");
+      $(this).parent().siblings().children("select").css("color", "#c4c1c7");
       $(this).parent().siblings().children().removeAttr('required');
       $(this).parent().siblings().children("ul").remove();
-      $(this).remove();
+      // $(this).remove();
       setTimeout(function(){ 
         $('.sea-services').find('ul.errorlist').each(function(){
             count++;
@@ -439,23 +543,11 @@ $(function(){
       $(".jSignature").resize();
     });
 
-    // Auto Age
-    $(".birth_date").change(function(){
-      val = $(this).val();
-      var birthday = new Date(val);
-      var today = new Date();
-      var age = ((today - birthday) / (31557600000));
-      var age = Math.floor( age );
-      $(".age").val(age);
-    });
     $(".search-zip").click(function(){
       params = $(this).attr('data-params');
-      baranggay = $("#"+params+"_baranggay").val();
-      zip = $("#"+params+"_zip").val();
+      barangay = $("#"+params+"_barangay").val();
       municipality = $("#"+params+"_municipality").val();
-      town = $("#"+params+"_town").val();
-      street = $("#"+params+"_street").val();
-      address = baranggay+"+"+municipality+"+"+"zip code";
+      address = barangay+"+"+municipality+"+"+"zip code";
       address = address.replace(/ /g,"+");
       var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");
     });
@@ -465,6 +557,9 @@ $(function(){
     }
     if($("#id_position_applied").val() != "Position Applied"){
       $("#id_position_applied").css("color", "#000");
+    }
+    if($("#id_civil_status").val() != "Civil Status"){
+      $("#id_civil_status").css("color", "#000");
     }
 
     // Start Input Validations
@@ -490,10 +585,15 @@ $(function(){
       }
     });
     // End Input Validations
+    $("input[name='source']").each(function(){
+      if($(this).is(':checked')){
+        $(this).trigger("click");
+      }
+    });
 }); 
 
 // Start Webcam Scripts
-webcam.set_api_url( '/application-form/tmp-image/' );
+webcam.set_api_url( '/application-form/tmp-image/?first' );
 webcam.set_quality( 90 ); // JPEG quality (1 - 100)
 webcam.set_shutter_sound( true ); // play shutter click sound
 $(".webcam-container").html(webcam.get_html(220, 180));
@@ -509,7 +609,7 @@ function my_completion_handler(msg) {
     var image_url = msg;
     // show JPEG image in page
     // Extra parameter for Image Caching
-    document.getElementById('picture-container').innerHTML = '<img src="' + image_url + '?'+d.getTime()+'">';
+    document.getElementById('picture-container').innerHTML = '<img src="' + image_url + '?'+d.getTime()+'"><input type="text" name="application_picture" value="'+image_url+'" style="display:none">';
     // reset camera for another shot
     webcam.reset();
     // $("#update_image").val("image");
