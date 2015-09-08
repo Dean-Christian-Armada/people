@@ -258,7 +258,10 @@ class FlagDocuments(AbstractFlagDocuments):
 class FlagDocumentsDetailed(models.Model):
 	flags_documents = models.ForeignKey(FlagDocuments, on_delete=models.CASCADE)
 	flags = models.ForeignKey(Flags, on_delete=models.CASCADE)
-	sbook_number = models.PositiveIntegerField(blank=True)
+	sbook_number = models.PositiveIntegerField(null = True, blank=True)
 	sbook_expiry = models.DateField(null=True, blank=True)
-	license_number = models.PositiveIntegerField(blank=True)
+	license_number = models.PositiveIntegerField(null = True, blank=True)
 	license_expiry = models.DateField(null=True, blank=True)
+
+	def __unicode__(self):
+		return "dean"

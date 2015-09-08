@@ -603,9 +603,14 @@ class FlagForm(forms.ModelForm):
 		flag.user = userprofile
 		flag.save()
 		self.cleaned_data['user'] = userprofile
+		# Saving in Mariners Profile script
 		value = self.cleaned_data
-		# flagdocuments = FlagDocuments.object.get_or_create(user=user)
-
-
-	def save_m2m(self, commit=True):
-		print "dean"
+		# Creating flagdocuments object representing the user object for the FlagDocumentsDetailed model
+		flagdocuments = FlagDocuments.objects.get_or_create(user=userprofile)
+		if flagdocuments:
+			flagdocuments = FlagDocuments.objects.get(user=userprofile)
+		# Returning flag key that contains all the flag objects
+		flags = value['flags']
+		# looping the flag objects to be inserted on the FlagDocumentsDetailed model with the flagdocuments object
+		for flag_values in flags:
+			x = FlagDocumentsDetailed.objects.get_or_create(flags_documents=flagdocuments, flags=flag_values)
