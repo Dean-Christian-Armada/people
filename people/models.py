@@ -136,3 +136,159 @@ class AbstractEmergencyContact(models.Model):
 	def __unicode__(self):
 		user = "%s %s %s" % (self.emergency_first_name, self.emergency_middle_name, self.emergency_last_name)
 		return user
+
+# START Background Info
+class AbstractVisaApplication(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	visa_application = models.NullBooleanField(default=None)
+	visa_application_reason = models.ForeignKey('mariners_profile.Reasons', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.visa_application)
+	
+
+class AbstractDetained(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	detained = models.NullBooleanField(default=None)
+	detained_reason = models.ForeignKey('mariners_profile.Reasons', default=None)
+
+	class Meta:
+		abstract = True
+	
+
+class AbstractDisciplinaryAction(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	disciplinary_action = models.NullBooleanField(default=None)
+	disciplinary_action_reason = models.ForeignKey('mariners_profile.Reasons', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.disciplinary_action)
+
+class AbstractPassport(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	passport = models.CharField(max_length=100, unique=True, default=None)
+	passport_expiry = models.DateField(default=None)
+	# place_issued = models.ForeignKey(PassportPlaceIssued, default=None, blank=True)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.passport)
+
+class AbstractSbook(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	sbook = models.CharField(max_length=100, unique=True, default=None)
+	sbook_expiry = models.DateField(default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.sbook)
+	
+class AbstractCOC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	coc = models.CharField(max_length=100, unique=True, default=None)
+	coc_expiry = models.DateField(default=None)
+	coc_rank = models.ForeignKey('mariners_profile.COCRank', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.coc)
+	
+class AbstractLicense(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	license = models.CharField(max_length=100, unique=True, default=None, blank=True)
+	license_rank = models.ForeignKey('mariners_profile.Rank', default=None, blank=True)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.license)
+	
+class AbstractSRC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	src = models.CharField(max_length=100, unique=True, default=None)
+	src_rank = models.ForeignKey('mariners_profile.Rank', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.src)
+	
+class AbstractGOC(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	goc = models.CharField(max_length=100, unique=True, default=None)
+	goc_expiry = models.DateField(default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.goc)
+	
+class AbstractUSVisa(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	us_visa = models.NullBooleanField()
+	us_visa_expiry = models.DateField(blank=True, null=True, default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.us_visa)
+	
+class AbstractSchengenVisa(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	schengen_visa = models.NullBooleanField()
+	schengen_visa_expiry = models.DateField(blank=True, null=True, default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.schengen_visa)
+	
+class AbstractYellowFever(models.Model):
+	user = models.OneToOneField(UserProfile, default=None)
+	yellow_fever = models.CharField(max_length=100, unique=True, default=None)
+	yellow_fever_expiry = models.DateField(default=None)
+
+	class Meta:
+		abstract = True
+	
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.yellow_fever)
+
+class AbstractFlagDocuments(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return user

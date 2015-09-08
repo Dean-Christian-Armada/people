@@ -81,6 +81,11 @@ class Rank(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+class COCRank(models.Model):
+	coc_rank = models.CharField(max_length=50, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, )
+	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
 class EngineType(models.Model):
 	engine_type = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
@@ -127,6 +132,9 @@ class Reasons(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.reason
+
 class Status(models.Model):
 	status = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
@@ -142,16 +150,16 @@ class Position(models.Model):
 	position = models.CharField(max_length=50, default=None)
 
 class Bank(models.Model):
-	bank = models.CharField(max_length=50, default=None)
+	bank = models.CharField(max_length=50, default=None,)
 
 class Branch(models.Model):
-	branch = models.CharField(max_length=50, default=None)
+	branch = models.CharField(max_length=50, default=None,)
 
 class PassportPlaceIssued(models.Model):
-	place = models.CharField(max_length=50, default=None)
+	place = models.CharField(max_length=50, default=None, blank=True)
 
 class SBookPlaceIssued(models.Model):
-	place = models.CharField(max_length=50, default=None)
+	place = models.CharField(max_length=50, default=None, blank=True)
 
 class Zip(models.Model):
 	zip = models.PositiveIntegerField(unique=True, default=None)
@@ -162,6 +170,15 @@ class Zip(models.Model):
 
 	def __unicode__(self):
 		return unicode(self.zip)
+
+class Flags(models.Model):
+	flags = models.CharField(max_length=50, default=None)
+	company_standard = models.NullBooleanField(max_length=50, default=False)
+	date_created = models.DateTimeField(auto_now_add=True, )
+	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
+	def __unicode__(self):
+		return self.flags
 
 class CurrentAddress(models.Model):
 	current_zip = models.ForeignKey(Zip, default=None)
@@ -197,3 +214,51 @@ class HighSchool(AbstractHighSchool):
 
 class EmergencyContact(AbstractEmergencyContact):
 	pass
+
+class VisaApplication(AbstractVisaApplication):
+	pass
+	
+class Detained(AbstractDetained):
+	pass	
+
+class DisciplinaryAction(AbstractDisciplinaryAction):
+	pass
+
+class Passport(AbstractPassport):
+	passport_place_issued = models.ForeignKey(PassportPlaceIssued, default=None, blank=True)
+
+class Sbook(AbstractSbook):
+	sbook_place_issued = models.ForeignKey(SBookPlaceIssued, default=None, blank=True)
+
+class COC(AbstractCOC):
+	coc_date_issued = models.DateField(default=None, null=True, blank=True)
+
+class License(AbstractLicense):
+	license_expiry = models.DateField(default=None, null=True, blank=True)
+	license_date_issued = models.DateField(default=None, null=True, blank=True)
+
+class SRC(AbstractSRC):
+	src_expiry = models.DateField(default=None, null=True, blank=True)
+	src_date_issued = models.DateField(default=None, null=True, blank=True)
+	
+class GOC(AbstractGOC):
+	goc_date_issued = models.DateField(default=None, null=True, blank=True)
+
+class USVisa(AbstractUSVisa):
+	pass
+
+class SchengenVisa(AbstractSchengenVisa):
+	pass
+class YellowFever(AbstractYellowFever):
+	pass
+
+class FlagDocuments(AbstractFlagDocuments):
+	flags = models.ManyToManyField(Flags, through='mariners_profile.FlagDocumentsDetailed', blank=True, default=None)
+
+class FlagDocumentsDetailed(models.Model):
+	flags_documents = models.ForeignKey(FlagDocuments, on_delete=models.CASCADE)
+	flags = models.ForeignKey(Flags, on_delete=models.CASCADE)
+	sbook_number = models.PositiveIntegerField(blank=True)
+	sbook_expiry = models.DateField(null=True, blank=True)
+	license_number = models.PositiveIntegerField(blank=True)
+	license_expiry = models.DateField(null=True, blank=True)

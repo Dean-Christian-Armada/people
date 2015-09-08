@@ -12,6 +12,7 @@ $(function(){
     count = 0;
     var seaservice_count = 0;
     var college_count = 0;
+    var emergency_count = 0;
 
     // full name in the bottom most of the code
     var full_name = function(){
@@ -278,11 +279,31 @@ $(function(){
     });
     $(".add-college").click(function(){
       college_count++;
-      college_html = '<div class="form-group"><div class="col-md-2"><button type="button" class="btn btn-info delete-college">Delete College</button></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-college" name="form-'+college_count+'-college" placeholder="College" type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-degree" name="form-'+college_count+'-degree" placeholder="Degree Obtained"type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_from" min="0" name="form-'+college_count+'-collegeyear_from"placeholder="From" type="number" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_to" min="0" name="form-'+college_count+'-collegeyear_to"placeholder="To" type="number" /></div></div>'
-      $(".colleges").after(college_html);
+      college_html = '<div class="form-group colleges"><div class="col-md-2"><button type="button" class="btn btn-info delete-college">Delete College</button></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-college" name="form-'+college_count+'-college" placeholder="College" type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-degree" name="form-'+college_count+'-degree" placeholder="Degree Obtained"type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_from" min="0" name="form-'+college_count+'-collegeyear_from"placeholder="From" type="number" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_to" min="0" name="form-'+college_count+'-collegeyear_to"placeholder="To" type="number" /></div></div>';
+      $(".colleges:last").after(college_html);
     });
     $("body").on("click", ".delete-college", function(){
       $(this).parent().parent().remove();
+    });
+    $(".add-emergency").click(function(){
+      emergency_count++;
+      emergency_html = '<div class="emergency-contacts"><div class="form-group"><div class="col-md-12"><button type="button" class="btn btn-info delete-emergency">Delete Emergency Below</button></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_last_name" maxlength="50" name="form-'+emergency_count+'-emergency_last_name"placeholder="Last Name" type="text" /></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_first_name" maxlength="50" name="form-0emergency_first_name" placeholder="First Name" type="text" /></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_middle_name" maxlength="50" name="form-0emergency_middle_name" placeholder="Middle Name" type="text" /></div></div><div class="form-group"><div class="col-md-6"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_contact" name="form-'+emergency_count+'-emergency_contact"placeholder="Contact No." type="text" /></div><div class="col-md-6"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-relationship" name="form-'+emergency_count+'-relationship" placeholder="Relationship"type="text" /></div></div><div class="form-group bottom-zero"><div class="col-md-12"><div class="col-md-12"><span class="emergency-search-zip pull-right" data-params="'+emergency_count+'" style="">Search zip code</span></div></div></div><div class="form-group"><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_unit" maxlength="50" name="form-'+emergency_count+'-emergency_unit"placeholder="Unit / Lot / House" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_street" maxlength="50" name="form-'+emergency_count+'-emergency_street"placeholder="Street" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="emergency_barangay" name="form-'+emergency_count+'-emergency_barangay" placeholder="Barangay"type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="emergency_municipality" name="form-'+emergency_count+'-emergency_municipality"placeholder="Municipality" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_zip" name="form-'+emergency_count+'-emergency_zip" placeholder="Zip Code"type="number" /></div></div>';
+      $(".emergency-contacts:last").after(emergency_html);
+    });
+    $("body").on("click", ".delete-emergency", function(){
+      $(this).parent().parent().parent().remove();
+    });
+
+    $("input").change(function(){
+      name = $(this).attr("name");
+      if( name == "visa_application" || name == "detained" || name == "disciplinary_action" ){
+        val2 = $(this).val();
+        if(val == 1){
+          $(this).parent().parent().after("<textarea class='form-control' name='"+name+"_reason' placeholder='Write your reason here' required></textarea>")
+        }else{
+          $("textarea[name='"+name+"_reason']").remove();
+        }
+      }
     });
 
 
@@ -547,6 +568,14 @@ $(function(){
       params = $(this).attr('data-params');
       barangay = $("#"+params+"_barangay").val();
       municipality = $("#"+params+"_municipality").val();
+      address = barangay+"+"+municipality+"+"+"zip code";
+      address = address.replace(/ /g,"+");
+      var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");
+    });
+    $(".emergency-search-zip").click(function(){
+      params = $(this).attr('data-params');
+      barangay = $("#id_form-"+params+"-emergency_barangay").val();
+      municipality = $("#id_form-"+params+"_municipality").val();
       address = barangay+"+"+municipality+"+"+"zip code";
       address = address.replace(/ /g,"+");
       var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");

@@ -300,62 +300,192 @@
                 </div>
               </div>
 
-              <h3 id='step-5' style="color: #02be9b;">Emergency Contact Details</h3>
-              <div class="form-group">
-                <div class="col-md-4">
-                  {{ emergencycontact_form.emergency_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Last Name" }}
-                  {{ emergencycontact_form.emergency_last_name.errors }}
-                </div>
-                <div class="col-md-4">
-                  {{ emergencycontact_form.emergency_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:First Name" }}
-                  {{ emergencycontact_form.emergency_first_name.errors }}
-                </div>
-                <div class="col-md-4">
-                  {{ emergencycontact_form.emergency_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Middle Name" }}
-                  {{ emergencycontact_form.emergency_middle_name.errors }}
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-md-6">
-                  {{ emergencycontact_form.emergency_contact|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Contact No." }}
-                  {{ emergencycontact_form.emergency_contact.errors }}
-                </div>
-                <div class="col-md-6">
-                  {{ emergencycontact_form.relationship|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Relationship" }}
-                  {{ emergencycontact_form.relationship.errors }}
-                </div>
-              </div>
-              <div class="form-group bottom-zero">
-                <div class="col-md-12">
-                  <div class="col-md-12">
-                    <span class="search-zip pull-right" data-params="emergency" style="">Search zip code</span>
+              <h3 id='step-5' style="color: #02be9b;">Emergency Contact Details<button type="button" class="btn btn-info add-emergency">Add more Emergency Contacts</button></h3>
+              {% for emergencycontact_form in emergency %}
+                <div class="emergency-contacts">  
+                  <div class="form-group">
+                    <div class="col-md-4">
+                      {{ emergencycontact_form.emergency_last_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Last Name" }}
+                      {{ emergencycontact_form.emergency_last_name.errors }}
+                    </div>
+                    <div class="col-md-4">
+                      {{ emergencycontact_form.emergency_first_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:First Name" }}
+                      {{ emergencycontact_form.emergency_first_name.errors }}
+                    </div>
+                    <div class="col-md-4">
+                      {{ emergencycontact_form.emergency_middle_name|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Middle Name" }}
+                      {{ emergencycontact_form.emergency_middle_name.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      {{ emergencycontact_form.emergency_contact|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Contact No." }}
+                      {{ emergencycontact_form.emergency_contact.errors }}
+                    </div>
+                    <div class="col-md-6">
+                      {{ emergencycontact_form.relationship|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Relationship" }}
+                      {{ emergencycontact_form.relationship.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group bottom-zero">
+                    <div class="col-md-12">
+                      <div class="col-md-12">
+                        <span class="emergency-search-zip pull-right" data-params="0" style="">Search zip code</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-3">
+                      {{ emergencycontact_form.emergency_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit / Lot / House" }}
+                      {{ emergencycontact_form.emergency_unit.errors }}
+                    </div>
+                     <div class="col-md-2">
+                      {{ emergencycontact_form.emergency_street|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Street" }}
+                      {{ emergencycontact_form.emergency_street.errors }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ emergencycontact_form.emergency_barangay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Barangay"|attr:"id:emergency_barangay" }}
+                      {{ emergencycontact_form.emergency_barangay.errors }}
+                    </div>
+                    <div class="col-md-3">
+                      {{ emergencycontact_form.emergency_municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:emergency_municipality" }}
+                      {{ emergencycontact_form.emergency_municipality.errors }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ emergencycontact_form.emergency_zip|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Zip Code" }}
+                      {{ emergencycontact_form.emergency_zip.errors }}
+                    </div>
                   </div>
                 </div>
+              {% endfor %}
+
+              <h3 id='step-6'><a href = "#seaservice" role="button" data-toggle="modal" rel="tooltip" data-original-title="Click here to add more sea services" class="btn btn-info btn-lg sea-service-button form-control">Sea Service</a></h3>
+
+              <h3 id='step-7' style="color: #02be9b;">Background Information</h3>
+                <p>
+                  {{ visa_application.visa_application.errors }}
+                  A.) Have you ever been denied an application for any visa or entry into another country?
+                  {{ visa_application.visa_application }}
+                </p>
+                <p>
+                  {{ detained.detained.errors }}
+                  B.) Have you ever been detained or ordered to leave any country?
+                  {{ detained.detained }}
+                </p>
+                <p>
+                  {{ disciplinary_action.disciplinary_action.errors }}
+                  C.) Have you ever been subject of any disciplinary action during an employment contract?
+                  {{ disciplinary_action.disciplinary_action }}
+                </p>
+
+              <h3 id='step-8' style="color: #02be9b;">National Certificates and Travel Documents</h3>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ passport_form.passport|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Passport No." }}
+                  {{ passport_form.passport.errors }} 
+                </div>
+                <div class="col-md-6">
+                  {{ passport_form.passport_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ passport_form.passport_expiry.errors }} 
+                </div>
               </div>
               <div class="form-group">
-                <div class="col-md-3">
-                  {{ emergencycontact_form.emergency_unit|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Unit / Lot / House" }}
-                  {{ emergencycontact_form.emergency_unit.errors }}
+                <div class="col-md-6">
+                  {{ sbook_form.sbook|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:SBook No." }}
+                  {{ sbook_form.sbook.errors }} 
                 </div>
-                 <div class="col-md-2">
-                  {{ emergencycontact_form.emergency_street|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Street" }}
-                  {{ emergencycontact_form.emergency_street.errors }}
-                </div>
-                <div class="col-md-2">
-                  {{ emergencycontact_form.emergency_barangay|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Barangay"|attr:"id:emergency_barangay" }}
-                  {{ emergencycontact_form.emergency_barangay.errors }}
-                </div>
-                <div class="col-md-3">
-                  {{ emergencycontact_form.emergency_municipality|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Municipality"|attr:"id:emergency_municipality" }}
-                  {{ emergencycontact_form.emergency_municipality.errors }}
-                </div>
-                <div class="col-md-2">
-                  {{ emergencycontact_form.emergency_zip|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Zip Code" }}
-                  {{ emergencycontact_form.emergency_zip.errors }}
+                <div class="col-md-6">
+                  {{ sbook_form.sbook_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ sbook_form.sbook_expiry.errors }} 
                 </div>
               </div>
-              
+              <div class="form-group">
+                <div class="col-md-4">
+                  {{ coc_form.coc|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:COC/COE" }}
+                  {{ coc_form.coc.errors }} 
+                </div>
+                <div class="col-md-4">
+                  {{ coc_form.coc_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder: Expiry" }}
+                  {{ coc_form.coc_expiry.errors }} 
+                </div>
+                <div class="col-md-4">
+                  {{ coc_form.coc_rank|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Rank" }}
+                  {{ coc_form.coc_rank.errors }} 
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ license_form.license|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:License" }}
+                  {{ license_form.license.errors }} 
+                </div>
+                <div class="col-md-6">
+                  {{ license_form.license_rank|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Rank" }}
+                  {{ license_form.license_rank.errors }} 
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ src_form.src|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:SRC" }}
+                  {{ src_form.src.errors }} 
+                </div>
+                <div class="col-md-6">
+                  {{ src_form.src_rank|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Rank" }}
+                  {{ src_form.src_rank.errors }} 
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ goc_form.goc|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:GOC" }}
+                  {{ goc_form.goc.errors }} 
+                </div>
+                <div class="col-md-6">
+                  {{ goc_form.goc_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ goc_form.goc_expiry.errors }} 
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  US Visa(C1/D)
+                  {{ usvisa_form.us_visa }}
+                  {{ usvisa_form.us_visa.errors }}
+                </div>
+                <div class="col-md-6">
+                  {{ usvisa_form.us_visa_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ usvisa_form.us_visa_expiry.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  Schengen Visa(Type C)
+                  {{ schengenvisa_form.schengen_visa }}
+                  {{ schengenvisa_form.schengen_visa.errors }}
+                </div>
+                <div class="col-md-6">
+                  {{ schengenvisa_form.schengen_visa_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ schengenvisa_form.schengen_visa_expiry.errors }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6">
+                  {{ yellowfever_form.yellow_fever|add_class:"form-control"|attr:"data-toggle:tooltip"|attr:"placeholder:Yellow Fever" }}
+                  {{ yellowfever_form.yellow_fever.errors }}
+                </div>
+                <div class="col-md-6">
+                  {{ yellowfever_form.yellow_fever_expiry|add_class:"form-control date"|attr:"data-toggle:tooltip"|attr:"placeholder:Expiry" }}
+                  {{ yellowfever_form.yellow_fever_expiry.errors }}
+                </div>
+              </div>
 
+              <h3 id='step-9' style="color: #02be9b;">Flag Documents</h3>
+              <p>Please check the box if you possess any of the specified flag document</p>
+              <div class="form-group">
+                  {% for flag in flags.flags %}
+                    <div class="col-md-4 padding-right-negator">
+                      {{ flag }}
+                    </div>
+                  {% endfor %}
+              </div>
+              
               <button class="btn btn-success form-control submit-application" >Submit Application</button>
               <br /> &nbsp;
             </form>

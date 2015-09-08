@@ -253,7 +253,7 @@ class Passport(models.Model):
 class Sbook(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	sbook = models.CharField(max_length=100, unique=True, default=None)
-	expiry = models.DateField(default=None)
+	sbook_expiry = models.DateField(default=None)
 	place_issued = models.ForeignKey(SBookPlaceIssued, default=None, blank=True)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
@@ -262,7 +262,7 @@ class COC(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	coc = models.CharField(max_length=100, unique=True, default=None)
 	issued = models.DateField(default=None)
-	expiry = models.DateField(default=None)
+	coc_expiry = models.DateField(default=None)
 	rank = models.ForeignKey(Rank, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
@@ -270,46 +270,46 @@ class COC(models.Model):
 class License(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	license = models.CharField(max_length=100, unique=True, default=None)
-	issued = models.DateField(default=None)
-	expiry = models.DateField(default=None)
+	license_issued = models.DateField(default=None)
+	license_expiry = models.DateField(default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
 class SRC(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	src = models.CharField(max_length=100, unique=True, default=None)
-	issued = models.DateField(default=None)
-	expiry = models.DateField(default=None)
-	rank = models.ForeignKey(Rank, default=None)
+	src_issued = models.DateField(default=None)
+	src_expiry = models.DateField(default=None)
+	src_rank = models.ForeignKey(Rank, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
 class GOC(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	goc = models.CharField(max_length=100, unique=True, default=None)
-	issued = models.DateField(default=None)
-	expiry = models.DateField(default=None)
+	goc_issued = models.DateField(default=None)
+	goc_expiry = models.DateField(default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
 class USVisa(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	us_visa = models.CharField(max_length=100, unique=True, default=None)
-	expiry = models.DateField(blank=True, default=None)
+	us_visa_expiry = models.DateField(blank=True, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
 class SchengenVisa(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	schengen_visa = models.CharField(max_length=100, unique=True, default=None)
-	expiry = models.DateField(blank=True, default=None)
+	schengen_visa_expiry = models.DateField(blank=True, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
 class YellowFever(models.Model):
 	user = models.OneToOneField(UserProfile, default=None)
 	yellow_fever = models.CharField(max_length=100, unique=True, default=None)
-	expiry = models.DateField(default=None)
+	yellow_fever_expiry = models.DateField(default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 

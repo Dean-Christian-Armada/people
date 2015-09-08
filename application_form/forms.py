@@ -12,6 +12,17 @@ from mariners_profile.models import *
 # All data input processes are located here
 # def clean processes the insert data on the mariners profile
 
+
+# Renders manually made for horizontal selections
+class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+  def render(self):
+    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+class HorizontalCheckboxRenderer(forms.CheckboxSelectMultiple.renderer):
+  def render(self):
+    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+
 class ApplicantNameForm(forms.ModelForm):
 	last_name = forms.CharField(widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':"Last Name", 'data-toggle':'tooltip'}))
 	first_name = forms.CharField(widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':"First Name", 'data-toggle':'tooltip'}))
@@ -120,20 +131,13 @@ class PersonalDataForm(forms.ModelForm):
 	tin = forms.RegexField(regex=r'^([0-9]{12})$', error_messages={'invalid': "Please input proper 12 digit format of tin"}, required=False)
 	# regex fild for pagibig
 	pagibig = forms.RegexField(regex=r'^([0-9]{12})$', error_messages={'invalid': "Please input proper 12 digit format of pagibig"}, required=False)
+	age = forms.IntegerField(error_messages={'required': 'Please Fill up your Date of Birth'})
 
  
 	class Meta:
 		model = ApplicationFormPersonalData
 		fields = '__all__'
 		exclude = ('name', 'birth_place', 'preferred_vessel_type', 'permanent_address', 'current_address')
-
-	# def __init__(self, *args, **kwargs):
-	# 	pass
-
-	# def clean(self):
-	# 	print self.cleaned_data
-	# 	value = self.cleaned_data
-	# 	PersonalData.objects.create(**value)
 
 	def save(self, commit=True):
 		birthplace = self.cleaned_data['birth_place']
@@ -211,7 +215,6 @@ class CollegeForm(forms.ModelForm):
 		self.cleaned_data['college'] = colleges
 		self.cleaned_data['degree'] = degree
 		value = self.cleaned_data
-		print value
 		College.objects.create(**value)
 
 class HighSchoolForm(forms.ModelForm):
@@ -223,21 +226,17 @@ class HighSchoolForm(forms.ModelForm):
 
 	def save(self, commit=True):
 		highschool_name = self.cleaned_data['highschool']
-		print highschool_name
 		highschool = super(HighSchoolForm, self).save(commit=False)
 		userprofile = UserProfile.objects.latest('id')
-		print "dean"
 		highschools = HighSchools.objects.get_or_create(highschool_name=highschool_name)
 		if highschools:
 			highschools = HighSchools.objects.get(highschool_name=highschool_name)
 		highschool.user = userprofile
-		print highschools
 		highschool.highschool = highschools
 		highschool.save()
 		self.cleaned_data['user'] = userprofile
 		self.cleaned_data['highschool'] = highschools
 		value = self.cleaned_data
-		print value
 		HighSchool.objects.create(**value)
 
 class EmergencyContactForm(forms.ModelForm):
@@ -286,3 +285,327 @@ class EmergencyContactForm(forms.ModelForm):
 		value = self.cleaned_data
 		EmergencyContact.objects.create(**value)
 		return emergency_contact
+
+class VisaApplicationForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	visa_application = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	visa_application_reason = forms.CharField(required=False)
+	class Meta:
+		model = ApplicationFormVisaApplication
+		fields = ('visa_application', )
+
+	def clean(self):
+		msg = "Please choose either yes or no"
+		try:
+			visa_application = selfdata['visa_application']
+		except:
+			visa_application = self.cleaned_data['visa_application']
+		if visa_application is None:	
+			self.add_error('visa_application', msg)
+
+	def save(self, commit=True):
+		reason = self.cleaned_data['visa_application_reason']
+		visa_application = super(VisaApplicationForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		visa_application.user = userprofile
+		reasons = Reasons.objects.get_or_create(reason=reason)
+		if reasons:
+			reasons = Reasons.objects.get(reason=reason)
+		visa_application.visa_application_reason = reasons
+		visa_application.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['visa_application_reason'] = reasons
+		value = self.cleaned_data
+		VisaApplication.objects.create(**value)
+
+class DetainedForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	detained = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	detained_reason = forms.CharField(required=False)
+	class Meta:
+		model = ApplicationFormDetained
+		fields = ('detained', )
+
+	def clean(self):
+		msg = "Please choose either yes or no"
+		try:
+			detained = selfdata['detained']
+		except:
+			detained = self.cleaned_data['detained']
+		if detained is None:	
+			self.add_error('detained', msg)
+
+	def save(self, commit=True):
+		reason = self.cleaned_data['detained_reason']
+		detained = super(DetainedForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		detained.user = userprofile
+		reasons = Reasons.objects.get_or_create(reason=reason)
+		if reasons:
+			reasons = Reasons.objects.get(reason=reason)
+		detained.detained_reason = reasons
+		detained.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['detained_reason'] = reasons
+		value = self.cleaned_data
+		Detained.objects.create(**value)
+
+class DisciplinaryActionForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	disciplinary_action = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	disciplinary_action_reason = forms.CharField(required=False)
+	class Meta:
+		model = ApplicationFormDisciplinaryAction
+		fields = ('disciplinary_action', )
+
+	def clean(self):
+		msg = "Please choose either yes or no"
+		try:
+			disciplinary_action = selfdata['disciplinary_action']
+		except:
+			disciplinary_action = self.cleaned_data['disciplinary_action']
+		if disciplinary_action is None:	
+			self.add_error('disciplinary_action', msg)
+
+	def save(self, commit=True):
+		reason = self.cleaned_data['disciplinary_action_reason']
+		disciplinary_action = super(DisciplinaryActionForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		disciplinary_action.user = userprofile
+		reasons = Reasons.objects.get_or_create(reason=reason)
+		if reasons:
+			reasons = Reasons.objects.get(reason=reason)
+		disciplinary_action.disciplinary_action_reason = reasons
+		disciplinary_action.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['disciplinary_action_reason'] = reasons
+		value = self.cleaned_data
+		DisciplinaryAction.objects.create(**value)
+
+class PassportForm(forms.ModelForm):
+	class Meta:
+		model = ApplicationFormPassport
+		fields = ('passport', 'passport_expiry')
+
+	def save(self, commit=True):
+		passport = super(PassportForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		passport.user = userprofile
+		passport.save()
+		place_issued = PassportPlaceIssued.objects.get_or_create(place='')
+		if place_issued:
+			place_issued = PassportPlaceIssued.objects.get(place='')
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['passport_place_issued'] = place_issued
+		value = self.cleaned_data
+		Passport.objects.create(**value)
+
+class SbookForm(forms.ModelForm):
+	class Meta:
+		model = ApplicationFormSbook
+		fields = ('sbook', 'sbook_expiry')
+
+	def save(self, commit=True):
+		sbook = super(SbookForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		sbook.user = userprofile
+		sbook.save()
+		place_issued = SBookPlaceIssued.objects.get_or_create(place='')
+		if place_issued:
+			place_issued = SBookPlaceIssued.objects.get(place='')
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['sbook_place_issued'] = place_issued
+		value = self.cleaned_data
+		Sbook.objects.create(**value)
+
+class COCForm(forms.ModelForm):
+	coc_rank = forms.CharField()
+	class Meta:
+		model = ApplicationFormCOC
+		fields = ('coc', 'coc_expiry')
+
+	def save(self, commit=True):
+		rank = self.cleaned_data['coc_rank']
+		coc = super(COCForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		coc.user = userprofile
+		coc_rank = COCRank.objects.get_or_create(coc_rank=rank)
+		if coc_rank:
+			coc_rank = COCRank.objects.get(coc_rank=rank)
+		coc.coc_rank = coc_rank
+		coc.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['coc_rank'] = coc_rank
+		self.cleaned_data['coc_date_issued'] = None
+		value = self.cleaned_data
+		COC.objects.create(**value)
+
+class LicenseForm(forms.ModelForm):
+	license_rank = forms.CharField()
+	class Meta:
+		model = ApplicationFormLicense
+		fields = ('license', )
+
+	def save(self, commit=True):
+		rank = self.cleaned_data['license_rank']
+		license = super(LicenseForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		license.user = userprofile
+		license_rank = Rank.objects.get_or_create(rank=rank)
+		if license_rank:
+			license_rank = Rank.objects.get(rank=rank)
+		license.license_rank = license_rank
+		license.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['license_rank'] = license_rank
+		self.cleaned_data['license_expiry'] = None
+		self.cleaned_data['license_date_issued'] = None
+		value = self.cleaned_data
+		License.objects.create(**value)
+
+class SRCForm(forms.ModelForm):
+	src_rank = forms.CharField()
+	class Meta:
+		model = ApplicationFormSRC
+		fields = ('src', )
+
+	def save(self, commit=True):
+		rank = self.cleaned_data['src_rank']
+		src = super(SRCForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		src.user = userprofile
+		src_rank = Rank.objects.get_or_create(rank=rank)
+		if src_rank:
+			src_rank = Rank.objects.get(rank=rank)
+		src.src_rank = src_rank
+		src.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['src_rank'] = src_rank
+		self.cleaned_data['src_expiry'] = None
+		self.cleaned_data['src_date_issued'] = None
+		value = self.cleaned_data
+		SRC.objects.create(**value)
+
+class GOCForm(forms.ModelForm):
+	class Meta:
+		model = ApplicationFormGOC
+		fields = ('goc', 'goc_expiry')
+
+	def save(self, commit=True):
+		goc = super(GOCForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		goc.user = userprofile
+		goc.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['goc_date_issued'] = None
+		value = self.cleaned_data
+		GOC.objects.create(**value)
+
+class USVisaForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	us_visa = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	class Meta:
+		model = ApplicationFormUSVisa
+		fields = ('us_visa', 'us_visa_expiry')
+
+	def clean(self):
+		try:
+			value = selfdata['us_visa']
+			expiry = selfdata['us_visa_expiry']
+		except:
+			value = self.cleaned_data['us_visa']
+			expiry = self.cleaned_data['us_visa_expiry']
+		if value is None:	
+			msg = "Please choose either yes or no"
+			self.add_error('us_visa', msg)
+		elif value == 1 and expiry is None:
+			msg_expiry = "Please fill up the date of expiry"
+			self.add_error('us_visa_expiry', msg_expiry)
+
+	def save(self, commit=True):
+		us_visa = super(USVisaForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		us_visa.user = userprofile
+		us_visa.save()
+		self.cleaned_data['user'] = userprofile
+		value = self.cleaned_data
+		USVisa.objects.create(**value)
+
+class SchengenVisaForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	schengen_visa = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	class Meta:
+		model = ApplicationFormSchengenVisa
+		fields = ('schengen_visa', 'schengen_visa_expiry')
+
+	def clean(self):
+		try:
+			value = selfdata['schengen_visa']
+			expiry = selfdata['schengen_visa_expiry']
+		except:
+			value = self.cleaned_data['schengen_visa']
+			expiry = self.cleaned_data['schengen_visa_expiry']
+		if value is None:	
+			msg = "Please choose either yes or no"
+			self.add_error('schengen_visa', msg)
+		elif value == 1 and expiry is None:
+			msg_expiry = "Please fill up the date of expiry"
+			self.add_error('schengen_visa_expiry', msg_expiry)
+
+	def save(self, commit=True):
+		schengen_visa = super(SchengenVisaForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		schengen_visa.user = userprofile
+		schengen_visa.save()
+		self.cleaned_data['user'] = userprofile
+		value = self.cleaned_data
+		SchengenVisa.objects.create(**value)
+
+class YellowFeverForm(forms.ModelForm):
+	class Meta:
+		model = ApplicationFormYellowFever
+		fields = ('yellow_fever', 'yellow_fever_expiry')
+
+	def save(self, commit=True):
+		yellow_fever = super(YellowFeverForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		yellow_fever.user = userprofile
+		yellow_fever.save()
+		self.cleaned_data['user'] = userprofile
+		value = self.cleaned_data
+		YellowFever.objects.create(**value)
+
+class FlagForm(forms.ModelForm):
+	flags = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=Flags.objects.filter(company_standard=1), required=False)
+	class Meta:
+		model = ApplicationFormFlagDocuments
+		fields = ('flags', )
+
+	def save(self, commit=True):
+		print self.cleaned_data
+		flag = super(FlagForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		flag.user = userprofile
+		flag.save()
+		self.cleaned_data['user'] = userprofile
+		value = self.cleaned_data
+		# flagdocuments = FlagDocuments.object.get_or_create(user=user)
+
+
+	def save_m2m(self, commit=True):
+		print "dean"
