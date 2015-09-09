@@ -6,7 +6,7 @@ from django_date_extensions.fields import ApproximateDateField
 
 from login.models import UserProfile
 from people.models import *
-from mariners_profile.models import Zip, Flags
+from mariners_profile.models import Zip, Flags, TrainingCertificates
 
 
 class ApplicationFormCurrentAddress(models.Model):
@@ -51,6 +51,12 @@ class ApplicationFormDetained(AbstractDetained):
 class ApplicationFormDisciplinaryAction(AbstractDisciplinaryAction):
 	pass
 
+class ApplicationFormChargedOffense(AbstractChargedOffense):
+	pass
+	
+class ApplicationFormTermination(AbstractTermination):
+	pass	
+
 class ApplicationFormPassport(AbstractPassport):
 	pass
 
@@ -79,3 +85,9 @@ class ApplicationFormYellowFever(AbstractYellowFever):
 
 class ApplicationFormFlagDocuments(AbstractFlagDocuments):
 	flags = models.ManyToManyField(Flags, blank=True, default=None)
+
+class ApplicationFormTrainingCertificateDocuments(AbstractTrainingCertificateDocuments):
+	trainings_certificates = models.ManyToManyField(TrainingCertificates, default=None)
+
+class ApplicationFormSeaService(AbstractSeaService):
+	pass

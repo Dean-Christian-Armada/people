@@ -19,13 +19,41 @@
             $("#id_civil_status option:first-child").text("Civil Status");
             $("#id_civil_status option:first-child").css("display", "inline");
             setTimeout(function(){ $("#id_civil_status option:first-child").css("display", "none"); $("#id_civil_status").attr("style", "") }, 500);
+            $(".cause_of_discharge option:first-child").text("Cause of Discharge");
+            $(".cause_of_discharge option:first-child").css("display", "inline");
+            setTimeout(function(){ $(".cause_of_discharge option:first-child").css("display", "none"); $(".cause_of_discharge").attr("style", "") }, 500);
+            // $(".cause_of_discharge").each(function)({
+            //     $('option:first-child', this).text("Cause of Discharge");
+            //     $('option:first-child', this).css("display", "inline");
+            //     setTimeout(function(){ $('option:first-child', this).css("display", "none"); $(this).attr("style", "") }, 500);
+            // });
         {% else %}
-            text = $("#id_civil_status option:selected").text();
-            if(text == "---------"){
+            civil_status = $("#id_civil_status option:selected").text();
+            // cause_of_discharge = $(".cause_of_discharge option:selected").text();
+            if(civil_status == "---------"){
                 $("#id_civil_status option:first-child").text("Civil Status");
                 $("#id_civil_status option:first-child").css("display", "inline");
                 setTimeout(function(){ $("#id_civil_status option:first-child").css("display", "none"); $("#id_civil_status").attr("style", "") }, 500);
             }
+            // if(cause_of_discharge == "---------"){
+            //     alert('dean');
+            //     $(".cause_of_discharge option:first-child").text("Cause of Discharge");
+            //     $(".cause_of_discharge option:first-child").css("display", "inline");
+            //     setTimeout(function(){ $(".cause_of_discharge option:first-child").css("display", "none"); $(".cause_of_discharge").attr("style", "") }, 500);
+            // }
+            $('table.sea-services').find('.cause_of_discharge').each(function(){
+            $('option:first-child', this).text("Cause of Discharge");
+            $('option:first-child', this).css("display", "inline");
+            // setTimeout(function(){ $('option:first-child', this).css("display", "none"); $("#id_civil_status").attr("style", "") }, 500);
+            // setTimeout(function(){
+                // alert($('option:selected', this).text());
+                // alert("dean");
+              if($('option:selected', this).text() != "Cause of Discharge"){
+                $(this).css("color", "#000");
+              }
+            // }, 1000);
+            });
+
         {% endif %}
     </script>
   </body>

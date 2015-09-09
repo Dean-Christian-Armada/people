@@ -9,7 +9,7 @@ from login.models import UserProfile
 from django_date_extensions.fields import ApproximateDateField	
 
 class AbstractPersonalData(models.Model):
-	name = models.OneToOneField(UserProfile, default=None)
+	name = models.ForeignKey(UserProfile, default=None)
 
 	# ForeignKeys
 	birth_place = models.ForeignKey('mariners_profile.BirthPlace', default=None)
@@ -71,7 +71,7 @@ class AbstractPersonalData(models.Model):
 		
 
 class AbstractSpouseData(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	spouse_first_name = models.CharField(max_length=50, null=True, blank=True, default=None)
 	spouse_middle_name = models.CharField(max_length=50, null=True, blank=True, default=None)
 	spouse_last_name = models.CharField(max_length=50, null=True, blank=True, default=None)
@@ -120,7 +120,7 @@ class AbstractHighSchool(models.Model):
 		return "%s - %s / %s-%s" % (user, self.highschool, self.schoolyear_from, self.schoolyear_to)
 
 class AbstractEmergencyContact(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	relationship = models.ForeignKey('mariners_profile.Relationship', default=None)
 	emergency_zip = models.ForeignKey('mariners_profile.Zip', default=None)
 	emergency_first_name = models.CharField(max_length=50, null=True, default=None)
@@ -172,8 +172,34 @@ class AbstractDisciplinaryAction(models.Model):
 		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
 		return "%s %s" % (user, self.disciplinary_action)
 
+class AbstractChargedOffense(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	charged_offense = models.NullBooleanField(default=None)
+	charged_offense_reason = models.ForeignKey('mariners_profile.Reasons', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.charged_offense)
+
+
+class AbstractTermination(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	termination = models.NullBooleanField(default=None)
+	termination_reason = models.ForeignKey('mariners_profile.Reasons', default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s %s" % (user, self.termination)
+
+
 class AbstractPassport(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	passport = models.CharField(max_length=100, unique=True, default=None)
 	passport_expiry = models.DateField(default=None)
 	# place_issued = models.ForeignKey(PassportPlaceIssued, default=None, blank=True)
@@ -186,7 +212,7 @@ class AbstractPassport(models.Model):
 		return "%s %s" % (user, self.passport)
 
 class AbstractSbook(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	sbook = models.CharField(max_length=100, unique=True, default=None)
 	sbook_expiry = models.DateField(default=None)
 
@@ -198,7 +224,7 @@ class AbstractSbook(models.Model):
 		return "%s %s" % (user, self.sbook)
 	
 class AbstractCOC(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	coc = models.CharField(max_length=100, unique=True, default=None)
 	coc_expiry = models.DateField(default=None)
 	coc_rank = models.ForeignKey('mariners_profile.COCRank', default=None)
@@ -211,7 +237,7 @@ class AbstractCOC(models.Model):
 		return "%s %s" % (user, self.coc)
 	
 class AbstractLicense(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	license = models.CharField(max_length=100, unique=True, default=None, blank=True)
 	license_rank = models.ForeignKey('mariners_profile.Rank', default=None, blank=True)
 
@@ -223,7 +249,7 @@ class AbstractLicense(models.Model):
 		return "%s %s" % (user, self.license)
 	
 class AbstractSRC(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	src = models.CharField(max_length=100, unique=True, default=None)
 	src_rank = models.ForeignKey('mariners_profile.Rank', default=None)
 
@@ -235,7 +261,7 @@ class AbstractSRC(models.Model):
 		return "%s %s" % (user, self.src)
 	
 class AbstractGOC(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	goc = models.CharField(max_length=100, unique=True, default=None)
 	goc_expiry = models.DateField(default=None)
 
@@ -247,7 +273,7 @@ class AbstractGOC(models.Model):
 		return "%s %s" % (user, self.goc)
 	
 class AbstractUSVisa(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	us_visa = models.NullBooleanField()
 	us_visa_expiry = models.DateField(blank=True, null=True, default=None)
 
@@ -259,7 +285,7 @@ class AbstractUSVisa(models.Model):
 		return "%s %s" % (user, self.us_visa)
 	
 class AbstractSchengenVisa(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	schengen_visa = models.NullBooleanField()
 	schengen_visa_expiry = models.DateField(blank=True, null=True, default=None)
 
@@ -271,7 +297,7 @@ class AbstractSchengenVisa(models.Model):
 		return "%s %s" % (user, self.schengen_visa)
 	
 class AbstractYellowFever(models.Model):
-	user = models.OneToOneField(UserProfile, default=None)
+	user = models.ForeignKey(UserProfile, default=None)
 	yellow_fever = models.CharField(max_length=100, unique=True, default=None)
 	yellow_fever_expiry = models.DateField(default=None)
 
@@ -292,3 +318,49 @@ class AbstractFlagDocuments(models.Model):
 	def __unicode__(self):
 		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
 		return user
+
+class AbstractTrainingCertificateDocuments(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return user
+
+class AbstractSeaService(models.Model):
+
+	# OneToOneField with Django Users Model 
+	user = models.ForeignKey(UserProfile, default=None)
+
+	# ForeignKeys
+	vessel_name = models.ForeignKey('mariners_profile.VesselName', default=None)
+	vessel_type = models.ForeignKey('mariners_profile.VesselType', default=None)
+	flag = models.ForeignKey('mariners_profile.Flags', default=None)
+	engine_type = models.ForeignKey('mariners_profile.EngineType', default=None)
+	manning_agency = models.ForeignKey('mariners_profile.ManningAgency', default=None)
+	principal = models.ForeignKey('mariners_profile.Principal', default=None)
+	rank = models.ForeignKey('mariners_profile.Rank', default=None)
+	cause_of_discharge = models.ForeignKey('mariners_profile.CauseOfDischarge', default=None)
+
+	# Integer Fields
+	grt = models.PositiveIntegerField(default=None)
+	dwt = models.PositiveIntegerField(default=None)
+	year_built = models.PositiveSmallIntegerField(default=None)
+	duration = models.PositiveSmallIntegerField(default=None)
+
+	# Decimal Fields
+	hp = models.DecimalField(decimal_places=1, max_digits=10, default=None)
+	kw = models.DecimalField(decimal_places=1, max_digits=10, default=None)
+
+	# Date Fields
+	date_joined = models.DateField(default=None)
+	date_left = models.DateField(default=None)
+
+	class Meta:
+		abstract = True
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return "%s - %s" % (user, self.vessel_name)

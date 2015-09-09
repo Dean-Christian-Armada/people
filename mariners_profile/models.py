@@ -101,6 +101,9 @@ class CauseOfDischarge(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.cause_of_discharge
+
 class Municipality(models.Model):
 	municipality = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
@@ -180,6 +183,28 @@ class Flags(models.Model):
 	def __unicode__(self):
 		return self.flags
 
+class TrainingCertificatesSegregation(models.Model):
+	segregation = models.CharField(max_length=50, default=None)
+
+	def __unicode__(self):
+		return self.segregation
+
+class TrainingCertificates(models.Model):
+	trainings_certificates = models.CharField(max_length=100, default=None)
+	segregation = models.ForeignKey(TrainingCertificatesSegregation, default=1)
+	company_standard = models.NullBooleanField(max_length=50, default=True)
+	date_created = models.DateTimeField(auto_now_add=True, )
+	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
+	def __unicode__(self):
+		return self.trainings_certificates
+
+class TrainingCenter(models.Model):
+	training_center = models.CharField(max_length=50, default=None, blank=True)
+
+	def __unicode__(self):
+		return self.training_center
+
 class CurrentAddress(models.Model):
 	current_zip = models.ForeignKey(Zip, default=None)
 	current_unit = models.CharField(max_length=50, default=None)
@@ -224,6 +249,12 @@ class Detained(AbstractDetained):
 class DisciplinaryAction(AbstractDisciplinaryAction):
 	pass
 
+class ChargedOffense(AbstractChargedOffense):
+	pass
+	
+class Termination(AbstractTermination):
+	pass	
+
 class Passport(AbstractPassport):
 	passport_place_issued = models.ForeignKey(PassportPlaceIssued, default=None, blank=True)
 
@@ -264,4 +295,18 @@ class FlagDocumentsDetailed(models.Model):
 	license_expiry = models.DateField(null=True, blank=True)
 
 	def __unicode__(self):
-		return "dean"
+		user = "%s %s %s" % (self.flags_documents.user.first_name, self.flags_documents.user.middle_name, self.flags_documents.user.last_name)
+		return "%s - %s" % (user, self.flags.flags)
+
+class TrainingCertificateDocuments(AbstractTrainingCertificateDocuments):
+	trainings_certificates = models.ManyToManyField(TrainingCertificates, default=None)
+
+class TrainingCertificateDocumentsDetailed(models.Model):
+	trainings_certificate_documents = models.ForeignKey(TrainingCertificateDocuments, on_delete=models.CASCADE)
+	trainings_certificates = models.ForeignKey(TrainingCertificates, on_delete=models.CASCADE)
+	number = models.PositiveIntegerField(null=True, blank=True)
+	issued = models.DateField(null=True, blank=True)
+	place_trained = models.ForeignKey(TrainingCenter)
+
+class SeaService(AbstractSeaService):
+	pass

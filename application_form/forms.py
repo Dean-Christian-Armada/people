@@ -9,6 +9,9 @@ from jsignature.widgets import JSignatureWidget
 from .models import *
 from login.models import UserProfile, Userlevel
 from mariners_profile.models import *
+
+import sys
+
 # All data input processes are located here
 # def clean processes the insert data on the mariners profile
 
@@ -196,26 +199,29 @@ class CollegeForm(forms.ModelForm):
 		exclude = ('user', 'college', 'degree' )
 
 	def save(self, commit=True):
-		college_name = self.cleaned_data['college']
-		degree_obtained = self.cleaned_data['degree']
-
-		college = super(CollegeForm, self).save(commit=False)
-		userprofile = UserProfile.objects.latest('id')
-		colleges = Colleges.objects.get_or_create(college_name=college_name)
-		if colleges:
-			colleges = Colleges.objects.get(college_name=college_name)
-		degree = Degree.objects.get_or_create(degree=degree_obtained)
-		if degree:
-			degree = Degree.objects.get(degree=degree_obtained)
-		college.user = userprofile
-		college.college = colleges
-		college.degree = degree
-		college.save()
-		self.cleaned_data['user'] = userprofile
-		self.cleaned_data['college'] = colleges
-		self.cleaned_data['degree'] = degree
-		value = self.cleaned_data
-		College.objects.create(**value)
+		# Try is used to proceed if second formset onwards is left blank
+		try:
+			college_name = self.cleaned_data['college']
+			degree_obtained = self.cleaned_data['degree']
+			college = super(CollegeForm, self).save(commit=False)
+			userprofile = UserProfile.objects.latest('id')
+			colleges = Colleges.objects.get_or_create(college_name=college_name)
+			if colleges:
+				colleges = Colleges.objects.get(college_name=college_name)
+			degree = Degree.objects.get_or_create(degree=degree_obtained)
+			if degree:
+				degree = Degree.objects.get(degree=degree_obtained)
+			college.user = userprofile
+			college.college = colleges
+			college.degree = degree
+			college.save()
+			self.cleaned_data['user'] = userprofile
+			self.cleaned_data['college'] = colleges
+			self.cleaned_data['degree'] = degree
+			value = self.cleaned_data
+			College.objects.create(**value)
+		except:
+			pass
 
 class HighSchoolForm(forms.ModelForm):
 	highschool = forms.CharField()
@@ -251,40 +257,57 @@ class EmergencyContactForm(forms.ModelForm):
 		exclude = ('user', 'emergency_zip', 'relationship')
 
 	def save(self, commit=True):
-		emergency_zip = self.cleaned_data['emergency_zip']
-		emergency_barangay = self.cleaned_data['emergency_barangay']
-		emergency_municipality = self.cleaned_data['emergency_municipality']
-		relationship = self.cleaned_data['relationship']
-
-		emergency_contact = super(EmergencyContactForm, self).save(commit=False)
-		userprofile = UserProfile.objects.latest('id')
-		municipality = Municipality.objects.get_or_create(municipality=emergency_municipality)
-		if municipality:
-			municipality = Municipality.objects.get(municipality=emergency_municipality)
-		barangay = Barangay.objects.get_or_create(barangay=emergency_barangay)
-		if barangay:
-			barangay = Barangay.objects.get(barangay=emergency_barangay)
-		relationships = Relationship.objects.get_or_create(relationship=relationship)
-		if relationships:
-			relationships = Relationship.objects.get(relationship=relationship)
+		# Try is used to proceed if second formset onwards is left blank
 		try:
-			zip = Zip.objects.get_or_create(zip=emergency_zip, barangay=barangay, municipality=municipality)[0]
+			emergency_zip = self.cleaned_data['emergency_zip']
+			emergency_barangay = self.cleaned_data['emergency_barangay']
+			emergency_municipality = self.cleaned_data['emergency_municipality']
+			relationship = self.cleaned_data['relationship']
+			print "DEAN"
+			print self.cleaned_data
+
+			emergency_contact = super(EmergencyContactForm, self).save(commit=False)
+			print "a"
+			userprofile = UserProfile.objects.latest('id')
+			print "b"
+			municipality = Municipality.objects.get_or_create(municipality=emergency_municipality)
+			print "c"
+			if municipality:
+				municipality = Municipality.objects.get(municipality=emergency_municipality)
+			barangay = Barangay.objects.get_or_create(barangay=emergency_barangay)
+			print "d"
+			if barangay:
+				barangay = Barangay.objects.get(barangay=emergency_barangay)
+			relationships = Relationship.objects.get_or_create(relationship=relationship)
+			print "e"
+			if relationships:
+				relationships = Relationship.objects.get(relationship=relationship)
+			print "f"
+			try:
+				zip = Zip.objects.get_or_create(zip=emergency_zip, barangay=barangay, municipality=municipality)[0]
+			except:
+				zip = Zip.objects.get(zip=emergency_zip)
+			print "g"
+			emergency_contact.user = userprofile
+			emergency_contact.emergency_zip = zip
+			print "h"
+			emergency_contact.relationship = relationships
+			print "i"
+			print zip
+			print relationships
+			emergency_contact.save()
+			print "XYLINE"
+			# Modify cleaned_data for var arguments on creating data on the Mariners Object
+			self.cleaned_data['user'] = userprofile
+			self.cleaned_data['emergency_zip'] = zip
+			self.cleaned_data['relationship'] = relationships
+			# Remove data not on the Mariners Object fields
+			self.cleaned_data.pop("emergency_municipality")
+			self.cleaned_data.pop("emergency_barangay")
+			value = self.cleaned_data
+			EmergencyContact.objects.create(**value)
 		except:
-			zip = Zip.objects.get(zip=current_zip)
-		emergency_contact.user = userprofile
-		emergency_contact.emergency_zip = zip
-		emergency_contact.relationship = relationships
-		emergency_contact.save()
-		# Modify cleaned_data for var arguments on creating data on the Mariners Object
-		self.cleaned_data['user'] = userprofile
-		self.cleaned_data['emergency_zip'] = zip
-		self.cleaned_data['relationship'] = relationships
-		# Remove data not on the Mariners Object fields
-		self.cleaned_data.pop("emergency_municipality")
-		self.cleaned_data.pop("emergency_barangay")
-		value = self.cleaned_data
-		EmergencyContact.objects.create(**value)
-		return emergency_contact
+			print "%s - %s" % (sys.exc_info()[0], sys.exc_info()[1])
 
 class VisaApplicationForm(forms.ModelForm):
 	CHOICES = (
@@ -390,6 +413,76 @@ class DisciplinaryActionForm(forms.ModelForm):
 		self.cleaned_data['disciplinary_action_reason'] = reasons
 		value = self.cleaned_data
 		DisciplinaryAction.objects.create(**value)
+
+class ChargedOffenseForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	charged_offense = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	charged_offense_reason = forms.CharField(required=False)
+	class Meta:
+		model = ApplicationFormChargedOffense
+		fields = ('charged_offense', )
+
+	def clean(self):
+		msg = "Please choose either yes or no"
+		try:
+			charged_offense = selfdata['charged_offense']
+		except:
+			charged_offense = self.cleaned_data['charged_offense']
+		if charged_offense is None:	
+			self.add_error('charged_offense', msg)
+
+	def save(self, commit=True):
+		reason = self.cleaned_data['charged_offense_reason']
+		charged_offense = super(ChargedOffenseForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		charged_offense.user = userprofile
+		reasons = Reasons.objects.get_or_create(reason=reason)
+		if reasons:
+			reasons = Reasons.objects.get(reason=reason)
+		charged_offense.charged_offense_reason = reasons
+		charged_offense.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['charged_offense_reason'] = reasons
+		value = self.cleaned_data
+		ChargedOffense.objects.create(**value)
+
+class TerminationForm(forms.ModelForm):
+	CHOICES = (
+			('1', 'Yes'),
+			('0', 'No'),
+		)
+	termination = forms.NullBooleanField(widget=forms.RadioSelect(choices=CHOICES, renderer=HorizontalRadioRenderer))
+	termination_reason = forms.CharField(required=False)
+	class Meta:
+		model = ApplicationFormTermination
+		fields = ('termination', )
+
+	def clean(self):
+		msg = "Please choose either yes or no"
+		try:
+			termination = selfdata['termination']
+		except:
+			termination = self.cleaned_data['termination']
+		if termination is None:	
+			self.add_error('termination', msg)
+
+	def save(self, commit=True):
+		reason = self.cleaned_data['termination_reason']
+		termination = super(TerminationForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		termination.user = userprofile
+		reasons = Reasons.objects.get_or_create(reason=reason)
+		if reasons:
+			reasons = Reasons.objects.get(reason=reason)
+		termination.termination_reason = reasons
+		termination.save()
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['termination_reason'] = reasons
+		value = self.cleaned_data
+		Termination.objects.create(**value)
 
 class PassportForm(forms.ModelForm):
 	class Meta:
@@ -597,7 +690,6 @@ class FlagForm(forms.ModelForm):
 		fields = ('flags', )
 
 	def save(self, commit=True):
-		print self.cleaned_data
 		flag = super(FlagForm, self).save(commit=False)
 		userprofile = UserProfile.objects.latest('id')
 		flag.user = userprofile
@@ -614,3 +706,109 @@ class FlagForm(forms.ModelForm):
 		# looping the flag objects to be inserted on the FlagDocumentsDetailed model with the flagdocuments object
 		for flag_values in flags:
 			x = FlagDocumentsDetailed.objects.get_or_create(flags_documents=flagdocuments, flags=flag_values)
+
+class TrainingCertificateForm(forms.ModelForm):
+	trainings_certificates = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckboxRenderer), queryset=TrainingCertificates.objects.filter(company_standard=1), error_messages={'required': 'Please do not forget to select among the trainings and certificates'})
+	class Meta:
+		model = ApplicationFormTrainingCertificateDocuments
+		fields = ('trainings_certificates', )
+
+	def save(self, commit=True):
+		trainings_certificates = super(TrainingCertificateForm, self).save(commit=False)
+		userprofile = UserProfile.objects.latest('id')
+		trainings_certificates.user = userprofile
+		trainings_certificates.save()
+		self.cleaned_data['user'] = userprofile
+		# Saving in Mariners Profile script
+		value = self.cleaned_data
+		# Creating flagdocuments object representing the user object for the FlagDocumentsDetailed model
+		trainingcertificatedocuments = TrainingCertificateDocuments.objects.get_or_create(user=userprofile)
+		if trainingcertificatedocuments:
+			trainingcertificatedocuments = TrainingCertificateDocuments.objects.get(user=userprofile)
+		place_trained = TrainingCenter.objects.get_or_create(training_center='')
+		if place_trained:
+			place_trained = TrainingCenter.objects.get(training_center='')
+		trainings_certificates = value['trainings_certificates']
+		for trainings_certificates_values in trainings_certificates:
+			x = TrainingCertificateDocumentsDetailed.objects.get_or_create(trainings_certificate_documents=trainingcertificatedocuments, trainings_certificates=trainings_certificates_values, place_trained=place_trained)
+
+class SeaServiceForm(forms.ModelForm):
+	vessel_name = forms.CharField()
+	vessel_type = forms.CharField()
+	flag = forms.CharField()
+	engine_type = forms.CharField()
+	manning_agency = forms.CharField()
+	# Do not make principal autocomplete
+	principal = forms.CharField()
+	rank = forms.CharField()
+	class Meta:
+		model = ApplicationFormSeaService
+		fields = '__all__'
+		exclude = ('date_modified',)
+
+
+
+
+# class EmergencyContactForm(forms.ModelForm):
+# 	relationship = forms.CharField()
+# 	emergency_zip = forms.IntegerField()
+# 	emergency_municipality = forms.CharField()
+# 	emergency_barangay = forms.CharField()
+# 	emergency_contact = forms.RegexField(regex=r'^([0-9]{7}|[0-9]{11})$', error_messages={'invalid': "Telephone and Mobile Numbers are only allowed"})
+# 	class Meta:
+# 		model = ApplicationFormEmergencyContact
+# 		fields = '__all__'
+# 		exclude = ('user', 'emergency_zip', 'relationship')
+
+# 	def save(self, commit=True):
+# 		# Try is used to proceed if second formset onwards is left blank
+# 		try:
+# 			emergency_zip = self.cleaned_data['emergency_zip']
+# 			emergency_barangay = self.cleaned_data['emergency_barangay']
+# 			emergency_municipality = self.cleaned_data['emergency_municipality']
+# 			relationship = self.cleaned_data['relationship']
+# 			print "DEAN"
+# 			print self.cleaned_data
+
+# 			emergency_contact = super(EmergencyContactForm, self).save(commit=False)
+# 			print "a"
+# 			userprofile = UserProfile.objects.latest('id')
+# 			print "b"
+# 			municipality = Municipality.objects.get_or_create(municipality=emergency_municipality)
+# 			print "c"
+# 			if municipality:
+# 				municipality = Municipality.objects.get(municipality=emergency_municipality)
+# 			barangay = Barangay.objects.get_or_create(barangay=emergency_barangay)
+# 			print "d"
+# 			if barangay:
+# 				barangay = Barangay.objects.get(barangay=emergency_barangay)
+# 			relationships = Relationship.objects.get_or_create(relationship=relationship)
+# 			print "e"
+# 			if relationships:
+# 				relationships = Relationship.objects.get(relationship=relationship)
+# 			print "f"
+# 			try:
+# 				zip = Zip.objects.get_or_create(zip=emergency_zip, barangay=barangay, municipality=municipality)[0]
+# 			except:
+# 				zip = Zip.objects.get(zip=emergency_zip)
+# 			print "g"
+# 			emergency_contact.user = userprofile
+# 			emergency_contact.emergency_zip = zip
+# 			print "h"
+# 			emergency_contact.relationship = relationships
+# 			print "i"
+# 			print zip
+# 			print relationships
+# 			emergency_contact.save()
+# 			print "XYLINE"
+# 			# Modify cleaned_data for var arguments on creating data on the Mariners Object
+# 			self.cleaned_data['user'] = userprofile
+# 			self.cleaned_data['emergency_zip'] = zip
+# 			self.cleaned_data['relationship'] = relationships
+# 			# Remove data not on the Mariners Object fields
+# 			self.cleaned_data.pop("emergency_municipality")
+# 			self.cleaned_data.pop("emergency_barangay")
+# 			value = self.cleaned_data
+# 			EmergencyContact.objects.create(**value)
+# 		except:
+# 			print "%s - %s" % (sys.exc_info()[0], sys.exc_info()[1])

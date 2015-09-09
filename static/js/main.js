@@ -10,7 +10,7 @@ $(function(){
         ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
     var x = ''; 
     count = 0;
-    var seaservice_count = 0;
+    var seaservice_count = 9;
     var college_count = 0;
     var emergency_count = 0;
 
@@ -138,30 +138,6 @@ $(function(){
     ];
     // End Variables
 
-    $("input[name='visa_entry']").change(function(){
-      html = ''
-      val = $(this).val();
-      if(val=='yes'){
-        html = "<textarea class='form-control'></textarea>";
-      }
-      $("p#visa_entry_yes").html(html);
-    });
-    $("input[name='leave_order']").change(function(){
-      html = ''
-      val = $(this).val();
-      if(val=='yes'){
-        html = "<textarea class='form-control'></textarea>";
-      }
-      $("p#leave_order_yes").html(html);
-    });
-    $("input[name='disciplinary_action']").change(function(){
-      html = ''
-      val = $(this).val();
-      if(val=='yes'){
-        html = "<textarea class='form-control'></textarea>";
-      }
-      $("p#disciplinary_action_yes").html(html);
-    });
     $("input[name='source']").click(function(){
       val = $(this).val();
       if($(this).is(':checked') && val != 'Seafarer Center'){
@@ -250,53 +226,87 @@ $(function(){
       }
     });
 
-    $('table.sea-services').find('tr').each(function(){
-      seaservice_count++;
-    });
+    // $('table.sea-services').find('tr').each(function(){
+    //   seaservice_count++;
+    // });
     $('table.sea-services').find('.date-left').each(function(){
       if($(this).val() != ''){
         $(this).prop("disabled", false);
       }
     });
-    $('table.sea-services').find('.cause_of_discharge').each(function(){
-      if($(this).val() != "Cause of Discharge"){
-        $(this).css("color", "#000");
-      }
-    });
 
 
+    // add_seaservice = '<tr><td><button type="button" class="btn btn-danger delete-row">Delete</button></td><td><button type="button" class="btn btn-info add-row">Add</button></td><td><button type="button" class="btn btn-warning clear-row">Clear Row</button></td><td><input Placeholder="Vessel Name" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_name" maxlength="50" name="form-'+seaservice_count+'-vessel_name" type="text" /></td><td><input Placeholder="Vessel Type" class="vtype" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_type" maxlength="50" name="form-'+seaservice_count+'-vessel_type" type="text" /></td><td><input Placeholder="Flag" class="flag" data-toggle="tooltip" id="id_form-'+seaservice_count+'-flag" maxlength="50" name="form-'+seaservice_count+'-flag" type="text" /></td><td><input Placeholder="GRT" class="grt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-grt" min="0" name="form-'+seaservice_count+'-grt" type="number" /></td><td><input Placeholder="DWT" class="dwt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-dwt" min="0" name="form-'+seaservice_count+'-dwt" type="number" /></td><td><input Placeholder="Year Built" data-toggle="tooltip" id="id_form-'+seaservice_count+'-year_built" min="0" name="form-'+seaservice_count+'-year_built" type="number" /></td><td><input Placeholder="Engine Type" data-toggle="tooltip" id="id_form-'+seaservice_count+'-engine_type" maxlength="50" name="form-'+seaservice_count+'-engine_type" type="text" /></td><td><input Placeholder="HP" class="hp" data-toggle="tooltip" id="id_form-'+seaservice_count+'-hp" step="0.1" name="form-'+seaservice_count+'-hp" type="number" /></td><td><input Placeholder="KW" class="kw" data-toggle="tooltip" id="id_form-'+seaservice_count+'-kw" step="0.1" name="form-'+seaservice_count+'-kw" type="number" /></td><td><input Placeholder="Manning Agency" class="td-150 manning_agency" data-toggle="tooltip" id="id_form-'+seaservice_count+'-manning_agency" maxlength="50" name="form-'+seaservice_count+'-manning_agency"type="text" /></td><td><input Placeholder="Principal / Shipowner" class="td-170" data-toggle="tooltip" id="id_form-'+seaservice_count+'-principal" maxlength="50" name="form-'+seaservice_count+'-principal" type="text" /></td><td><input Placeholder="Date Joined" class="date date-joined" data-toggle="tooltip" id="id_form-'+seaservice_count+'-date_joined" name="form-'+seaservice_count+'-date_joined" type="text" /></td><td><input Placeholder="Date Left" class="date date-left" data-toggle="tooltip" disabled="" id="id_form-'+seaservice_count+'-date_left" name="form-'+seaservice_count+'-date_left" type="text" /></td><td style="display:none"><input Placeholder="Days" class="duration" data-toggle="tooltip" id="id_form-'+seaservice_count+'-duration" min="0" name="form-'+seaservice_count+'-duration" readonly="" type="number"/></td><td><input Placeholder="Rank" class="rank" data-toggle="tooltip" id="id_form-'+seaservice_count+'-rank" maxlength="50" name="form-'+seaservice_count+'-rank" type="text" /></td><td><select class="first-choice cause_of_discharge" data-toggle="tooltip" id="id_form-'+seaservice_count+'-cause_of_discharge" name="form-'+seaservice_count+'-cause_of_discharge"><option value="Cause of Discharge">Cause of Discharge</option><option value="Finished Contract">Finished Contract</option><option value="Compassionate Reason">Compassionate Reason</option><option value="Medical Repatriation">Medical Repatriation</option><option value="Promoted on Board">Promoted on Board</option><option value="Vessel Sold">Vessel Sold</option><option value="Vessel Scraped">Vessel Scraped</option><option value="Change Management">Change Management</option><option value="Own Request">Own Request</option></select></td></tr>';
+    // $("tbody").on("click", ".add-row", function(){
+    //   $(this).parent().parent().after(add_seaservice);
+    //   seaservice_count++;
+    //   val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
+    // });
+    // $("tbody").on("click", ".delete-row", function(){
+    //   $(this).parent().parent().remove();
+    //   seaservice_count--;
+    //   val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
+    // });
 
-    add_seaservice = '<tr><td><button type="button" class="btn btn-danger delete-row">Delete</button></td><td><button type="button" class="btn btn-info add-row">Add</button></td><td><button type="button" class="btn btn-warning clear-row">Clear Row</button></td><td><input Placeholder="Vessel Name" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_name" maxlength="50" name="form-'+seaservice_count+'-vessel_name" type="text" /></td><td><input Placeholder="Vessel Type" class="vtype" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_type" maxlength="50" name="form-'+seaservice_count+'-vessel_type" type="text" /></td><td><input Placeholder="Flag" class="flag" data-toggle="tooltip" id="id_form-'+seaservice_count+'-flag" maxlength="50" name="form-'+seaservice_count+'-flag" type="text" /></td><td><input Placeholder="GRT" class="grt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-grt" min="0" name="form-'+seaservice_count+'-grt" type="number" /></td><td><input Placeholder="DWT" class="dwt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-dwt" min="0" name="form-'+seaservice_count+'-dwt" type="number" /></td><td><input Placeholder="Year Built" data-toggle="tooltip" id="id_form-'+seaservice_count+'-year_built" min="0" name="form-'+seaservice_count+'-year_built" type="number" /></td><td><input Placeholder="Engine Type" data-toggle="tooltip" id="id_form-'+seaservice_count+'-engine_type" maxlength="50" name="form-'+seaservice_count+'-engine_type" type="text" /></td><td><input Placeholder="HP" class="hp" data-toggle="tooltip" id="id_form-'+seaservice_count+'-hp" step="0.1" name="form-'+seaservice_count+'-hp" type="number" /></td><td><input Placeholder="KW" class="kw" data-toggle="tooltip" id="id_form-'+seaservice_count+'-kw" step="0.1" name="form-'+seaservice_count+'-kw" type="number" /></td><td><input Placeholder="Manning Agency" class="td-150 manning_agency" data-toggle="tooltip" id="id_form-'+seaservice_count+'-manning_agency" maxlength="50" name="form-'+seaservice_count+'-manning_agency"type="text" /></td><td><input Placeholder="Principal / Shipowner" class="td-170" data-toggle="tooltip" id="id_form-'+seaservice_count+'-principal" maxlength="50" name="form-'+seaservice_count+'-principal" type="text" /></td><td><input Placeholder="Date Joined" class="date date-joined" data-toggle="tooltip" id="id_form-'+seaservice_count+'-date_joined" name="form-'+seaservice_count+'-date_joined" type="text" /></td><td><input Placeholder="Date Left" class="date date-left" data-toggle="tooltip" disabled="" id="id_form-'+seaservice_count+'-date_left" name="form-'+seaservice_count+'-date_left" type="text" /></td><td style="display:none"><input Placeholder="Days" class="duration" data-toggle="tooltip" id="id_form-'+seaservice_count+'-duration" min="0" name="form-'+seaservice_count+'-duration" readonly="" type="number"/></td><td><input Placeholder="Rank" class="rank" data-toggle="tooltip" id="id_form-'+seaservice_count+'-rank" maxlength="50" name="form-'+seaservice_count+'-rank" type="text" /></td><td><select class="first-choice cause_of_discharge" data-toggle="tooltip" id="id_form-'+seaservice_count+'-cause_of_discharge" name="form-'+seaservice_count+'-cause_of_discharge"><option value="Cause of Discharge">Cause of Discharge</option><option value="Finished Contract">Finished Contract</option><option value="Compassionate Reason">Compassionate Reason</option><option value="Medical Repatriation">Medical Repatriation</option><option value="Promoted on Board">Promoted on Board</option><option value="Vessel Sold">Vessel Sold</option><option value="Vessel Scraped">Vessel Scraped</option><option value="Change Management">Change Management</option><option value="Own Request">Own Request</option></select></td></tr>';
-    $("tbody").on("click", ".add-row", function(){
-      $(this).parent().parent().after(add_seaservice);
-      seaservice_count++;
-      val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
-    });
-    $("tbody").on("click", ".delete-row", function(){
-      $(this).parent().parent().remove();
-      seaservice_count--;
-      val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
-    });
+    // undisplays all except the first college
+    $(".colleges:not(:eq(0))").hide();
     $(".add-college").click(function(){
       college_count++;
-      college_html = '<div class="form-group colleges"><div class="col-md-2"><button type="button" class="btn btn-info delete-college">Delete College</button></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-college" name="form-'+college_count+'-college" placeholder="College" type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-degree" name="form-'+college_count+'-degree" placeholder="Degree Obtained"type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_from" min="0" name="form-'+college_count+'-collegeyear_from"placeholder="From" type="number" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+college_count+'-collegeyear_to" min="0" name="form-'+college_count+'-collegeyear_to"placeholder="To" type="number" /></div></div>';
-      $(".colleges:last").after(college_html);
+      $(".delete-college").show();
+      $(".colleges").eq(college_count).show();
     });
     $("body").on("click", ".delete-college", function(){
-      $(this).parent().parent().remove();
+      $(".colleges").eq(college_count).hide();
+      college_count--;
+      if(college_count == 0){
+        $(this).hide();
+      }
     });
+    // Makes sure the form group shows if fields are not null
+    $(".colleges").each(function(){
+      $(this).find('input').each(function(){
+        val = $(this).val()
+        if(val != ''){
+          $(this).parent().parent().show();
+        } 
+      })
+    });
+
+    $(".emergency-contacts:not(:eq(0))").hide();
     $(".add-emergency").click(function(){
       emergency_count++;
-      emergency_html = '<div class="emergency-contacts"><div class="form-group"><div class="col-md-12"><button type="button" class="btn btn-info delete-emergency">Delete Emergency Below</button></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_last_name" maxlength="50" name="form-'+emergency_count+'-emergency_last_name"placeholder="Last Name" type="text" /></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_first_name" maxlength="50" name="form-0emergency_first_name" placeholder="First Name" type="text" /></div><div class="col-md-4"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_middle_name" maxlength="50" name="form-0emergency_middle_name" placeholder="Middle Name" type="text" /></div></div><div class="form-group"><div class="col-md-6"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_contact" name="form-'+emergency_count+'-emergency_contact"placeholder="Contact No." type="text" /></div><div class="col-md-6"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-relationship" name="form-'+emergency_count+'-relationship" placeholder="Relationship"type="text" /></div></div><div class="form-group bottom-zero"><div class="col-md-12"><div class="col-md-12"><span class="emergency-search-zip pull-right" data-params="'+emergency_count+'" style="">Search zip code</span></div></div></div><div class="form-group"><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_unit" maxlength="50" name="form-'+emergency_count+'-emergency_unit"placeholder="Unit / Lot / House" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_street" maxlength="50" name="form-'+emergency_count+'-emergency_street"placeholder="Street" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="emergency_barangay" name="form-'+emergency_count+'-emergency_barangay" placeholder="Barangay"type="text" /></div><div class="col-md-3"><input class="form-control" data-toggle="tooltip" id="emergency_municipality" name="form-'+emergency_count+'-emergency_municipality"placeholder="Municipality" type="text" /></div><div class="col-md-2"><input class="form-control" data-toggle="tooltip" id="id_form-'+emergency_count+'-emergency_zip" name="form-'+emergency_count+'-emergency_zip" placeholder="Zip Code"type="number" /></div></div>';
-      $(".emergency-contacts:last").after(emergency_html);
+      $(".delete-emergency").show();
+      $(".emergency-contacts").eq(emergency_count).show();
     });
     $("body").on("click", ".delete-emergency", function(){
-      $(this).parent().parent().parent().remove();
+      $(".emergency-contacts").eq(emergency_count).hide();
+      emergency_count--;
+      if(emergency_count == 0){
+        $(this).hide();
+      }
+    });
+    // Makes sure the form group shows if fields are not null
+    $(".emergency-contacts").each(function(){
+      $(this).children().children().find('input').each(function(){
+        val = $(this).val();
+        if(val != ''){
+          $(this).parent().parent().parent().show();
+        } 
+      })
+    });
+
+    $('.sea-service-row').click(function(){
+      // alert($(this).index());
+    });
+    $(".add-sea-service-row").click(function(){
+      seaservice_count++;
+      // $(".delete-emergency").show();
+      $(".sea-service-row").eq(seaservice_count).show();
     });
 
     $("input").change(function(){
       name = $(this).attr("name");
-      if( name == "visa_application" || name == "detained" || name == "disciplinary_action" ){
+      if( name == "visa_application" || name == "detained" || name == "disciplinary_action" || name == "charged_offense" || name == "termination" ){
         val2 = $(this).val();
         if(val == 1){
           $(this).parent().parent().after("<textarea class='form-control' name='"+name+"_reason' placeholder='Write your reason here' required></textarea>")
@@ -304,8 +314,10 @@ $(function(){
           $("textarea[name='"+name+"_reason']").remove();
         }
       }
+      if( name == "us_visa" || name == "schengen_visa" ){
+        $("input[name='"+name+"_expiry']").prop("disabled", true);
+      }
     });
-
 
     $("body").on("focus", ".date", function(){
       $(this).datepicker({ 
@@ -489,6 +501,7 @@ $(function(){
 
     $(".essay").trigger('click');
     $("#id_civil_status").trigger("change");
+    // $(".cause_of_discharge").trigger("change");
     $("#application-form input").trigger("keyup");
     $("body").on("change", "select", function(){
       val = $(this).val();
@@ -572,10 +585,10 @@ $(function(){
       address = address.replace(/ /g,"+");
       var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");
     });
-    $(".emergency-search-zip").click(function(){
-      params = $(this).attr('data-params');
+    $("body").on("click", ".emergency-search-zip", function(){
+      params = $(this).attr('data-params')-1;
       barangay = $("#id_form-"+params+"-emergency_barangay").val();
-      municipality = $("#id_form-"+params+"_municipality").val();
+      municipality = $("#id_form-"+params+"-emergency_municipality").val();
       address = barangay+"+"+municipality+"+"+"zip code";
       address = address.replace(/ /g,"+");
       var myWindow = window.open("http://www.google.com.ph/#q="+address, "", "width=1000, height=700");
