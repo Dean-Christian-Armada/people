@@ -16,6 +16,13 @@ class TrainingCertificatesResource(resources.ModelResource):
 class TrainingCertificatesImport(ImportExportModelAdmin):
 	resource_class = TrainingCertificatesResource
 
+class ReferrersPoolResource(resources.ModelResource):
+	class Meta:
+		model = ReferrersPool
+
+class ReferrersPoolImport(ImportExportModelAdmin):
+	resource_class = ReferrersPoolResource
+
 admin.site.register(Zip)
 admin.site.register(CurrentAddress)
 admin.site.register(PermanentAddress)
@@ -37,10 +44,10 @@ admin.site.register(DisciplinaryAction)
 admin.site.register(ChargedOffense)
 admin.site.register(Termination)
 admin.site.register(Passport)
-# admin.site.register(Sources)
-# admin.site.register(Specifics)
-# admin.site.register(Reasons)
-# admin.site.register(Rank)
+admin.site.register(Sources)
+admin.site.register(Specifics)
+admin.site.register(Reasons)
+admin.site.register(Rank)
 admin.site.register(BirthPlace)
 # admin.site.register(VesselType)
 # admin.site.register(CivilStatus)
@@ -51,6 +58,7 @@ admin.site.register(BirthPlace)
 admin.site.register(CauseOfDischarge)
 # admin.site.register(Status)
 # admin.site.register(Zip)
+admin.site.register(SeaService)
 admin.site.register(Sbook)
 admin.site.register(COC)
 admin.site.register(License)
@@ -67,3 +75,4 @@ admin.site.register(TrainingCertificatesSegregation)
 admin.site.register(TrainingCertificates, TrainingCertificatesImport)
 admin.site.register(TrainingCertificateDocuments)
 admin.site.register(TrainingCertificateDocumentsDetailed)
+admin.site.register(ReferrersPool, ReferrersPoolImport)

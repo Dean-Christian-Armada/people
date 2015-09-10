@@ -3,14 +3,16 @@
 $(function(){
     // Start Variables
     var sea_service = $(".sea-service-button");
-    var d = new Date();
-    var month = d.getMonth()+1;
-    var day = d.getDate();
-    var date = ((''+month).length<2 ? '0' : '') + month + '/' +
-        ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
+    // var d = new Date();
+    // var month = d.getMonth()+1;
+    // var day = d.getDate();
+    // var date = ((''+month).length<2 ? '0' : '') + month + '/' +
+    //     ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear(); 
     var x = ''; 
     count = 0;
     var seaservice_count = 9;
+    // counter for sea service incremental purposes
+    var seaservice_counter = 9;
     var college_count = 0;
     var emergency_count = 0;
 
@@ -138,18 +140,28 @@ $(function(){
     ];
     // End Variables
 
-    $("input[name='source']").click(function(){
-      val = $(this).val();
-      if($(this).is(':checked') && val != 'Seafarer Center'){
+    $("input[name='source']").click(function(e){
+      var label = '';
+      var inputs = '';
+      var text = e.currentTarget.nextSibling.data
+      var text = text.trim();
+      if($(this).is(':checked') && text != 'Seafarer Center'){
         $('.specific').remove();
-        if(val == 'Internet'){ 
-          label = '<label class="specific"><b>(Website Name/Address)</b></label>';
-        }else{
-          label = '<label class="specific"><b>(Please Specify)</b></label>';
+        if(text == 'Advertisements'){
+          label = '<label class="specific">:</label>';
+          inputs = advertisements;
         }
-        $(this).parent().append(label+" <input type='text' class='specific' name='specific' value="+specific+">");
-      }else{
-        $(this).parent().children("label, input[type='text']").remove();
+        else if(text == 'Internet'){ 
+          label = '<label class="specific">:</label>';
+          inputs = internet;
+        }else if(text == "Referred By"){
+          label = '<label class="specific">:</label> ';
+          inputs = referrer;
+        }
+        $(this).parent().append(label+inputs);
+      }
+      else{
+        $('.specific').remove();
       }
     });
     $(".ecdis-specific").change(function(){
@@ -226,9 +238,6 @@ $(function(){
       }
     });
 
-    // $('table.sea-services').find('tr').each(function(){
-    //   seaservice_count++;
-    // });
     $('table.sea-services').find('.date-left').each(function(){
       if($(this).val() != ''){
         $(this).prop("disabled", false);
@@ -236,56 +245,47 @@ $(function(){
     });
 
 
-    // add_seaservice = '<tr><td><button type="button" class="btn btn-danger delete-row">Delete</button></td><td><button type="button" class="btn btn-info add-row">Add</button></td><td><button type="button" class="btn btn-warning clear-row">Clear Row</button></td><td><input Placeholder="Vessel Name" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_name" maxlength="50" name="form-'+seaservice_count+'-vessel_name" type="text" /></td><td><input Placeholder="Vessel Type" class="vtype" data-toggle="tooltip" id="id_form-'+seaservice_count+'-vessel_type" maxlength="50" name="form-'+seaservice_count+'-vessel_type" type="text" /></td><td><input Placeholder="Flag" class="flag" data-toggle="tooltip" id="id_form-'+seaservice_count+'-flag" maxlength="50" name="form-'+seaservice_count+'-flag" type="text" /></td><td><input Placeholder="GRT" class="grt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-grt" min="0" name="form-'+seaservice_count+'-grt" type="number" /></td><td><input Placeholder="DWT" class="dwt" data-toggle="tooltip" id="id_form-'+seaservice_count+'-dwt" min="0" name="form-'+seaservice_count+'-dwt" type="number" /></td><td><input Placeholder="Year Built" data-toggle="tooltip" id="id_form-'+seaservice_count+'-year_built" min="0" name="form-'+seaservice_count+'-year_built" type="number" /></td><td><input Placeholder="Engine Type" data-toggle="tooltip" id="id_form-'+seaservice_count+'-engine_type" maxlength="50" name="form-'+seaservice_count+'-engine_type" type="text" /></td><td><input Placeholder="HP" class="hp" data-toggle="tooltip" id="id_form-'+seaservice_count+'-hp" step="0.1" name="form-'+seaservice_count+'-hp" type="number" /></td><td><input Placeholder="KW" class="kw" data-toggle="tooltip" id="id_form-'+seaservice_count+'-kw" step="0.1" name="form-'+seaservice_count+'-kw" type="number" /></td><td><input Placeholder="Manning Agency" class="td-150 manning_agency" data-toggle="tooltip" id="id_form-'+seaservice_count+'-manning_agency" maxlength="50" name="form-'+seaservice_count+'-manning_agency"type="text" /></td><td><input Placeholder="Principal / Shipowner" class="td-170" data-toggle="tooltip" id="id_form-'+seaservice_count+'-principal" maxlength="50" name="form-'+seaservice_count+'-principal" type="text" /></td><td><input Placeholder="Date Joined" class="date date-joined" data-toggle="tooltip" id="id_form-'+seaservice_count+'-date_joined" name="form-'+seaservice_count+'-date_joined" type="text" /></td><td><input Placeholder="Date Left" class="date date-left" data-toggle="tooltip" disabled="" id="id_form-'+seaservice_count+'-date_left" name="form-'+seaservice_count+'-date_left" type="text" /></td><td style="display:none"><input Placeholder="Days" class="duration" data-toggle="tooltip" id="id_form-'+seaservice_count+'-duration" min="0" name="form-'+seaservice_count+'-duration" readonly="" type="number"/></td><td><input Placeholder="Rank" class="rank" data-toggle="tooltip" id="id_form-'+seaservice_count+'-rank" maxlength="50" name="form-'+seaservice_count+'-rank" type="text" /></td><td><select class="first-choice cause_of_discharge" data-toggle="tooltip" id="id_form-'+seaservice_count+'-cause_of_discharge" name="form-'+seaservice_count+'-cause_of_discharge"><option value="Cause of Discharge">Cause of Discharge</option><option value="Finished Contract">Finished Contract</option><option value="Compassionate Reason">Compassionate Reason</option><option value="Medical Repatriation">Medical Repatriation</option><option value="Promoted on Board">Promoted on Board</option><option value="Vessel Sold">Vessel Sold</option><option value="Vessel Scraped">Vessel Scraped</option><option value="Change Management">Change Management</option><option value="Own Request">Own Request</option></select></td></tr>';
-    // $("tbody").on("click", ".add-row", function(){
-    //   $(this).parent().parent().after(add_seaservice);
-    //   seaservice_count++;
-    //   val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
-    // });
-    // $("tbody").on("click", ".delete-row", function(){
-    //   $(this).parent().parent().remove();
-    //   seaservice_count--;
-    //   val = $("#id_form-TOTAL_FORMS").val(seaservice_count);
-    // });
-
+  // START College Dynamic Fields Scripts
     // undisplays all except the first college
     $(".colleges:not(:eq(0))").hide();
-    $(".add-college").click(function(){
-      college_count++;
-      $(".delete-college").show();
-      $(".colleges").eq(college_count).show();
-    });
-    $("body").on("click", ".delete-college", function(){
-      $(".colleges").eq(college_count).hide();
-      college_count--;
-      if(college_count == 0){
-        $(this).hide();
-      }
-    });
-    // Makes sure the form group shows if fields are not null
+    // Makes sure the form group shows if fields are not null upon post request
     $(".colleges").each(function(){
       $(this).find('input').each(function(){
         val = $(this).val()
         if(val != ''){
           $(this).parent().parent().show();
         } 
-      })
+      });
+      if($(this).is(":visible")){
+        college_count++;
+        // alert(college_count);
+      }
     });
-
-    $(".emergency-contacts:not(:eq(0))").hide();
-    $(".add-emergency").click(function(){
-      emergency_count++;
-      $(".delete-emergency").show();
-      $(".emergency-contacts").eq(emergency_count).show();
+    college_count--;
+    if(college_count > 0){
+      $(".delete-college").show();
+    }
+    // alert($(".colleges").eq(0).is(":visible"));
+    $(".add-college").click(function(){
+      college_count++;
+      // alert(college_count);
+      $(".delete-college").show();
+      $(".colleges").eq(college_count).show();
+      // alert($(".colleges").eq(college_count).show());
     });
-    $("body").on("click", ".delete-emergency", function(){
-      $(".emergency-contacts").eq(emergency_count).hide();
-      emergency_count--;
-      if(emergency_count == 0){
+    $("body").on("click", ".delete-college", function(){
+      $(".colleges").eq(college_count).hide();
+      $(".colleges").eq(college_count).find('input').val('');
+      college_count--;
+      if(college_count == 0){
         $(this).hide();
       }
     });
-    // Makes sure the form group shows if fields are not null
+  // END College Dynamic Fields Scripts
+
+  // START Emergency Contact Dynamic Fields Scripts
+    $(".emergency-contacts:not(:eq(0))").hide();
+    // Makes sure the form group shows if fields are not null upon post request
     $(".emergency-contacts").each(function(){
       $(this).children().children().find('input').each(function(){
         val = $(this).val();
@@ -293,16 +293,53 @@ $(function(){
           $(this).parent().parent().parent().show();
         } 
       })
+      if($(this).is(":visible")){
+        emergency_count++;
+      }
     });
+    emergency_count--;
+    if(emergency_count > 0){
+      $(".delete-emergency").show();
+    }
+    $(".add-emergency").click(function(){
+      emergency_count++;
+      $(".delete-emergency").show();
+      $(".emergency-contacts").eq(emergency_count).show();
+    });
+    $("body").on("click", ".delete-emergency", function(){
+      $(".emergency-contacts").eq(emergency_count).hide();
+      $(".emergency-contacts").eq(emergency_count).find('input').val('');
+      emergency_count--;
+      if(emergency_count == 0){
+        $(this).hide();
+      }
+    });
+  // END Emergency Contact Dynamic Fields Scripts
 
-    $('.sea-service-row').click(function(){
-      // alert($(this).index());
+  
+  // START Sea Service Dynamic Fields Scripts
+    // Makes sure the form group shows if fields are not null upon post request
+    $(".sea-service-row").each(function(){
+      $(this).children().find("input").each(function(){
+        val = $(this).val();
+        if(val != ''){
+          $(this).parent().parent().show();
+        }
+      });
     });
     $(".add-sea-service-row").click(function(){
-      seaservice_count++;
-      // $(".delete-emergency").show();
+      if(seaservice_count > 9){
+        seaservice_counter++;
+      }
+      $(".sea-service-row").each(function(){
+        if($(this).is(":visible")){
+          seaservice_count++;
+        }
+      });
+      seaservice_count-=seaservice_counter;
       $(".sea-service-row").eq(seaservice_count).show();
     });
+  // END Sea Service Dynamic Fields Scripts
 
     $("input").change(function(){
       name = $(this).attr("name");
@@ -403,6 +440,11 @@ $(function(){
       if ($(this).find("li.active").text().trim() == 'Sea Service' && x == 1){
         $(sea_service).click();
       }
+      position_applied = $("#id_position_applied option:selected").text();
+      alternative_position = $("#id_alternative_position option:selected").text();
+      if(position_applied != "Engine Cadet" && position_applied != "Deck Cadet" && alternative_position != "Engine Cadet" && alternative_position != "Deck Cadet"){
+        $("#application-form-essay").hide();
+      }
     });
     $.fn.modal.Constructor.prototype.enforceFocus = function () { };
 
@@ -422,13 +464,17 @@ $(function(){
       }
     });
 
-    $('.application-date').val(date);
+    // $('.application-date').val(date);
     $('[data-toggle="tooltip"]').tooltip({ html: true });
     $("input").keyup(tooltip).click(tooltip).focusout(tooltip);
     $("#last_name, #first_name, #middle_name").keyup(full_name).click(full_name).focusout(full_name);
     $("#permanent_unit, #current_unit, #permanent_street, #permanent_baranggay, #permanent_municipality, #permanent_zip, #current_street, #current_baranggay, #current_municipality, #current_zip").keyup(address).change(address);
     $(".essay").keyup(essay).click(essay).focusout(essay);
+    // Used for sea-services validation
+    // Users can not exit the sea-service unless valid
     $(".sea-services").on("keyup", "input", function(){
+      $(this).parent().siblings().children().prop("required", "true");
+    }).on("change", "select", function(){
       $(this).parent().siblings().children().prop("required", "true");
     });
 
@@ -460,10 +506,10 @@ $(function(){
         }
       });
       $('.sea-services').find('select').each(function(){
-        if($(this).prop('required') && $(this).next('ul').length != 1 && $(this).val() == "Cause of Discharge"){
+        if($(this).prop('required') && $(this).next('ul').length != 1 && $('option:selected', this).text() == "Cause of Discharge"){
           // count++;
           $(this).after("<ul class='errorlist'><li>This field is required.</li></ul>");
-        }else if($(this).val() != "Cause of Discharge" && $(this).next('ul').length == 1){
+        }else if($('option:selected', this).text() != "Cause of Discharge" && $(this).next('ul').length == 1){
           // count--;
           $(this).next('ul').remove();
         }
@@ -600,9 +646,13 @@ $(function(){
     if($("#id_position_applied").val() != "Position Applied"){
       $("#id_position_applied").css("color", "#000");
     }
-    if($("#id_civil_status").val() != "Civil Status"){
-      $("#id_civil_status").css("color", "#000");
-    }
+
+    $("#id_alternative_position, #id_position_applied").change(function(){
+      x = $('option:selected', this).text();
+      if( x == 'Deck Cadet' || x == 'Engine Cadet' ){
+        $("#application-form-essay").show();
+      }
+    });
 
     // Start Input Validations
     $("body").on("keydown", "input[type='number']", function(e){

@@ -78,8 +78,14 @@ class Relationship(models.Model):
 
 class Rank(models.Model):
 	rank = models.CharField(max_length=50, default=None)
+	hiring = models.BooleanField(default=0)
+	# Application Form Ordering Dorpdown Purposes
+	order = models.PositiveSmallIntegerField(default=None, null=True, blank=True)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
+	def __unicode__(self):
+		return self.rank
 
 class COCRank(models.Model):
 	coc_rank = models.CharField(max_length=50, default=None)
@@ -125,8 +131,11 @@ class Sources(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.source
+
 class Specifics(models.Model):
-	specific = models.CharField(max_length=50, default=None)
+	specific = models.CharField(max_length=50, default=None, blank=True)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
@@ -310,3 +319,26 @@ class TrainingCertificateDocumentsDetailed(models.Model):
 
 class SeaService(AbstractSeaService):
 	pass
+
+# This is a temporary model object for the referrer's pool
+class ReferrersPool(models.Model):
+	# first_name = models.CharField(max_length=30, default=None)
+	# middle_name = models.CharField(max_length=30, default=None, blank=True)
+	# last_name = models.CharField(max_length=30, default=None)
+	name = models.CharField(max_length=100, default=None)
+
+	def __unicode__(self):
+		return self.name
+
+	# def name(self):
+	# 	return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
+
+class MarinersProfile(models.Model):
+	user = models.ForeignKey(UserProfile, default=None)
+	status = models.NullBooleanField(default=0)
+	# ForeignKey temporarily at ReferrersPool
+	# Eventually will be a foreign key to UserProfile
+	referrer = models.ForeignKey(ReferrersPool)
+	position = models.ForeignKey(Rank)
+	picture = models.ImageField(upload_to='photos/mariners-profile', blank=True, default=None)
+	signatures = models.ImageField(upload_to='signatures/mariners-profile', blank=True, default=None)

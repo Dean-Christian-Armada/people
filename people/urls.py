@@ -40,6 +40,9 @@ urlpatterns = [
     # url(r'^application-form/$', form, name='application_form'),
     url(r'^application-form/', include('application_form.urls')),
     url(r'^mariners-profile/', include('mariners_profile.urls')),
+
+    # Django autocomplete
+    url(r'^autocomplete/', include('autocomplete_light.urls'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

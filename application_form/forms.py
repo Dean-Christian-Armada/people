@@ -10,7 +10,9 @@ from .models import *
 from login.models import UserProfile, Userlevel
 from mariners_profile.models import *
 
-import sys
+from datetime import date
+
+import sys, autocomplete_light
 
 # All data input processes are located here
 # def clean processes the insert data on the mariners profile
@@ -263,40 +265,25 @@ class EmergencyContactForm(forms.ModelForm):
 			emergency_barangay = self.cleaned_data['emergency_barangay']
 			emergency_municipality = self.cleaned_data['emergency_municipality']
 			relationship = self.cleaned_data['relationship']
-			print "DEAN"
-			print self.cleaned_data
-
 			emergency_contact = super(EmergencyContactForm, self).save(commit=False)
-			print "a"
 			userprofile = UserProfile.objects.latest('id')
-			print "b"
 			municipality = Municipality.objects.get_or_create(municipality=emergency_municipality)
-			print "c"
 			if municipality:
 				municipality = Municipality.objects.get(municipality=emergency_municipality)
 			barangay = Barangay.objects.get_or_create(barangay=emergency_barangay)
-			print "d"
 			if barangay:
 				barangay = Barangay.objects.get(barangay=emergency_barangay)
 			relationships = Relationship.objects.get_or_create(relationship=relationship)
-			print "e"
 			if relationships:
 				relationships = Relationship.objects.get(relationship=relationship)
-			print "f"
 			try:
 				zip = Zip.objects.get_or_create(zip=emergency_zip, barangay=barangay, municipality=municipality)[0]
 			except:
 				zip = Zip.objects.get(zip=emergency_zip)
-			print "g"
 			emergency_contact.user = userprofile
 			emergency_contact.emergency_zip = zip
-			print "h"
 			emergency_contact.relationship = relationships
-			print "i"
-			print zip
-			print relationships
 			emergency_contact.save()
-			print "XYLINE"
 			# Modify cleaned_data for var arguments on creating data on the Mariners Object
 			self.cleaned_data['user'] = userprofile
 			self.cleaned_data['emergency_zip'] = zip
@@ -744,71 +731,92 @@ class SeaServiceForm(forms.ModelForm):
 	class Meta:
 		model = ApplicationFormSeaService
 		fields = '__all__'
-		exclude = ('date_modified',)
+		exclude = ('date_modified', 'vessel_name', 'vessel_type', 'flag', 'engine_type', 'manning_agency', 'principal', 'rank', 'user')
 
+	def save(self, commit=True):
+		try:
+			vessel_name = self.cleaned_data['vessel_name']
+			vessel_type = self.cleaned_data['vessel_type']
+			flag = self.cleaned_data['flag']
+			engine_type = self.cleaned_data['engine_type']
+			manning_agency = self.cleaned_data['manning_agency']
+			principal = self.cleaned_data['principal']
+			rank = self.cleaned_data['rank']
+			sea_services = super(SeaServiceForm, self).save(commit=False)
+			userprofile = UserProfile.objects.latest('id')
+			vesselname = VesselName.objects.get_or_create(vessel_name=vessel_name)
+			if vesselname:
+				vesselname = VesselName.objects.get(vessel_name=vessel_name)
+			vesseltype = VesselType.objects.get_or_create(vessel_type=vessel_type)
+			if vesseltype:
+				vesseltype = VesselType.objects.get(vessel_type=vessel_type)
+			flags = Flags.objects.get_or_create(flags=flag)
+			if flags:
+				flags = Flags.objects.get(flags=flag)
+			enginetype = EngineType.objects.get_or_create(engine_type=engine_type)
+			if enginetype:
+				enginetype = EngineType.objects.get(engine_type=engine_type)
+			manningagency = ManningAgency.objects.get_or_create(manning_agency=manning_agency)
+			if manningagency:
+				manningagency = ManningAgency.objects.get(manning_agency=manning_agency)
+			principals = Principal.objects.get_or_create(principal=principal)
+			if principals:
+				principals = Principal.objects.get(principal=principal)
+			ranks = Rank.objects.get_or_create(rank=rank)
+			if ranks:
+				ranks = Rank.objects.get(rank=rank)
+			sea_services.user = userprofile
+			sea_services.vessel_name = vesselname
+			sea_services.vessel_type = vesseltype
+			sea_services.flag = flags
+			sea_services.engine_type = enginetype
+			sea_services.principal = principals
+			sea_services.manning_agency = manningagency
+			sea_services.rank = ranks
+			sea_services.save()
+			self.cleaned_data['user'] = userprofile
+			self.cleaned_data['vessel_name'] = vesselname
+			self.cleaned_data['vessel_type'] = vesseltype
+			self.cleaned_data['flag'] = flags
+			self.cleaned_data['engine_type'] = enginetype
+			self.cleaned_data['manning_agency'] = manningagency
+			self.cleaned_data['principal'] = principals
+			self.cleaned_data['rank'] = ranks
+			value = self.cleaned_data
+			SeaService.objects.create(**value)
+		except:
+			print "%s - %s" % (sys.exc_info()[0], sys.exc_info()[1])
 
+class ApplicationForm(autocomplete_light.ModelForm):
+	# pass
+	# Date today script
+	ADVERTISEMENT_CHOICES = (
+			('Magazine', 'Magazine'),
+			('Newspaper', 'Newspaper'),
+		)
+	INTERNET_CHOICES = (
+			('www.manship.com', 'www.manship.com'),
+			('www.seamanjobsite.com', 'www.seamanjobsite.com'),
+			('www.pinoyseaman.com', 'www.pinoyseaman.com'),
+			('www.crewtoo.com', 'www.crewtoo.com'),
+		)
+	today = date.today()
+	today = today.strftime("%m/%d/%y")
+	application_date = forms.DateField(widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':"Date of Application", 'data-toggle':'tooltip', 'readonly':'readonly', 'value':today}))
+	signature = JSignatureField(widget=JSignatureWidget(jsignature_attrs={'color': '#000'}))
+	alternative_position = forms.ModelChoiceField(widget=forms.Select, queryset=Rank.objects.filter(hiring=1).order_by('order'))
+	position_applied = forms.ModelChoiceField(widget=forms.Select, queryset=Rank.objects.filter(hiring=1).order_by('order'))
+	source = forms.ModelChoiceField(widget=forms.RadioSelect, error_messages={'required': 'Please let us know how you learned our company'}, queryset=Sources.objects.filter(~Q(source="Friends or Relatives")))
+	advertisements = forms.ChoiceField(widget=forms.Select(attrs={'class':"specific"}), choices=ADVERTISEMENT_CHOICES, required=False)
+	internet = forms.ChoiceField(widget=forms.Select(attrs={'class':"specific"}), choices=INTERNET_CHOICES, required=False)
+	referred_by = forms.CharField(widget=autocomplete_light.TextWidget('ReferrerAutocomplete', attrs={'placeholder':'Search Referrer', 'class':"specific"}))
+	application_picture = models.CharField()
+	class Meta:
+		model = ApplicationForm
+		fields = ('application_date', 'essay' )
 
-
-# class EmergencyContactForm(forms.ModelForm):
-# 	relationship = forms.CharField()
-# 	emergency_zip = forms.IntegerField()
-# 	emergency_municipality = forms.CharField()
-# 	emergency_barangay = forms.CharField()
-# 	emergency_contact = forms.RegexField(regex=r'^([0-9]{7}|[0-9]{11})$', error_messages={'invalid': "Telephone and Mobile Numbers are only allowed"})
-# 	class Meta:
-# 		model = ApplicationFormEmergencyContact
-# 		fields = '__all__'
-# 		exclude = ('user', 'emergency_zip', 'relationship')
-
-# 	def save(self, commit=True):
-# 		# Try is used to proceed if second formset onwards is left blank
-# 		try:
-# 			emergency_zip = self.cleaned_data['emergency_zip']
-# 			emergency_barangay = self.cleaned_data['emergency_barangay']
-# 			emergency_municipality = self.cleaned_data['emergency_municipality']
-# 			relationship = self.cleaned_data['relationship']
-# 			print "DEAN"
-# 			print self.cleaned_data
-
-# 			emergency_contact = super(EmergencyContactForm, self).save(commit=False)
-# 			print "a"
-# 			userprofile = UserProfile.objects.latest('id')
-# 			print "b"
-# 			municipality = Municipality.objects.get_or_create(municipality=emergency_municipality)
-# 			print "c"
-# 			if municipality:
-# 				municipality = Municipality.objects.get(municipality=emergency_municipality)
-# 			barangay = Barangay.objects.get_or_create(barangay=emergency_barangay)
-# 			print "d"
-# 			if barangay:
-# 				barangay = Barangay.objects.get(barangay=emergency_barangay)
-# 			relationships = Relationship.objects.get_or_create(relationship=relationship)
-# 			print "e"
-# 			if relationships:
-# 				relationships = Relationship.objects.get(relationship=relationship)
-# 			print "f"
-# 			try:
-# 				zip = Zip.objects.get_or_create(zip=emergency_zip, barangay=barangay, municipality=municipality)[0]
-# 			except:
-# 				zip = Zip.objects.get(zip=emergency_zip)
-# 			print "g"
-# 			emergency_contact.user = userprofile
-# 			emergency_contact.emergency_zip = zip
-# 			print "h"
-# 			emergency_contact.relationship = relationships
-# 			print "i"
-# 			print zip
-# 			print relationships
-# 			emergency_contact.save()
-# 			print "XYLINE"
-# 			# Modify cleaned_data for var arguments on creating data on the Mariners Object
-# 			self.cleaned_data['user'] = userprofile
-# 			self.cleaned_data['emergency_zip'] = zip
-# 			self.cleaned_data['relationship'] = relationships
-# 			# Remove data not on the Mariners Object fields
-# 			self.cleaned_data.pop("emergency_municipality")
-# 			self.cleaned_data.pop("emergency_barangay")
-# 			value = self.cleaned_data
-# 			EmergencyContact.objects.create(**value)
-# 		except:
-# 			print "%s - %s" % (sys.exc_info()[0], sys.exc_info()[1])
+	def save(self, commit=True):
+		userprofile = UserProfile.objects.latest('id')
+		signature = self.cleaned_data['signature']
+		application = super(ApplicationForm, self).save(commit=False)
+			pass

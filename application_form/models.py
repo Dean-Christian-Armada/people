@@ -6,7 +6,7 @@ from django_date_extensions.fields import ApproximateDateField
 
 from login.models import UserProfile
 from people.models import *
-from mariners_profile.models import Zip, Flags, TrainingCertificates
+from mariners_profile.models import Zip, Flags, TrainingCertificates, Sources, Specifics, Rank, Status
 
 
 class ApplicationFormCurrentAddress(models.Model):
@@ -91,3 +91,29 @@ class ApplicationFormTrainingCertificateDocuments(AbstractTrainingCertificateDoc
 
 class ApplicationFormSeaService(AbstractSeaService):
 	pass
+
+class AppSource(models.Model):
+	source = models.ForeignKey(Sources, default=None)
+	specific = models.ForeignKey(Specifics, default=None)
+	date_created = models.DateTimeField(auto_now_add=True, )
+
+class ApplicationForm(models.Model):
+
+	# ForeignKey with Django Users Model 
+	user = models.ForeignKey(UserProfile, default=None)
+
+	picture = models.ImageField(upload_to='photos/application-form', blank=True, default=None)
+	signatures = models.ImageField(upload_to='signatures/application-form', blank=True, default=None)
+	
+	# ForeignKeys
+	position_applied = models.ForeignKey(Rank, related_name="position_applied", default=None)
+	alternative_position = models.ForeignKey(Rank, related_name="alternative_position", default=None)
+	application_source = models.ForeignKey(AppSource, default=None)
+	# Status of the applicant if passed, failed or onhold
+	status = models.ForeignKey(Status, default=None)
+
+	# Date Fields
+	application_date = models.DateField(default=None)
+	
+	# Text Field
+	essay = models.TextField(null=True, blank=True, default=None)
