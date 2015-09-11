@@ -31,8 +31,6 @@ class FirstRequiredFormSet(BaseFormSet):
     def __init__(self, *args, **kwargs):
         super(FirstRequiredFormSet, self).__init__(*args, **kwargs)
         self.forms[0].empty_permitted = False
-        # for form in self.forms:
-        #     form.empty_permitted = False
 
 @login_required()
 def form(request):
@@ -65,8 +63,6 @@ def form(request):
 	sea_service = formset_factory(SeaServiceForm, extra=20)
 	application = ApplicationForm(initial={'scheme': scheme, 'http_host': http_host})
 
-	# emergency_contact = EmergencyContactForm()
-
 	if request.method == "POST":
 		applicant_name = ApplicantNameForm(request.POST)
 		permanent_address = PermanentAddressForm(request.POST)
@@ -95,7 +91,7 @@ def form(request):
 		sea_service = sea_service(request.POST)
 		application = ApplicationForm(request.POST)
 
-		if applicant_name.is_valid() and personal_data.is_valid() and permanent_address.is_valid() and current_address.is_valid() and spouse.is_valid() and college.is_valid() and highschool.is_valid() and emergency_contact.is_valid() and visa_application.is_valid() and detained.is_valid() and disciplinary_action.is_valid() and charged_offense.is_valid() and termination.is_valid() and passport.is_valid() and sbook.is_valid()and coc.is_valid()and license.is_valid()and src.is_valid()and goc.is_valid()and us_visa.is_valid()and schengen_visa.is_valid()and yellow_fever.is_valid() and flags.is_valid() and trainings_certificates.is_valid() and sea_service.is_valid and application.is_valid():
+		if applicant_name.is_valid() and personal_data.is_valid() and permanent_address.is_valid() and current_address.is_valid() and spouse.is_valid() and college.is_valid() and highschool.is_valid() and emergency_contact.is_valid() and visa_application.is_valid() and detained.is_valid() and disciplinary_action.is_valid() and charged_offense.is_valid() and termination.is_valid() and passport.is_valid() and sbook.is_valid()and coc.is_valid()and license.is_valid()and src.is_valid()and goc.is_valid()and us_visa.is_valid()and schengen_visa.is_valid()and yellow_fever.is_valid() and flags.is_valid() and trainings_certificates.is_valid() and sea_service.is_valid() and application.is_valid():
 			applicant_name.save()
 			permanent_address.save()
 			current_address.save()
@@ -203,11 +199,9 @@ def tmp_image(request):
 		tmp_image_name = ''.join(random.choice(string.lowercase) for i in range(10))
 		# does not work with starting slash
 		x = 'media/photos/tmp/'+tmp_image_name+'.jpg'
-		# y = 'media/photos/image.jpg'
 		f = open(x, 'wb')
 		f.write(request.body)
 		f.close()
-		# os.rename(x, y)
 		scheme = request.scheme
 		http_host = request.META['HTTP_HOST']
 		return HttpResponse(scheme+"://"+http_host+"/"+x)

@@ -29,8 +29,10 @@ def home(request):
 		elif userlevel == 'application-form':
 			# return HttpResponse("HELLO This is the applicant level!<a href='/logout/'>Log Out</a>")
 			return HttpResponseRedirect('/application-form/')
-		elif userlevel == 'crew':
-			return HttpResponse("HELLO This is the crew level!<a href='/logout/'>Log Out</a>")
+		elif userlevel == 'crewing':
+			# return HttpResponse("HELLO This is the crew level!<a href='/logout/'>Log Out</a>")
+			# return HttpResponseRedirect('/mariners-profile/')
+			template = "login-landing/mariners_profile.html"
 		else:
 			print userlevel
 			print type(userlevel)

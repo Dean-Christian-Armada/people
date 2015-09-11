@@ -37,6 +37,9 @@ class Principal(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.principal
+
 class CivilStatus(models.Model):
 	civil_status = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
@@ -97,10 +100,16 @@ class EngineType(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.engine_type
+
 class ManningAgency(models.Model):
 	manning_agency = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
+	def __unicode__(self):
+		return self.manning_agency
 
 class CauseOfDischarge(models.Model):
 	cause_of_discharge = models.CharField(max_length=50, default=None)
@@ -272,9 +281,11 @@ class Termination(AbstractTermination):
 
 class Passport(AbstractPassport):
 	passport_place_issued = models.ForeignKey(PassportPlaceIssued, default=None, blank=True)
+	passport_date_issued = models.DateField(default=None, null=True, blank=True)
 
 class Sbook(AbstractSbook):
 	sbook_place_issued = models.ForeignKey(SBookPlaceIssued, default=None, blank=True)
+	sbook_date_issued = models.DateField(default=None, null=True, blank=True)
 
 class COC(AbstractCOC):
 	coc_date_issued = models.DateField(default=None, null=True, blank=True)
@@ -289,14 +300,20 @@ class SRC(AbstractSRC):
 	
 class GOC(AbstractGOC):
 	goc_date_issued = models.DateField(default=None, null=True, blank=True)
+	# goc_rank = models.ForeignKey('mariners_profile.Rank', default=None)
 
 class USVisa(AbstractUSVisa):
 	pass
+	# us_visa_place_issued = models.ForeignKey(USVisaPlaceIssued, default=None, blank=True)
 
 class SchengenVisa(AbstractSchengenVisa):
 	pass
+	# schengen_visa_place_issued = models.ForeignKey(SchengenVisaPlaceIssued, default=None, blank=True)
+
 class YellowFever(AbstractYellowFever):
 	pass
+	# yellow_fever_place_issued = models.ForeignKey(YellowFeverPlaceIssued, default=None, blank=True)
+	# yellow_fever_date_issued = models.DateField(default=None, null=True, blank=True)
 
 class FlagDocuments(AbstractFlagDocuments):
 	flags = models.ManyToManyField(Flags, through='mariners_profile.FlagDocumentsDetailed', blank=True, default=None)
@@ -348,3 +365,7 @@ class MarinersProfile(models.Model):
 	position = models.ForeignKey(Rank)
 	picture = models.ImageField(upload_to='photos/mariners-profile', blank=True, default=None)
 	signature = models.ImageField(upload_to='signatures/mariners-profile', blank=True, default=None)
+
+	def __unicode__(self):
+		user = "%s %s %s" % (self.user.first_name, self.user.middle_name, self.user.last_name)
+		return user
