@@ -139,6 +139,9 @@ class Specifics(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
 
+	def __unicode__(self):
+		return self.specific
+
 class Reasons(models.Model):
 	reason = models.TextField(blank=True, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
@@ -151,6 +154,9 @@ class Status(models.Model):
 	status = models.CharField(max_length=50, default=None)
 	date_created = models.DateTimeField(auto_now_add=True, )
 	date_modified = models.DateTimeField(auto_now=True, blank=True, )
+
+	def __unicode__(self):
+		return self.status
 
 class English(models.Model):
 	english = models.CharField(max_length=50, default=None)
@@ -341,4 +347,4 @@ class MarinersProfile(models.Model):
 	referrer = models.ForeignKey(ReferrersPool)
 	position = models.ForeignKey(Rank)
 	picture = models.ImageField(upload_to='photos/mariners-profile', blank=True, default=None)
-	signatures = models.ImageField(upload_to='signatures/mariners-profile', blank=True, default=None)
+	signature = models.ImageField(upload_to='signatures/mariners-profile', blank=True, default=None)

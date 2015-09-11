@@ -7,11 +7,13 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from easy_pdf.views import PDFTemplateView
 from easy_pdf.rendering import render_to_pdf_response
 
+from jsignature.utils import draw_signature
+
 from . forms import *
 
 from mariners_profile.models import TrainingCertificatesSegregation
 
-import os, shutil, datetime, random, string
+import os, shutil, datetime
 
 
 
@@ -36,8 +38,6 @@ class FirstRequiredFormSet(BaseFormSet):
 
 @login_required()
 def form(request):
-	scheme = request.scheme
-	http_host = request.META['HTTP_HOST']
 	applicant_name = ApplicantNameForm()
 	personal_data = PersonalDataForm()
 	permanent_address = PermanentAddressForm()
@@ -62,12 +62,12 @@ def form(request):
 	yellow_fever = YellowFeverForm()
 	flags = FlagForm()
 	trainings_certificates = TrainingCertificateForm()
+	# sea_service = SeaServiceForm()
 	sea_service = formset_factory(SeaServiceForm, extra=20)
-	application = ApplicationForm(initial={'scheme': scheme, 'http_host': http_host})
-
 	# emergency_contact = EmergencyContactForm()
 
 	if request.method == "POST":
+		print request.POST
 		applicant_name = ApplicantNameForm(request.POST)
 		permanent_address = PermanentAddressForm(request.POST)
 		current_address = CurrentAddressForm(request.POST)
@@ -93,9 +93,10 @@ def form(request):
 		flags = FlagForm(request.POST)
 		trainings_certificates = TrainingCertificateForm(request.POST)
 		sea_service = sea_service(request.POST)
-		application = ApplicationForm(request.POST)
+		# emergency_contact = EmergencyContactForm(request.POST)
 
-		if applicant_name.is_valid() and personal_data.is_valid() and permanent_address.is_valid() and current_address.is_valid() and spouse.is_valid() and college.is_valid() and highschool.is_valid() and emergency_contact.is_valid() and visa_application.is_valid() and detained.is_valid() and disciplinary_action.is_valid() and charged_offense.is_valid() and termination.is_valid() and passport.is_valid() and sbook.is_valid()and coc.is_valid()and license.is_valid()and src.is_valid()and goc.is_valid()and us_visa.is_valid()and schengen_visa.is_valid()and yellow_fever.is_valid() and flags.is_valid() and trainings_certificates.is_valid() and sea_service.is_valid and application.is_valid():
+
+		if applicant_name.is_valid() and personal_data.is_valid() and permanent_address.is_valid() and current_address.is_valid() and spouse.is_valid() and college.is_valid() and highschool.is_valid() and emergency_contact.is_valid() and visa_application.is_valid() and detained.is_valid() and disciplinary_action.is_valid() and charged_offense.is_valid() and termination.is_valid() and passport.is_valid() and sbook.is_valid()and coc.is_valid()and license.is_valid()and src.is_valid()and goc.is_valid()and us_visa.is_valid()and schengen_visa.is_valid()and yellow_fever.is_valid() and flags.is_valid() and trainings_certificates.is_valid() and sea_service.is_valid():
 			applicant_name.save()
 			permanent_address.save()
 			current_address.save()
@@ -127,8 +128,6 @@ def form(request):
 			trainings_certificates.save_m2m()
 			for sea_service_form in sea_service:
 				sea_service_form.save()
-			application.save()
-			return HttpResponseRedirect('/application-form/success/')
 		else:
 			print applicant_name.errors
 			print permanent_address.errors
@@ -155,8 +154,6 @@ def form(request):
 			print flags.errors
 			print trainings_certificates.errors
 			print sea_service.errors
-			print application.errors
-			
 
 	template = "application_form/index.html"
 	context_dict = {"title": "Application Form"}
@@ -185,31 +182,7 @@ def form(request):
 	context_dict['flags'] = flags
 	context_dict['trainings_certificates'] = trainings_certificates
 	context_dict['seaservice_form'] = sea_service
-	context_dict['application'] = application
+	# segregate = TrainingCertificatesSegregation.objects.filter()
+	# context_dict['segregate'] = segregate
 
 	return render(request, template, context_dict)
-
-
-@login_required
-def success(request):
-	template = "application_form/success.html"
-	context_dict = {"title": "Thank You For Applying at Manship"}
-	return render(request, template, context_dict)
-
-@csrf_exempt
-@login_required
-def tmp_image(request):
-	if request.method == 'POST':
-		tmp_image_name = ''.join(random.choice(string.lowercase) for i in range(10))
-		# does not work with starting slash
-		x = 'media/photos/tmp/'+tmp_image_name+'.jpg'
-		# y = 'media/photos/image.jpg'
-		f = open(x, 'wb')
-		f.write(request.body)
-		f.close()
-		# os.rename(x, y)
-		scheme = request.scheme
-		http_host = request.META['HTTP_HOST']
-		return HttpResponse(scheme+"://"+http_host+"/"+x)
-	else:
-		return HttpResponse("No data")

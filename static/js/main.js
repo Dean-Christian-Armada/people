@@ -66,7 +66,7 @@ $(function(){
 
     // 50 words essay word count validation
     var essay = function(event){
-      var _essay = document.getElementById('essay');
+      var _essay = document.getElementById('id_essay');
       try{
         essay = _essay.value.match(/\S+/g).length;
       }
@@ -157,6 +157,7 @@ $(function(){
         }else if(text == "Referred By"){
           label = '<label class="specific">:</label> ';
           inputs = referrer;
+          $("#id_referred_by").prop("required", "true");
         }
         $(this).parent().append(label+inputs);
       }
@@ -164,16 +165,16 @@ $(function(){
         $('.specific').remove();
       }
     });
-    $(".ecdis-specific").change(function(){
-      val = $(this).val();
-      if($(this).is(':checked')){
-          label = '<label>(Please specify brand): </label>';
-          $(this).parent().append(label+" <input type='text'>");
-        }
-      else{
-        $(this).parent().children("label, input[type='text']").remove();
-      }
-    });
+    // $(".ecdis-specific").change(function(){
+    //   val = $(this).val();
+    //   if($(this).is(':checked')){
+    //       label = '<label>(Please specify brand): </label>';
+    //       $(this).parent().append(label+" <input type='text'>");
+    //     }
+    //   else{
+    //     $(this).parent().children("label, input[type='text']").remove();
+    //   }
+    // });
     $("#same_address").change(function(){
       if($(this).is(':checked')){
         unit = $("#permanent_unit").val();
@@ -352,7 +353,11 @@ $(function(){
         }
       }
       if( name == "us_visa" || name == "schengen_visa" ){
-        $("input[name='"+name+"_expiry']").prop("disabled", true);
+        if(val == 0){
+          $("input[name='"+name+"_expiry']").prop("disabled", true);
+        }else{
+          $("input[name='"+name+"_expiry']").prop("disabled", false);
+        }
       }
     });
 
@@ -444,6 +449,7 @@ $(function(){
       alternative_position = $("#id_alternative_position option:selected").text();
       if(position_applied != "Engine Cadet" && position_applied != "Deck Cadet" && alternative_position != "Engine Cadet" && alternative_position != "Deck Cadet"){
         $("#application-form-essay").hide();
+        $("#id_essay").removeAttr('required');
       }
     });
     $.fn.modal.Constructor.prototype.enforceFocus = function () { };
@@ -651,6 +657,7 @@ $(function(){
       x = $('option:selected', this).text();
       if( x == 'Deck Cadet' || x == 'Engine Cadet' ){
         $("#application-form-essay").show();
+        $("#id_essay").prop("required", "true");
       }
     });
 

@@ -26,56 +26,9 @@
         <div class="col-md-9">
           <div class="bs-docs-section" id='application-form'> 
             {% csrf_token%}
-            {# include "application_form/error_validations.html" #}
-            {{ application.scheme|attr:"style:display:none" }}
-            {{ application.http_host|attr:"style:display:none" }}
-            <div class="form-group">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <div class="col-md-6 padding-negator">
-                      <h3><img src="{% static 'img/small_logo.png' %}"></h3>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-6">
-                      {{ application.application_date }}
-                      {{ application.application_date.errors }}
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-6">
-                      {{ application.position_applied|add_class:"form-control first-choice"|attr:"data-toggle:tooltip" }}
-                      {{ application.position_applied.errors }}
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-6">
-                      {{ application.alternative_position|add_class:"form-control first-choice"|attr:"data-toggle:tooltip" }}
-                      {{ application.alternative_position.errors }}
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6" style="text-align:right;">
-                  <div class="form-group">
-                    <div class="pull-right" id="picture-container">
-                      {% if request.POST %}  
-                        <img src="{{request.POST.application_picture}}">
-                        <input type="text" name="application_picture" value="{{request.POST.application_picture}}" style="display:none">
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#webcam" style="width:220px">Change Picture</button>
-
-                  </div>
-                  
-                </div>
-              </div>
 
             <h3 id='step-2' style="color: #02be9b;">How did you learn about Manship?</h3>
-            {{ application.source.errors }}
-            {{ application.source }}
-
+          
             <h3 id='step-3' style="color: #02be9b;">Personal Data</h3>
             <div class="form-group">
               {% for name in applicant_name  %}
@@ -554,54 +507,9 @@
               {% endfor %}
             </div>
 
-            <div id="application-form-essay">
-              <h3 id='step-11' style="color: #02be9b;">Essay</h3>
-                <p>Kindly say something about yourself, your qualifications and any other reasons why we should hire you.</p>
-                <p><b>(Take note: Essay must be at least 50 words)</b></p>
-                <p><b>TOTAL WORD COUNT: <span id="display_count">0</span> words</b></p>
-                {{ application.essay.errors }}
-                <p>
-                  {{ application.essay }}       
-                </p>
-            </div>
-            <div class="certification">
-                <h3 id='step-12' style="margin-top:0px; color: #02be9b;">Certification</h3>
-                <p>1.) I certify that all information I have provided on this Application Form is, to the best of my knowledge true and correct</p>
-                <p>2.) I agree that if I have withheld or misrepresented any information on this Application Form. I alone am responsible and accountable for any consequence of such withholding or misrepresentation</p>
-                <p>3.) I understand that the information I provided in this Application Form shall remain confidential, but I may be held liable for any untruthful statements made therein</p>
-                <div class="form-group">
-                  <div class="col-md-3">
-                    <label class="control-label">Printed Name:</label>
-                    <input type="text" data-toggle="tooltip" id="full_name" class="form-control certification-input" readonly="" placeholder="Printed Name" >
-                  </div>
-                  <div class="col-md-3">
-                    <label class="control-label">Signature:</label>
-                    <input type="text" data-toggle="modal" data-target="#signature" class="form-control certification-input" name="signature" placeholder="Signature" readonly="">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="control-label">Date:</label>
-                    <input type="text" data-toggle="tooltip" class="form-control certification-input application-date" readonly="" placeholder="Date" >
-                  </div>
-                </div>
-              </div>
-              <button class="btn btn-success form-control submit-application" >Submit Application</button>
+            <button class="btn btn-success form-control submit-application" >Submit Application</button>
             <br /> &nbsp;  
           </div>
-        </div>
-<div class="modal fade" id="webcam" tabindex="-1" role="dialog" aria-labelledby="PictureLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="pictureLabel"><b>TAKE PICTURE</b></h4>
-      </div>
-      <div class="modal-body webcam-container" style="text-align:center">
-      </div>
-      <div class="modal-footer">
-        <center><button type="button" class="btn btn-info half-width" id="start-application" onClick="take_snapshot()" data-dismiss="modal">Start Application</button></center>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="seaservice" tabindex="-1" role="dialog" aria-labelledby="SeaServiceLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -674,19 +582,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="signature" tabindex="-1" role="dialog" aria-labelledby="SignatureLabel" data-keyboard="false" data-backdrop="static">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="signatureLabel">Signature {{ application.signature.errors }}</h4>
-      </div>
-      <div class="modal-body" style="text-align: center">
-        {{ application.signature }}
-        <button class="btn btn-info form-control half-width" style="margin-top: 15px; margin-bottom: 15px;">Submit Application</button>
-      </div>
-    </div>
-  </div> 
-</div>   
+        </div>
         {% include "application_form/sidebar.html" %}
       </div>
     </div>
@@ -702,3 +598,4 @@
       </div>
     </div>
 {% endblock %}
+

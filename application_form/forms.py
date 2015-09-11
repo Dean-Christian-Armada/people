@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.db.models import Q
+from django.conf import settings
 from django import forms
 
 from jsignature.forms import JSignatureField
 from jsignature.widgets import JSignatureWidget
+from jsignature.utils import draw_signature
 
 from .models import *
 from login.models import UserProfile, Userlevel
@@ -12,7 +14,7 @@ from mariners_profile.models import *
 
 from datetime import date
 
-import sys, autocomplete_light
+import os, sys, shutil, autocomplete_light
 
 # All data input processes are located here
 # def clean processes the insert data on the mariners profile
@@ -530,7 +532,7 @@ class COCForm(forms.ModelForm):
 		COC.objects.create(**value)
 
 class LicenseForm(forms.ModelForm):
-	license_rank = forms.CharField()
+	license_rank = forms.CharField(required=False)
 	class Meta:
 		model = ApplicationFormLicense
 		fields = ('license', )
@@ -733,6 +735,8 @@ class SeaServiceForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('date_modified', 'vessel_name', 'vessel_type', 'flag', 'engine_type', 'manning_agency', 'principal', 'rank', 'user')
 
+
+
 	def save(self, commit=True):
 		try:
 			vessel_name = self.cleaned_data['vessel_name']
@@ -791,7 +795,9 @@ class ApplicationForm(autocomplete_light.ModelForm):
 	# pass
 	# Date today script
 	ADVERTISEMENT_CHOICES = (
-			('Magazine', 'Magazine'),
+			('Seaway', 'Seaway'),
+			('Buhay Marino', 'Buhay Marino'),
+			('Harbor Scope', 'Harbor Scope'),
 			('Newspaper', 'Newspaper'),
 		)
 	INTERNET_CHOICES = (
@@ -808,15 +814,129 @@ class ApplicationForm(autocomplete_light.ModelForm):
 	position_applied = forms.ModelChoiceField(widget=forms.Select, queryset=Rank.objects.filter(hiring=1).order_by('order'))
 	source = forms.ModelChoiceField(widget=forms.RadioSelect, error_messages={'required': 'Please let us know how you learned our company'}, queryset=Sources.objects.filter(~Q(source="Friends or Relatives")))
 	advertisements = forms.ChoiceField(widget=forms.Select(attrs={'class':"specific"}), choices=ADVERTISEMENT_CHOICES, required=False)
-	internet = forms.ChoiceField(widget=forms.Select(attrs={'class':"specific"}), choices=INTERNET_CHOICES, required=False)
-	referred_by = forms.CharField(widget=autocomplete_light.TextWidget('ReferrerAutocomplete', attrs={'placeholder':'Search Referrer', 'class':"specific"}))
-	application_picture = models.CharField()
+	internet = forms.ChoiceField(widget=forms.Select(attrs={'class':"specific", 'required':'required'}), choices=INTERNET_CHOICES, required=False)
+	referred_by = forms.CharField(widget=autocomplete_light.TextWidget('ReferrerAutocomplete', attrs={'placeholder':'Search Referrer', 'class':"specific"}) , required=False)
+	application_picture = forms.CharField()
+	scheme = forms.CharField()
+	http_host = forms.CharField()
+	essay = forms.CharField(widget=forms.Textarea(attrs={'class':"form-control essay"}), required=False)
 	class Meta:
 		model = ApplicationForm
-		fields = ('application_date', 'essay' )
+		fields = ('application_date', 'alternative_position', 'position_applied')
 
 	def save(self, commit=True):
-		userprofile = UserProfile.objects.latest('id')
+		print self.cleaned_data
+		advertisements = self.cleaned_data['advertisements']
+		internet = self.cleaned_data['internet']
+		referred_by = self.cleaned_data['referred_by']
+		essay = self.cleaned_data['essay']
+		application_picture = self.cleaned_data['application_picture']
+		scheme = self.cleaned_data['scheme']
+		http_host = self.cleaned_data['http_host']
+		# Sources Validation
+		if advertisements:
+			self.cleaned_data['specific'] = advertisements
+			self.cleaned_data.pop("advertisements")
+		elif internet:
+			self.cleaned_data['specific'] = internet
+			self.cleaned_data.pop("internet")
+		# Reffered By and (Friends or Relatives) validation
+		# If not in the referrers Pool it will be considerer as a friend or relative
+		elif referred_by:
+			try:
+				referred_by = ReferrersPool.objects.get(name=referred_by)
+			except:
+				self.cleaned_data['source'] = Sources.objects.get(source='Friends or Relatives')
+			self.cleaned_data['specific'] = referred_by
+			self.cleaned_data.pop("referred_by")
+		else:
+			self.cleaned_data['specific'] = ''
+
 		signature = self.cleaned_data['signature']
+		source = self.cleaned_data['source']
+		specific = self.cleaned_data['specific']
+		position_applied = self.cleaned_data['position_applied']
+		userprofile = UserProfile.objects.latest('id')
+		first_name = userprofile.first_name
+		middle_name = userprofile.middle_name
+		last_name = userprofile.last_name
+		file_name = first_name+middle_name+last_name
+		file_name = "".join(file_name.split())
+		
 		application = super(ApplicationForm, self).save(commit=False)
+		specifics = Specifics.objects.get_or_create(specific=specific)
+		if specifics:
+			specifics = Specifics.objects.get(specific=specific)
+
+		# Signature script on saving in a folder
+		signature_path = "media/signature/application-form/"+file_name+".png"
+		if signature:
+			signature_picture = draw_signature(signature)
+			_signature_file_path = draw_signature(signature, as_file=True)
+			signature_file_path = settings.MEDIA_ROOT+"/signatures/application-form/"
+			shutil.move(_signature_file_path, signature_file_path)
+			_signature_file_path = _signature_file_path.replace('/tmp/', 'signatures/application-form/')
+
+		essays = Essay.objects.get_or_create(essay=essay)
+		if essays:
+			essays = Essay.objects.get(essay=essay)
+
+		
+		# Webcam script on saving in a folder
+		try:
+			tmp_application_picture = application_picture
+			tmp_application_picture = tmp_application_picture.replace(scheme+"://"+http_host+"/", "")
+			# print tmp_application_picture
+			application_picture = "media/photos/application-form/"+file_name+".jpg"
+			os.rename(tmp_application_picture, application_picture)
+			print application_picture
+			application_picture = application_picture.replace("media/", "")
+			print application_picture
+		except:
+			print "%s - %s" % (sys.exc_info()[0], sys.exc_info()[1])
+
+		appsource = AppSource.objects.get_or_create(source=source, specific=specifics)
+		if appsource:
+			appsource = AppSource.objects.get(source=source, specific=specifics)
+		application.user = userprofile
+		application.application_source = appsource
+		application.picture = application_picture
+		application.essay = essays
+		application.signature = _signature_file_path
+		application.save()
+		try:
+			referrer = ReferrersPool.objects.get(name=referred_by)
+		except:
+			referrer = ReferrersPool.objects.get_or_create(name='')
+			referrer =ReferrersPool.objects.get(name='')
+		self.cleaned_data['signature'] = _signature_file_path
+		self.cleaned_data['user'] = userprofile
+		self.cleaned_data['picture'] = application_picture
+		self.cleaned_data['position'] = position_applied
+		self.cleaned_data['referrer'] = referrer
+		self.cleaned_data.pop("essay")
+		self.cleaned_data.pop("position_applied")
+		self.cleaned_data.pop("application_picture")
+		self.cleaned_data.pop("source")
+		self.cleaned_data.pop("http_host")
+		self.cleaned_data.pop("alternative_position")
+		self.cleaned_data.pop("scheme")
+		self.cleaned_data.pop("application_date")
+		try:
+			self.cleaned_data.pop("advertisements")
+		except:
 			pass
+		try:
+			self.cleaned_data.pop("specific")
+		except:
+			pass
+		try:
+			self.cleaned_data.pop("referred_by")
+		except:
+			pass
+		try:
+			self.cleaned_data.pop("internet")
+		except:
+			pass
+		value = self.cleaned_data
+		MarinersProfile.objects.create(**value)

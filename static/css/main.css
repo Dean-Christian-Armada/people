@@ -136,7 +136,8 @@ body.login {
     border-radius: 0;
     box-shadow: none!important;
     color: #000;
-    padding-left: 0
+    padding-left: 0;
+    /*text-transform: uppercase;*/
 }
 #application-form select, #seaservice select {
     color: #c4c1c7; background-color: #fff;
